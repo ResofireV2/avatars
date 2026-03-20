@@ -17,6 +17,8 @@ use Resofire\Avatars\Generator\Style\Undead;
 use Resofire\Avatars\Generator\Style\SpaceExplorer;
 use Resofire\Avatars\Generator\Style\FantasyCreature;
 use Resofire\Avatars\Generator\Style\Pirate;
+use Resofire\Avatars\Generator\Style\Glitch;
+use Resofire\Avatars\Generator\Style\Emoji;
 
 class AvatarGenerator
 {
@@ -42,6 +44,8 @@ class AvatarGenerator
             'space-explorer'    => new SpaceExplorer(),
             'fantasy-creature'  => new FantasyCreature(),
             'pirate'            => new Pirate(),
+            'glitch'            => new Glitch(),
+            'emoji'             => new Emoji(),
         ];
     }
 

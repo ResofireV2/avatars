@@ -20,6 +20,8 @@ resofire-avatars:
       space-explorer: Space Explorer
       fantasy-creature: Fantasy Creature
       pirate: Pirate
+      glitch: Glitch
+      emoji: Emoji
   forum:
     avatar_style_heading: Avatar Style
     avatar_style_help: Choose how your avatar looks. Your username determines the unique colours and features within the style.

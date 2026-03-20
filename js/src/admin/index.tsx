@@ -13,6 +13,8 @@ app.initializers.add('resofire/avatars', () => {
     'space-explorer',
     'fantasy-creature',
     'pirate',
+    'glitch',
+    'emoji',
   ];
 
   const styleOptions: Record<string, string> = {};

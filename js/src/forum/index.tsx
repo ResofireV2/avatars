@@ -15,6 +15,8 @@ const STYLES = [
   { key: 'space-explorer',   label: 'Space Explorer' },
   { key: 'fantasy-creature', label: 'Fantasy Creature' },
   { key: 'pirate',           label: 'Pirate' },
+  { key: 'glitch',           label: 'Glitch' },
+  { key: 'emoji',            label: 'Emoji' },
 ];
 
 class AvatarStylePicker extends Component<any> {
