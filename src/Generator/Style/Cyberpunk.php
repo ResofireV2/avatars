@@ -11,97 +11,109 @@ class Cyberpunk extends AbstractStyle
     {
         $img = $this->canvas();
 
-        $skinTones   = [[30,60,30],[20,50,40],[25,55,35],[40,70,40],[15,45,25]];
-        $mohawkColors= [[0,255,136],[0,200,255],[255,50,50],[200,0,255],[255,200,0]];
-        $eyeColors   = [[0,204,68],[0,170,255],[255,100,0],[180,0,255],[0,255,200]];
-        $implantColors=[[0,170,255],[0,255,136],[255,50,150],[200,100,255],[255,180,0]];
+        $bgColors     = [[204,0,136],[0,51,0],[0,17,68],[51,0,85],[0,34,51],[51,34,0]];
+        $accentColors = [[255,0,204],[0,255,68],[0,136,255],[170,0,255],[0,204,204],[255,238,0]];
+        $eyeTypes     = [0,1,2,3]; // visor, slit, implant, scanline
+        $mouthTypes   = [0,1,2];   // waveform, bar, circuit
 
-        [$sr,$sg,$sb]   = $this->pick($username, 0, $skinTones);
-        [$mr,$mg,$mb]   = $this->pick($username, 1, $mohawkColors);
-        [$er,$eg,$eb]   = $this->pick($username, 2, $eyeColors);
-        [$ir,$ig,$ib]   = $this->pick($username, 3, $implantColors);
-        $scarSide        = $this->hash($username, 4, 0, 1); // 0=left, 1=right
-        $hasEarring      = $this->hash($username, 5, 0, 1);
+        [$br,$bg2,$bb] = $this->pick($username, 0, $bgColors);
+        [$ar,$ag,$ab]  = $this->pick($username, 1, $accentColors);
+        $eyeType        = $this->pick($username, 2, $eyeTypes);
+        $mouthType      = $this->pick($username, 3, $mouthTypes);
+        $hasScar        = $this->hash($username, 4, 0, 1);
+        $hasMohawk      = $this->hash($username, 5, 0, 1);
 
-        $bg       = $this->color($img, 10, 10, 26);
-        $face     = $this->color($img, $sr, $sg, $sb);
-        $faceD    = $this->color($img, (int)($sr*0.75), (int)($sg*0.75), (int)($sb*0.75));
-        $mohawk   = $this->color($img, $mr, $mg, $mb);
-        $eyeC     = $this->color($img, $er, $eg, $eb);
-        $implant  = $this->color($img, $ir, $ig, $ib);
-        $implantD = $this->color($img, (int)($ir*0.5), (int)($ig*0.5), (int)($ib*0.5));
-        $black    = $this->color($img, 0, 0, 0);
-        $white    = $this->color($img, 255, 255, 255);
-        $circuit  = $this->color($img, $mr, $mg, $mb);
-        $collar   = $this->color($img, 17, 17, 17);
-        $scarC    = $this->color($img, 90, 42, 42);
-        $smirkC   = $this->color($img, $mr, $mg, $mb);
+        $bg     = $this->color($img, $br, $bg2, $bb);
+        $acc    = $this->color($img, $ar, $ag, $ab);
+        $accD   = $this->color($img, (int)($ar*0.4), (int)($ag*0.4), (int)($ab*0.4));
+        $panel  = $this->color($img, (int)($br*0.5), (int)($bg2*0.5), (int)($bb*0.5));
+        $black  = $this->color($img, 5, 5, 15);
 
-        // Background
         $this->rect($img, 0, 0, 200, 200, $bg);
 
-        // Subtle circuit lines at bottom
-        $this->rect($img, 0, 160, 70, 162, $circuit);
-        imagesetpixel($img, 70, 161, $circuit);
-        $this->rect($img, 130, 160, 200, 162, $circuit);
-
-        // Collar / body
-        $this->rect($img, 40, 168, 160, 200, $collar);
-        $this->rect($img, 40, 168, 160, 170, $circuit);
-
-        // Neck
-        $this->rect($img, 86, 152, 114, 172, $faceD);
-
-        // Face ellipse approximated
-        $this->ellipse($img, 100, 106, 112, 128, $face);
-
-        // Ears
-        $this->ellipse($img, 44, 106, 20, 32, $face);
-        $this->ellipse($img, 156, 106, 20, 32, $face);
-
-        // Earring
-        if ($hasEarring) {
-            $this->ellipse($img, 36, 116, 8, 8, $implant);
+        if ($hasMohawk) {
+            $this->rect($img, 88, 0, 112, 44, $acc);
         }
 
-        // Mohawk
-        $this->rect($img, 92, 34, 108, 74, $mohawk);
-        $this->ellipse($img, 100, 36, 32, 16, $mohawk);
+        // Eye socket panels
+        $this->rect($img, 30, 80, 90, 108, $panel);
+        $this->rect($img, 110, 80, 170, 108, $panel);
 
-        // Left eye - natural
-        $this->ellipse($img, 76, 100, 34, 26, $black);
-        $this->ellipse($img, 76, 100, 22, 20, $eyeC);
-        $this->ellipse($img, 76, 100, 10, 10, $black);
-        $this->rect($img, 70, 94, 74, 98, $white);
+        switch ($eyeType) {
+            case 0: // visor bar
+                $this->rect($img, 32, 82, 88, 106, $black);
+                $this->rect($img, 32, 86, 88, 90, $acc);
+                $this->rect($img, 32, 96, 88, 100, $acc);
+                $this->ellipse($img, 60, 94, 28, 20, $accD);
+                $this->ellipse($img, 60, 94, 16, 12, $acc);
+                $this->rect($img, 112, 82, 168, 106, $black);
+                $this->rect($img, 112, 86, 168, 90, $acc);
+                $this->rect($img, 112, 96, 168, 100, $acc);
+                $this->ellipse($img, 140, 94, 28, 20, $accD);
+                $this->ellipse($img, 140, 94, 16, 12, $acc);
+                break;
+            case 1: // slit
+                $this->rect($img, 32, 82, 88, 106, $black);
+                $this->rect($img, 32, 90, 88, 98, $acc);
+                $this->ellipse($img, 60, 94, 24, 8, $acc);
+                $this->rect($img, 112, 82, 168, 106, $black);
+                $this->rect($img, 112, 90, 168, 98, $acc);
+                $this->ellipse($img, 140, 94, 24, 8, $acc);
+                break;
+            case 2: // implant
+                $this->rect($img, 32, 82, 88, 106, $black);
+                $this->rect($img, 32, 84, 88, 88, $acc);
+                $this->rect($img, 32, 94, 88, 98, $acc);
+                $this->rect($img, 32, 104, 88, 108, $acc);
+                $this->ellipse($img, 60, 94, 20, 20, $accD);
+                $this->ellipse($img, 60, 94, 12, 12, $acc);
+                $this->rect($img, 112, 82, 168, 106, $black);
+                $this->ellipse($img, 140, 94, 28, 24, $accD);
+                $this->ellipse($img, 140, 94, 14, 14, $acc);
+                $this->ellipse($img, 140, 94, 6, 6, $black);
+                break;
+            case 3: // scanline
+                $this->rect($img, 32, 82, 88, 106, $black);
+                for ($i = 0; $i < 4; $i++) {
+                    $this->rect($img, 32, 84+$i*6, 88, 86+$i*6, $acc);
+                }
+                $this->ellipse($img, 60, 94, 22, 18, $acc);
+                $this->rect($img, 112, 82, 168, 106, $black);
+                for ($i = 0; $i < 4; $i++) {
+                    $this->rect($img, 112, 84+$i*6, 168, 86+$i*6, $acc);
+                }
+                $this->ellipse($img, 140, 94, 22, 18, $acc);
+                break;
+        }
 
-        // Right eye - cyber implant (rectangles)
-        $this->rect($img, 108, 92, 142, 110, $implantD);
-        $this->rect($img, 110, 94, 140, 108, $black);
-        $this->rect($img, 110, 97, 140, 99, $implant);
-        $this->rect($img, 110, 102, 140, 104, $implant);
-        $this->rect($img, 110, 107, 140, 109, $implant);
-        $this->ellipse($img, 124, 101, 14, 14, $implant);
-        $this->ellipse($img, 124, 101, 8, 8, $implantD);
-        // implant wire
-        $this->rect($img, 140, 94, 152, 96, $implant);
-        $this->ellipse($img, 154, 94, 6, 6, $implant);
+        // Mouth panel
+        $this->rect($img, 30, 128, 170, 148, $panel);
+        $this->rect($img, 32, 130, 168, 146, $black);
 
-        // Brows
-        $this->rect($img, 60, 86, 90, 90, $faceD);
-        $this->rect($img, 110, 86, 140, 90, $faceD);
+        switch ($mouthType) {
+            case 0: // waveform
+                $pts = [32,138, 44,130, 56,146, 68,130, 80,146, 92,130, 104,146, 116,130, 128,146, 140,130, 152,146, 164,138, 168,138];
+                imagesetthickness($img, 3);
+                for ($i = 0; $i < count($pts)-2; $i+=2) {
+                    imageline($img, $pts[$i], $pts[$i+1], $pts[$i+2], $pts[$i+3], $acc);
+                }
+                imagesetthickness($img, 1);
+                break;
+            case 1: // bar segments
+                $this->rect($img, 34, 134, 70, 144, $acc);
+                $this->rect($img, 74, 134, 100, 144, $acc);
+                $this->rect($img, 104, 134, 166, 144, $accD);
+                break;
+            case 2: // circuit
+                foreach ([34,56,78,100,122,144] as $cx) {
+                    $this->rect($img, $cx, 134, $cx+16, 144, $acc);
+                }
+                break;
+        }
 
-        // Nose
-        $this->rect($img, 94, 112, 106, 120, $faceD);
-
-        // Smirk
-        $this->rect($img, 74, 130, 118, 134, $smirkC);
-        $this->rect($img, 74, 130, 94, 134, $faceD); // cover left half darker
-
-        // Scar
-        if ($scarSide === 0) {
-            $this->rect($img, 72, 98, 75, 118, $scarC);
-        } else {
-            $this->rect($img, 125, 98, 128, 118, $scarC);
+        if ($hasScar) {
+            $scar = $this->color($img, min(255,$ar+60), (int)($ag*0.3), (int)($ab*0.3));
+            $this->rect($img, 56, 70, 62, 120, $scar);
         }
 
         return $img;

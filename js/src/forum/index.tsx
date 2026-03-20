@@ -5,12 +5,16 @@ import Component from 'flarum/common/Component';
 import Stream from 'flarum/common/utils/Stream';
 
 const STYLES = [
-  { key: 'pixel-gamer',     label: 'Pixel Gamer' },
-  { key: 'cyberpunk',       label: 'Cyberpunk' },
-  { key: 'fantasy-warrior', label: 'Fantasy Warrior' },
-  { key: 'scifi-android',   label: 'Sci-Fi Android' },
-  { key: 'orc-warrior',     label: 'Orc Warrior' },
-  { key: 'anime-chibi',     label: 'Anime Chibi' },
+  { key: 'retro-pixel',      label: 'Retro Pixel' },
+  { key: 'cyberpunk',        label: 'Cyberpunk' },
+  { key: 'android',          label: 'Android' },
+  { key: 'fantasy',          label: 'Fantasy' },
+  { key: 'orc',              label: 'Orc' },
+  { key: 'anime',            label: 'Anime' },
+  { key: 'undead',           label: 'Undead' },
+  { key: 'space-explorer',   label: 'Space Explorer' },
+  { key: 'fantasy-creature', label: 'Fantasy Creature' },
+  { key: 'pirate',           label: 'Pirate' },
 ];
 
 class AvatarStylePicker extends Component<any> {
@@ -21,7 +25,7 @@ class AvatarStylePicker extends Component<any> {
 
   oninit(vnode: any) {
     super.oninit(vnode);
-    this.selected = Stream(app.session.user?.attribute('rfAvatarStyle') || 'pixel-gamer');
+    this.selected = Stream(app.session.user?.attribute('rfAvatarStyle') || 'retro-pixel');
     this.saving   = Stream(false);
     this.saved    = Stream(false);
     this.error    = Stream('');

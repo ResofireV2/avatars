@@ -2,12 +2,17 @@ import app from 'flarum/admin/app';
 
 app.initializers.add('resofire/avatars', () => {
   const styles = [
-    'pixel-gamer',
+    'random',
+    'retro-pixel',
     'cyberpunk',
-    'fantasy-warrior',
-    'scifi-android',
-    'orc-warrior',
-    'anime-chibi',
+    'android',
+    'fantasy',
+    'orc',
+    'anime',
+    'undead',
+    'space-explorer',
+    'fantasy-creature',
+    'pirate',
   ];
 
   const styleOptions: Record<string, string> = {};
@@ -28,7 +33,7 @@ app.initializers.add('resofire/avatars', () => {
     app
       .request({
         method: 'POST',
-        url: `${app.forum.attribute('apiUrl')}/resofire-avatars/flush`,
+        url: app.forum.attribute('apiUrl') + '/resofire-avatars/flush',
       })
       .then((data: any) => {
         flushMessage = app.translator
