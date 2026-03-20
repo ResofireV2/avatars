@@ -1,0 +1,37 @@
+.RfAvatarPicker-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.RfAvatarPicker-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  transition: border-color 0.15s;
+}
+
+.RfAvatarPicker-item:hover {
+  border-color: #aaa;
+}
+
+.RfAvatarPicker-item.active {
+  border-color: var(--primary-color, #5858d0);
+}
+
+.RfAvatarPicker-label {
+  font-size: 11px;
+  color: #666;
+  text-align: center;
+}
+
+.RfAvatarPicker-item.active .RfAvatarPicker-label {
+  color: var(--primary-color, #5858d0);
+  font-weight: 500;
+}
