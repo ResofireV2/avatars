@@ -1,136 +1,60 @@
-# Cosmos Theme
+# RF Avatars
 
-A deep-space dark theme for [Flarum](https://flarum.org/) with a built-in day/night toggle, ambient star fields, and a fully styled post interaction system.
+A [Flarum](https://flarum.org) extension that automatically generates unique, gamer-style avatars for users — entirely locally, with no external API calls.
 
----
+Avatars are generated using PHP's GD library and saved to `assets/avatars` as standard PNG files. Every avatar is deterministic: the same username always produces the same avatar within a chosen style.
 
 ## Features
 
-### Palette & Typography
-- Deep space dark palette (`#080c14` background, teal `#69c6b9` primary accent)
-- Matching **day mode** (light) stylesheet that mirrors all structure — only colours flip
-- **Font picker** in admin: choose from Outfit (default), Space Grotesk, DM Sans, Sora, Plus Jakarta Sans, Nunito, or System UI. Code blocks always use DM Mono regardless of font choice
-
-### Day / Night Toggle
-- Self-contained theme switcher — **no dependency on fof/nightmode**
-- Three modes: **Auto** (follows OS dark/light preference), **Day**, **Night**
-- Preference persisted per user account via Flarum's prefs API; falls back to a cookie for guests
-- Admin can set the forum-wide default mode (Auto / Day / Night)
-- Toggle button always visible in the header; also accessible from the session dropdown and user settings page
-
-### Visual Effects
-- Ambient radial glow bloom behind the hero and page
-- CSS star field (box-shadow technique, no images) on hero and discussion page
-- Star fields and glow effects can be **disabled globally** from admin settings (e.g. for accessibility or performance)
-- Avatar ring glow that picks up the user's avatar colour
-- Connector line between posts in the avatar column on desktop
-
-### Hero / Welcome Area
-- Cosmos-styled hero with star field layer and gradient wash
-- Optional **image slider** replacing the hero — configurable entirely from admin:
-  - Enable/disable globally
-  - Disable on mobile (falls back to default hero)
-  - Hide on tag/category pages
-  - Desktop and mobile height (px)
-  - Autoplay interval (0 = manual only)
-
-### Discussion List
-- Unread indicator via left accent band
-- Styled discussion item controls (3-dot menu)
-- Pinned discussion highlighting (compatible with flarum/sticky)
-- Styled "Load more" button
-
-### User Profile Hero
-
-The profile hero is redesigned to match the rest of the Cosmos aesthetic:
-
-- Background gradient blended from the user's avatar colour into the Cosmos dark, using the same technique as the discussion hero
-- Animated star field tinted from the avatar colour (suppressed when the effects toggle is off)
-- Ambient glow bloom from the avatar colour on the left, teal counter-bloom on the right
-- Avatar ring glow using the avatar's dominant colour
-- **Stat pills** displayed below the user info: posts, discussions, and likes received (likes shown only when `flarum/likes` is active)
-- Both dark and light mode fully themed
-
-### Post Stream
-- Styled post headers, body, blockquotes, code blocks, tables, and images
-- Event posts (renamed, tagged, etc.) in muted style
-- Post number accent in secondary colour
-
-### Post Controls (flarum/likes + fof/reactions)
-Fully styled to match the Cosmos aesthetic:
-- **Reply button** — dimmed at rest, teal on hover
-- **Like button** — dimmed at rest, teal on hover and when active (already liked)
-- **Reaction count pills** — rounded-rect pills with a subtle border; teal tint on hover; stronger teal border + fill for your own active reaction
-- **React smiley button** — ghost button, teal on hover; inline SVG icon inherits `currentColor`
-- **Reaction picker dropdown** — dark surface card (`#131b2e`) with deep shadow in night mode; white card with soft shadow in day mode
-- **Emoji buttons inside picker** — teal-tinted background + scale pop on hover
-- All styles applied in both dark (`forum.css`) and light (`forum-day.css`)
-
-### Extension Compatibility
-Tested and styled for:
-- `flarum/tags` — tag pills styled as flat dark pills; white text overrides in hero
-- `flarum/sticky` — pinned discussion highlight
-- `flarum/likes` — like button with active state
-- `fof/reactions` — reaction pills, picker dropdown, emoji buttons, react trigger
-- `fof/user-directory` — 2-column card grid with star field, avatar glow, ambient colour bloom per card
-- Blog/cards extensions — card grid layout with image wrapper, body, footer, author, controls
-
-### Admin Settings
-All settings are available in **Admin → Extensions → Cosmos Theme**:
-
-| Setting | Description |
-|---|---|
-| Forum Font | Font applied globally (code blocks always use DM Mono) |
-| Default Colour Theme | Forum-wide default: Auto, Day, or Night |
-| Star Fields & Glow Effects | Enable/disable all star and glow visual effects |
-| Always Show Post Controls | Show Like, Reply, and Reactions buttons permanently on every post (default: visible on hover only) |
-| Enable Cosmos Slider | Replace the hero with an image slider |
-| Disable Slider on Mobile | Show default hero on mobile instead of slider |
-| Hide Slider on Tag Pages | Show default hero on tag/category pages |
-| Slider Height — Desktop (px) | Height of the slider on desktop viewports |
-| Slider Height — Mobile (px) | Height of the slider on mobile viewports |
-| Autoplay Interval (seconds) | Slide autoplay speed; 0 disables autoplay |
-
----
-
-### Mobile (acpl/mobile-tab compatible)
-
-The theme includes a full mobile pass targeting phone viewports (≤844px):
-
-- **MobileTab bar** — Cosmos surface treatment with top border and shadow, Outfit font on labels
-- **Profile tab highlight fix** — the session dropdown toggle no longer inherits the desktop `.Dropdown-toggle` border/background, so the Profile tab only highlights when active
-- **Reaction picker overflow** — the picker is anchored to the right edge of its trigger and capped to the viewport width so it never clips on narrow screens
-- **Touch reaction state** — `.mobile-show` receives the same Cosmos card styling as the hover state
-- **Body bottom padding** — page content clears the 54px tab bar (+ safe area inset) so the last post is never hidden behind it
-- **Discussion hero** — star field animation paused on phone for performance
-- **Post stream connector line** — hidden on phone where the avatar column layout doesn't apply
-- **User profile stat pills** — tighter sizing and gap for narrow viewports
+- **6 gamer-style avatar styles** — Pixel Gamer, Cyberpunk, Fantasy Warrior, Sci-Fi Android, Orc Warrior, Anime Chibi
+- **Fully local** — no external API calls, no dependencies beyond PHP's built-in GD extension
+- **User style picker** — users can select their preferred style from their settings page and see a live preview of all 6 options rendered from their actual username
+- **Admin default** — admins choose a default style for new users via the admin panel
+- **Automatic generation** — avatars are generated on registration and lazily for existing users on first load
+- **Safe file management** — all generated files are prefixed with `rf_` to distinguish them from manually uploaded avatars; a flush button in the admin panel clears them all cleanly
 
 ## Requirements
 
-- Flarum `^1.8`
-- PHP 8.3+
+- Flarum 1.x
+- PHP with GD extension enabled (standard on virtually all hosts)
 
 ## Installation
 
-Install via Composer:
-
 ```bash
-composer require resofire/cosmos-theme
+composer require resofire/avatars
+php flarum migrate
 ```
 
-Then enable the extension in your Flarum admin panel.
+Then enable the extension in your admin panel.
 
-## Optional Extensions
+## How It Works
 
-The theme works without these but includes explicit styling for them:
+When a new user registers, an avatar is generated in the admin's chosen default style and saved to `assets/avatars/rf_*.png`. The user's `avatar_url` column is updated to point to this file — it behaves identically to a manually uploaded avatar from Flarum's perspective.
 
-- `flarum/likes`
-- `fof/reactions`
-- `fof/user-directory`
-- `flarum/sticky`
-- `flarum/tags`
+If a user opens their settings page, they will see a style picker showing all 6 avatar styles rendered as live previews from their own username. Selecting a style and saving regenerates their avatar, deletes the old file, and updates their record — all in one request.
+
+Existing users without an avatar get one generated lazily on their first page load.
+
+## Admin Panel
+
+The extension adds two settings to the admin panel:
+
+- **Default Avatar Style** — the style applied to new users and used as the fallback
+- **Flush Avatars** — deletes all `rf_`-prefixed avatar files from `assets/avatars` and clears the corresponding database records, allowing all avatars to be regenerated fresh
+
+## Avatar Styles
+
+| Style | Description |
+|---|---|
+| Pixel Gamer | 8-bit face with a gaming headset |
+| Cyberpunk | Green-skinned face with a cyber eye implant |
+| Fantasy Warrior | Elven face with pointed ears and a gemstone circlet |
+| Sci-Fi Android | Robotic face with scan-line eyes and panel details |
+| Orc Warrior | Green brutish face with tusks and wild spiked hair |
+| Anime Chibi | Large expressive eyes with blush marks and sailor collar |
+
+All visual features — skin tone, hair color, eye color, accessories, scars, expressions — are derived deterministically from the username hash, so every user gets a unique face within their chosen style.
 
 ## License
 
-MIT
+MIT — see [LICENSE](LICENSE) for details.

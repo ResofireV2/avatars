@@ -1,25 +1,29 @@
 {
-    "name": "resofire/cosmos-theme",
-    "description": "Deep Cosmos — a dark, modern theme for Flarum.",
+    "name": "resofire/avatars",
+    "description": "Locally generated gamer-style avatars for Flarum users.",
     "type": "flarum-extension",
+    "keywords": ["flarum", "avatar", "gamer"],
     "license": "MIT",
     "require": {
-        "flarum/core": "^1.8"
-    },
-    "extra": {
-        "flarum-extension": {
-            "title": "Cosmos Theme",
-            "category": "theme",
-            "icon": {
-                "name": "fas fa-moon",
-                "backgroundColor": "#0d1220",
-                "color": "#69c6b9"
-            }
-        }
+        "flarum/core": "^1.0"
     },
     "autoload": {
         "psr-4": {
-            "Resofire\\CosmosTheme\\": "src/"
+            "Resofire\\Avatars\\": "src/"
         }
+    },
+    "extra": {
+        "flarum-extension": {
+            "title": "RF Avatars",
+            "category": "feature",
+            "icon": {
+                "name": "fas fa-user-circle",
+                "backgroundColor": "#7c3aed",
+                "color": "#fff"
+            }
+        }
+    },
+    "config": {
+        "sort-packages": true
     }
 }
