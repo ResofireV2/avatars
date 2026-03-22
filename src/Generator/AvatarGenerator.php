@@ -9,12 +9,8 @@ use Illuminate\Support\Str;
 use Resofire\Avatars\Generator\Style\StyleInterface;
 use Resofire\Avatars\Generator\Style\Cyberpunk;
 use Resofire\Avatars\Generator\Style\Android;
-use Resofire\Avatars\Generator\Style\Fantasy;
 use Resofire\Avatars\Generator\Style\Orc;
-use Resofire\Avatars\Generator\Style\Anime;
 use Resofire\Avatars\Generator\Style\Undead;
-use Resofire\Avatars\Generator\Style\SpaceExplorer;
-use Resofire\Avatars\Generator\Style\FantasyCreature;
 use Resofire\Avatars\Generator\Style\Pirate;
 use Resofire\Avatars\Generator\Style\Glitch;
 use Resofire\Avatars\Generator\Style\Emoji;
@@ -36,20 +32,16 @@ class AvatarGenerator
         $this->paths    = $paths;
 
         $this->styles = [
-            'cyberpunk'        => new Cyberpunk(),
-            'android'          => new Android(),
-            'fantasy'          => new Fantasy(),
-            'orc'              => new Orc(),
-            'anime'            => new Anime(),
-            'undead'           => new Undead(),
-            'space-explorer'   => new SpaceExplorer(),
-            'fantasy-creature' => new FantasyCreature(),
-            'pirate'           => new Pirate(),
-            'glitch'           => new Glitch(),
-            'emoji'            => new Emoji(),
-            'sugar-skull'      => new SugarSkull(),
-            'lcd-face'         => new LcdFace(),
-            'cassette'         => new CassetteTape(),
+            'cyberpunk'   => new Cyberpunk(),
+            'android'     => new Android(),
+            'orc'         => new Orc(),
+            'undead'      => new Undead(),
+            'pirate'      => new Pirate(),
+            'glitch'      => new Glitch(),
+            'emoji'       => new Emoji(),
+            'sugar-skull' => new SugarSkull(),
+            'lcd-face'    => new LcdFace(),
+            'cassette'    => new CassetteTape(),
         ];
     }
 
@@ -57,18 +49,15 @@ class AvatarGenerator
 
     public function resolveStyle(?string $key): StyleInterface
     {
-        // Only randomize when explicitly requested
         if ($key === 'random') {
             $keys = array_keys($this->styles);
             return $this->styles[$keys[array_rand($keys)]];
         }
 
-        // If a valid stored key exists, use it
         if (!empty($key) && isset($this->styles[$key])) {
             return $this->styles[$key];
         }
 
-        // No stored key — fall back to admin default setting
         $default = $this->settings->get('resofire-avatars.default_style', 'cyberpunk');
         if ($default === 'random') {
             $keys = array_keys($this->styles);

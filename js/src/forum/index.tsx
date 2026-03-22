@@ -5,20 +5,16 @@ import Component from 'flarum/common/Component';
 import Stream from 'flarum/common/utils/Stream';
 
 const STYLES = [
-  { key: 'cyberpunk',        label: 'Cyberpunk' },
-  { key: 'android',          label: 'Android' },
-  { key: 'fantasy',          label: 'Fantasy' },
-  { key: 'orc',              label: 'Orc' },
-  { key: 'anime',            label: 'Anime' },
-  { key: 'undead',           label: 'Undead' },
-  { key: 'space-explorer',   label: 'Space Explorer' },
-  { key: 'fantasy-creature', label: 'Fantasy Creature' },
-  { key: 'pirate',           label: 'Pirate' },
-  { key: 'glitch',           label: 'Glitch' },
-  { key: 'emoji',            label: 'Emoji' },
-  { key: 'sugar-skull',      label: 'Sugar Skull' },
-  { key: 'lcd-face',         label: 'LCD Face' },
-  { key: 'cassette',         label: 'Cassette' },
+  { key: 'cyberpunk',   label: 'Cyberpunk' },
+  { key: 'android',     label: 'Android' },
+  { key: 'orc',         label: 'Orc' },
+  { key: 'undead',      label: 'Undead' },
+  { key: 'pirate',      label: 'Pirate' },
+  { key: 'glitch',      label: 'Glitch' },
+  { key: 'emoji',       label: 'Emoji' },
+  { key: 'sugar-skull', label: 'Sugar Skull' },
+  { key: 'lcd-face',    label: 'LCD Face' },
+  { key: 'cassette',    label: 'Cassette' },
 ];
 
 class AvatarStylePicker extends Component<any> {

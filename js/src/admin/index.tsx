@@ -2,9 +2,8 @@ import app from 'flarum/admin/app';
 
 app.initializers.add('resofire/avatars', () => {
   const styles = [
-    'random', 'cyberpunk', 'android', 'fantasy', 'orc', 'anime',
-    'undead', 'space-explorer', 'fantasy-creature', 'pirate',
-    'glitch', 'emoji', 'sugar-skull', 'lcd-face', 'cassette',
+    'random','cyberpunk','android','orc','undead',
+    'pirate','glitch','emoji','sugar-skull','lcd-face','cassette',
   ];
 
   const styleOptions: Record<string, string> = {};
