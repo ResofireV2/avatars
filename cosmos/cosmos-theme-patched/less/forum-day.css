@@ -1,0 +1,3175 @@
+/* =============================================================
+   Cosmos Theme — forum-day.css
+   Light mode stylesheet. Loaded instead of forum.css when the
+   user selects Day Mode. All Cosmos structure, spacing, radii,
+   animations and typography are preserved — only colours flip.
+
+   Light palette:
+     --day-bg:        #f0f2f7  (warm off-white body)
+     --day-bg2:       #e8eaf0  (slightly darker bg, header)
+     --day-surface:   #ffffff  (card / surface)
+     --day-surface2:  #f4f5fa  (raised surface)
+     --day-surface3:  #eceef5  (hover / subtle surface)
+     --day-text:      #1a2035  (primary text)
+     --day-text2:     #4a5568  (secondary text / muted)
+     --day-text3:     #9aa3b4  (very muted / meta)
+   ============================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&display=swap');
+
+/* Override all CSS custom properties so core rules using var(--x) get light values.
+   This is the critical fix — without this, mobile core rules that use var(--header-bg)
+   etc. stay dark because variables.less compiles dark values into :root. */
+:root {
+  --body-bg:                  #f0f2f7;
+  --body-bg-shaded:           #e8eaf0;
+  --body-bg-light:            #f4f5fa;
+  --body-bg-faded:            rgba(240, 242, 247, 0.93);
+  --text-color:               #1a2035;
+  --link-color:               var(--primary-color);
+  --heading-color:            #1a2035;
+  --muted-color:              #4a5568;
+  --muted-color-light:        #6b7a93;
+  --muted-color-dark:         #1a2035;
+  --muted-more-color:         #9aa3b4;
+  --shadow-color:             rgba(0, 0, 0, 0.08);
+  --control-bg:               #ffffff;
+  --control-bg-light:         #f8f9fb;
+  --control-bg-shaded:        #f0f2f7;
+  --control-color:            #4a5568;
+  --overlay-bg:               rgba(240, 242, 247, 0.85);
+  --code-bg:                  #eceef5;
+  --code-color:               var(--primary-color);
+  --header-bg:                #e8eaf0;
+  --header-color:             #1a2035;
+  --header-control-bg:        #ffffff;
+  --header-control-color:     #4a5568;
+  --hero-bg:                  #e8eaf0;
+  --hero-color:               #1a2035;
+  --discussion-list-item-bg-hover: #f4f5fa;
+  --discussion-title-color:   #2d3a50;
+
+  /* Light-mode adjusted accent colours — clamp lightness to max 45% so
+     colours designed for dark backgrounds remain visible on light surfaces.
+     Uses oklch relative colour syntax: preserves hue + chroma, darkens only if needed. */
+  --primary-color-lm:   oklch(from var(--primary-color)   min(l, 0.35) c h);
+  --secondary-color-lm: oklch(from var(--secondary-color) min(l, 0.35) c h);
+}
+
+/* ---------------------------------
+   BODY & GLOBAL
+   --------------------------------- */
+body {
+  font-family: var(--cosmos-font, 'Outfit'), system-ui, -apple-system, sans-serif;
+  background: #f0f2f7;
+  color: #1a2035;
+  -webkit-font-smoothing: antialiased;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 75% -5%,  color-mix(in srgb, var(--primary-color)   8%, transparent) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 40% at -5% 65%,  color-mix(in srgb, var(--primary-color)   4%, transparent) 0%, transparent 50%),
+    radial-gradient(ellipse 55% 45% at 105% 100%, color-mix(in srgb, var(--secondary-color) 6%, transparent) 0%, transparent 55%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.App { position: relative; }
+
+a { color: var(--primary-color-lm); }
+a:hover { color: var(--primary-color-lm); text-decoration: none; }
+
+::-webkit-scrollbar               { width: 6px; height: 6px; }
+::-webkit-scrollbar-track         { background: #e8eaf0; }
+::-webkit-scrollbar-thumb         { background: color-mix(in srgb, var(--primary-color) 35%, #c8ccd8); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover   { background: color-mix(in srgb, var(--primary-color) 55%, #c8ccd8); }
+
+hr { border-top-color: rgba(0, 0, 0, 0.08); }
+
+/* ---------------------------------
+   HEADER / TOPBAR
+   --------------------------------- */
+.App-header {
+  background: rgba(232, 234, 240, 0.97);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+@media (min-width: 845px) {
+  .Header-title { font-size: 19px; line-height: 37px; }
+  .Search .FormControl { height: 36px; padding-top: 7px; padding-bottom: 7px; }
+  .Header-secondary .Button--icon .Button-icon,
+  .Header-secondary .Button--icon i { font-size: 18px; }
+  .SessionDropdown .Dropdown-toggle .Avatar {
+    width: 26px; height: 26px; font-size: 13px; --size: 26px; margin: -2px 5px -2px -6px;
+  }
+  .SessionDropdown .Dropdown-toggle { border-radius: 20px; }
+}
+
+@media (min-width: 845px) {
+  .Header-secondary .Header-controls > li { margin-left: 6px; }
+  .Header-secondary .Header-controls > li:first-child { margin-left: 0; }
+}
+
+.Header-title a {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-weight: 800;
+  font-size: 19px;
+  letter-spacing: -0.4px;
+  color: #1a2035;
+}
+.Header-title a:hover { color: var(--primary-color-lm); text-decoration: none; }
+
+.Search .FormControl {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  color: #1a2035;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+}
+.Search .FormControl:focus {
+  border-color: color-mix(in srgb, var(--primary-color-lm) 45%, transparent);
+  background: #ffffff;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-color-lm) 12%, transparent);
+  outline: none;
+}
+
+.Search-results .Dropdown-menu {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+}
+.Search-results .Dropdown-menu li > a {
+  color: #4a5568; border-radius: 6px; margin: 2px 4px; padding: 8px 12px;
+}
+.Search-results .Dropdown-menu li > a:hover {
+  background: #f4f5fa; color: #1a2035; text-decoration: none;
+}
+.Search-results mark {
+  background: none; color: var(--primary-color-lm); font-weight: 600; box-shadow: none;
+}
+
+.NotificationsDropdown.new .Button::after {
+  content: '';
+  position: absolute;
+  top: 6px; right: 6px;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  border: 2px solid #e8eaf0;
+}
+
+.NotificationsDropdown-content {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+}
+.Notification { border-bottom: 1px solid rgba(0, 0, 0, 0.06); }
+.Notification:last-child { border-bottom: none; }
+.Notification.unread { background: color-mix(in srgb, var(--primary-color) 6%, transparent); }
+.Notification a { color: #4a5568; }
+.Notification a:hover { background: #f4f5fa; color: #1a2035; text-decoration: none; }
+
+.Dropdown-menu {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+}
+.Dropdown-menu > li > a,
+.Dropdown-menu > li > button {
+  color: #4a5568;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+}
+.Dropdown-menu > li > a:hover,
+.Dropdown-menu > li > button:hover {
+  background: color-mix(in srgb, var(--primary-color) 8%, transparent);
+  color: #1a2035;
+  text-decoration: none;
+}
+.Dropdown-separator { background: rgba(0, 0, 0, 0.06) !important; }
+
+.App-drawer {
+  background: #f0f2f7;
+  border-right: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* ---------------------------------
+   HERO
+   --------------------------------- */
+@keyframes cosmos-drift-slow {
+  0%   { transform: translateY(0)   translateX(0); }
+  50%  { transform: translateY(-18px) translateX(6px); }
+  100% { transform: translateY(0)   translateX(0); }
+}
+@keyframes cosmos-drift-fast {
+  0%   { transform: translateY(0)   translateX(0); }
+  50%  { transform: translateY(-10px) translateX(-4px); }
+  100% { transform: translateY(0)   translateX(0); }
+}
+@keyframes cosmos-pulse {
+  0%, 100% { opacity: 0.25; }
+  50%       { opacity: 0.6; }
+}
+
+.WelcomeHero {
+  background: #e8eaf0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  color: #1a2035;
+  position: relative;
+  overflow: hidden;
+}
+.WelcomeHero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 90% 55% at 50% 115%,
+      color-mix(in srgb, var(--primary-color) 14%, transparent) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 40% at 15% 90%,
+      color-mix(in srgb, var(--primary-color) 6%, transparent) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 35% at 85% 85%,
+      color-mix(in srgb, var(--primary-color) 5%, transparent) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 35% at 8% 20%,
+      color-mix(in srgb, var(--secondary-color) 16%, transparent) 0%, transparent 60%),
+    radial-gradient(ellipse 35% 30% at 92% 15%,
+      color-mix(in srgb, var(--secondary-color) 11%, transparent) 0%,
+      transparent 55%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Star field — same positions extended to 1900px, darker colours for light bg visibility */
+.WelcomeHero::after {
+  content: '';
+  position: absolute;
+  width: 1px; height: 1px;
+  top: 0; left: 0;
+  border-radius: 50%;
+  box-shadow:
+    45px  128px 0 1px    color-mix(in srgb, var(--primary-color) 70%, #1a2035),
+    112px 142px 0 0.5px  color-mix(in srgb, var(--primary-color) 60%, #1a2035),
+    190px 135px 0 1px    color-mix(in srgb, var(--primary-color) 65%, #1a2035),
+    267px 155px 0 0.5px  color-mix(in srgb, var(--primary-color) 62%, #1a2035),
+    338px 122px 0 1.5px  color-mix(in srgb, var(--primary-color) 75%, #1a2035),
+    415px 148px 0 0.5px  color-mix(in srgb, var(--primary-color) 55%, #1a2035),
+    493px 138px 0 1px    color-mix(in srgb, var(--primary-color) 68%, #1a2035),
+    571px 162px 0 0.5px  color-mix(in srgb, var(--primary-color) 58%, #1a2035),
+    648px 125px 0 1px    color-mix(in srgb, var(--primary-color) 70%, #1a2035),
+    724px 150px 0 0.5px  color-mix(in srgb, var(--primary-color) 55%, #1a2035),
+    802px 132px 0 1px    color-mix(in srgb, var(--primary-color) 62%, #1a2035),
+    876px 158px 0 0.5px  color-mix(in srgb, var(--primary-color) 65%, #1a2035),
+    950px 140px 0 1px    color-mix(in srgb, var(--primary-color) 58%, #1a2035),
+    1024px 168px 0 0.5px color-mix(in srgb, var(--primary-color) 55%, #1a2035),
+    1100px 130px 0 1px   color-mix(in srgb, var(--primary-color) 65%, #1a2035),
+    1170px 152px 0 0.5px color-mix(in srgb, var(--primary-color) 60%, #1a2035),
+    1248px 138px 0 1px   color-mix(in srgb, var(--primary-color) 65%, #1a2035),
+    1320px 158px 0 0.5px color-mix(in srgb, var(--primary-color) 56%, #1a2035),
+    1395px 130px 0 1px   color-mix(in srgb, var(--primary-color) 62%, #1a2035),
+    1468px 148px 0 0.5px color-mix(in srgb, var(--primary-color) 52%, #1a2035),
+    1540px 135px 0 1px   color-mix(in srgb, var(--primary-color) 68%, #1a2035),
+    1615px 160px 0 0.5px color-mix(in srgb, var(--primary-color) 56%, #1a2035),
+    1688px 128px 0 1px   color-mix(in srgb, var(--primary-color) 63%, #1a2035),
+    1760px 145px 0 0.5px color-mix(in srgb, var(--primary-color) 53%, #1a2035),
+    1835px 138px 0 1px   color-mix(in srgb, var(--primary-color) 60%, #1a2035),
+    /* Near bottom — boldest accent points */
+    80px  172px 0 1.5px  color-mix(in srgb, var(--primary-color) 85%, #1a2035),
+    310px 175px 0 1px    color-mix(in srgb, var(--primary-color) 80%, #1a2035),
+    580px 170px 0 1.5px  color-mix(in srgb, var(--primary-color) 78%, #1a2035),
+    830px 174px 0 1px    color-mix(in srgb, var(--primary-color) 75%, #1a2035),
+    1080px 171px 0 1px   color-mix(in srgb, var(--primary-color) 72%, #1a2035),
+    1290px 173px 0 1.5px color-mix(in srgb, var(--primary-color) 78%, #1a2035),
+    1510px 170px 0 1px   color-mix(in srgb, var(--primary-color) 74%, #1a2035),
+    1720px 174px 0 1.5px color-mix(in srgb, var(--primary-color) 70%, #1a2035),
+    1890px 171px 0 1px   color-mix(in srgb, var(--primary-color) 65%, #1a2035),
+    /* Mid field (60–120px) */
+    25px   72px 0 0.5px  color-mix(in srgb, var(--primary-color) 38%, #1a2035),
+    140px  88px 0 0.5px  color-mix(in srgb, var(--primary-color) 32%, #1a2035),
+    225px  65px 0 1px    color-mix(in srgb, var(--primary-color) 40%, #1a2035),
+    360px 105px 0 0.5px  color-mix(in srgb, var(--primary-color) 35%, #1a2035),
+    450px  78px 0 0.5px  color-mix(in srgb, var(--primary-color) 38%, #1a2035),
+    540px  95px 0 0.5px  color-mix(in srgb, var(--primary-color) 32%, #1a2035),
+    635px  68px 0 1px    color-mix(in srgb, var(--primary-color) 42%, #1a2035),
+    730px 112px 0 0.5px  color-mix(in srgb, var(--primary-color) 34%, #1a2035),
+    820px  82px 0 0.5px  color-mix(in srgb, var(--primary-color) 36%, #1a2035),
+    915px 100px 0 0.5px  color-mix(in srgb, var(--primary-color) 32%, #1a2035),
+    1010px  74px 0 1px   color-mix(in srgb, var(--primary-color) 40%, #1a2035),
+    1130px  92px 0 0.5px color-mix(in srgb, var(--primary-color) 34%, #1a2035),
+    1210px  78px 0 0.5px color-mix(in srgb, var(--primary-color) 38%, #1a2035),
+    1305px  95px 0 0.5px color-mix(in srgb, var(--primary-color) 32%, #1a2035),
+    1400px  70px 0 1px   color-mix(in srgb, var(--primary-color) 40%, #1a2035),
+    1490px  88px 0 0.5px color-mix(in srgb, var(--primary-color) 34%, #1a2035),
+    1580px  72px 0 0.5px color-mix(in srgb, var(--primary-color) 36%, #1a2035),
+    1660px 108px 0 0.5px color-mix(in srgb, var(--primary-color) 32%, #1a2035),
+    1745px  80px 0 1px   color-mix(in srgb, var(--primary-color) 38%, #1a2035),
+    1820px  96px 0 0.5px color-mix(in srgb, var(--primary-color) 34%, #1a2035),
+    1900px  68px 0 0.5px color-mix(in srgb, var(--primary-color) 30%, #1a2035),
+    /* Upper field (0–60px) — sparse */
+    75px   18px 0 0.5px  color-mix(in srgb, var(--primary-color) 25%, #1a2035),
+    220px  38px 0 0.5px  color-mix(in srgb, var(--primary-color) 22%, #1a2035),
+    420px  12px 0 0.5px  color-mix(in srgb, var(--primary-color) 28%, #1a2035),
+    610px  45px 0 1px    color-mix(in srgb, var(--primary-color) 24%, #1a2035),
+    790px  28px 0 0.5px  color-mix(in srgb, var(--primary-color) 26%, #1a2035),
+    980px  50px 0 0.5px  color-mix(in srgb, var(--primary-color) 22%, #1a2035),
+    1150px 22px 0 0.5px  color-mix(in srgb, var(--primary-color) 25%, #1a2035),
+    1260px 40px 0 0.5px  color-mix(in srgb, var(--primary-color) 22%, #1a2035),
+    1380px 18px 0 0.5px  color-mix(in srgb, var(--primary-color) 26%, #1a2035),
+    1500px 35px 0 1px    color-mix(in srgb, var(--primary-color) 24%, #1a2035),
+    1620px 10px 0 0.5px  color-mix(in srgb, var(--primary-color) 22%, #1a2035),
+    1740px 28px 0 0.5px  color-mix(in srgb, var(--primary-color) 25%, #1a2035),
+    1860px 45px 0 0.5px  color-mix(in srgb, var(--primary-color) 20%, #1a2035);
+  animation: cosmos-drift-slow 18s ease-in-out infinite,
+             cosmos-pulse 8s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.WelcomeHero .container,
+.WelcomeHero .containerNarrow { position: relative; z-index: 1; }
+
+.Hero h1,
+.WelcomeHero h1 {
+  color: #1a2035;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  position: relative;
+  z-index: 1;
+}
+.Hero-subtitle { color: #4a5568; position: relative; z-index: 1; }
+.Hero-close { position: relative; z-index: 1; }
+
+.DiscussionHero {
+  background: #e8eaf0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  color: #1a2035;
+}
+.DiscussionHero .Badge {
+  box-shadow: none;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+/* ---------------------------------
+   SIDE NAVIGATION
+   --------------------------------- */
+@media (min-width: 992px) {
+  .sideNav .Dropdown--select .Dropdown-menu > li > a {
+    color: #4a5568;
+    font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+    font-size: 13.5px;
+    padding: 8px 0 8px 32px;
+    border-radius: 6px;
+    transition: background 0.15s, color 0.15s;
+  }
+  .sideNav .Dropdown--select .Dropdown-menu > li > a:hover {
+    background: #f4f5fa; color: #1a2035; text-decoration: none;
+  }
+  .sideNav .Dropdown--select .Dropdown-menu > li > a .Button-icon {
+    color: #9aa3b4; font-size: 14px;
+  }
+  .sideNav .Dropdown--select .Dropdown-menu > li.active > a {
+    background: color-mix(in srgb, var(--secondary-color) 10%, transparent);
+    color: var(--secondary-color-lm);
+    font-weight: 600;
+    border-radius: 6px;
+    border-left: 3px solid var(--secondary-color-lm);
+    padding-left: 35px;
+  }
+  .sideNav .Dropdown--select .Dropdown-menu > li.active > a .Button-icon {
+    color: var(--secondary-color-lm);
+  }
+  /* Horizontal nav: no background, just colour */
+  .sideNav--horizontal .Dropdown--select .Dropdown-menu > li.active > a,
+  .sideNav--horizontal .Dropdown-menu > li.active > a {
+    background: none;
+  }
+}
+
+.IndexPage-nav .item-newDiscussion .Button,
+.IndexPage-nav .item-newDiscussion .Button.Button--primary {
+  background: var(--primary-color);
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 14px;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+  border-top-right-radius: 44px;
+  border-bottom-right-radius: 44px;
+  border: none;
+  transition: filter 0.15s, box-shadow 0.2s;
+  letter-spacing: 0.01em;
+  padding-left: 16px;
+  padding-right: 24px;
+}
+@media (min-width: 845px) {
+  .IndexPage-nav .item-newDiscussion .Button.Button--primary::before {
+    content: '+';
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1;
+    margin-right: 6px;
+    vertical-align: -1px;
+  }
+}
+.IndexPage-nav .item-newDiscussion .Button:hover,
+.IndexPage-nav .item-newDiscussion .Button.Button--primary:hover {
+  filter: brightness(1.1);
+  text-decoration: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-color-lm) 25%, transparent),
+              0 0 16px 2px color-mix(in srgb, var(--primary-color) 35%, transparent);
+  transition: filter 0.15s, box-shadow 0.2s;
+}
+
+.TagLinkButton {
+  color: #4a5568; border-radius: 6px; transition: background 0.15s, color 0.15s;
+}
+.TagLinkButton:hover { background: #ffffff; color: #1a2035; text-decoration: none; }
+.TagLinkButton.active,
+.active > .TagLinkButton {
+  background: color-mix(in srgb, var(--primary-color) 10%, transparent);
+  color: var(--primary-color-lm);
+  font-weight: 600;
+}
+
+.IndexPage-toolbar-view .Button {
+  background: #ffffff;
+  color: #4a5568;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  margin-right: 4px;
+}
+.IndexPage-toolbar-view .Button:hover {
+  background: #f4f5fa; color: #1a2035; border-color: rgba(0,0,0,0.14);
+}
+.IndexPage-toolbar-view .Button.active {
+  background: color-mix(in srgb, var(--primary-color) 10%, transparent);
+  color: var(--primary-color-lm);
+  border-color: color-mix(in srgb, var(--primary-color-lm) 28%, transparent);
+}
+
+/* ---------------------------------
+   DISCUSSION LIST
+   --------------------------------- */
+.DiscussionListItem {
+  border-radius: 10px;
+  margin-bottom: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  background: #ffffff;
+  transition: background 0.15s, border-color 0.15s, box-shadow 0.2s;
+  box-shadow: 0 0 0 0 transparent;
+}
+.DiscussionListItem:hover {
+  background: color-mix(in srgb, var(--primary-color) 5%, #ffffff) !important;
+  border-color: color-mix(in srgb, var(--primary-color-lm) 22%, transparent);
+  box-shadow: 0 0 16px 3px color-mix(in srgb, var(--primary-color-lm) 45%, transparent);
+}
+
+.DiscussionListItem-content.unread .DiscussionListItem-title { font-weight: 700; color: #1a2035; }
+.DiscussionList:not(.DiscussionList--searchResults) .DiscussionListItem.read .DiscussionListItem-title {
+  color: #4a5568;
+}
+.DiscussionListItem-title {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 15px; font-weight: 500; color: #1a2035;
+  transition: color 0.15s; line-height: 1.35;
+}
+.DiscussionListItem-title mark {
+  background: none; color: var(--primary-color-lm); font-weight: 700; box-shadow: none;
+}
+.DiscussionListItem-info {
+  color: #9aa3b4; font-size: 12px; font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+}
+.DiscussionListItem-info .username { color: #4a5568; font-weight: 600; }
+.DiscussionListItem-info .item-excerpt {
+  color: #9aa3b4; font-size: 12.5px; line-height: 1.5; display: block; margin-top: 4px;
+}
+.DiscussionListItem-count {
+  color: #9aa3b4; font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 13px; font-weight: 500;
+}
+.DiscussionListItem-count::before { color: #9aa3b4; }
+.DiscussionListItem-content.unread .DiscussionListItem-count { color: var(--primary-color-lm); font-weight: 700; }
+.DiscussionListItem-content.unread .DiscussionListItem-count::before { color: var(--primary-color-lm); }
+.DiscussionListItem-author .Avatar { border: 1.5px solid rgba(0, 0, 0, 0.08); }
+.DiscussionListItem-controls .Button {
+  background: #f4f5fa; color: #4a5568; border: 1px solid rgba(0,0,0,0.08); border-radius: 6px;
+}
+.DiscussionListItem-controls .Button:hover { background: #eceef5; color: #1a2035; }
+.DiscussionListItem.Sticky {
+  background: color-mix(in srgb, var(--primary-color) 4%, #ffffff);
+  border-color: color-mix(in srgb, var(--primary-color-lm) 16%, transparent);
+}
+.DiscussionListItem.Sticky:hover {
+  background: color-mix(in srgb, var(--primary-color) 8%, #ffffff) !important;
+}
+.DiscussionList-loadMore .Button {
+  background: #ffffff; color: #4a5568;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-weight: 600; padding: 9px 24px;
+  transition: border-color 0.15s, color 0.15s;
+}
+.DiscussionList-loadMore .Button:hover {
+  border-color: color-mix(in srgb, var(--primary-color-lm) 40%, transparent);
+  color: var(--primary-color-lm); background: #ffffff;
+}
+
+/* ---------------------------------
+   DISCUSSION PAGE / POST STREAM
+   --------------------------------- */
+.PostStream-item:not(:last-child) { border-bottom: 1px solid rgba(0, 0, 0, 0.06); }
+.Post-header, .Post-header a { color: #4a5568; }
+
+.PostUser h3, .PostUser .PostUser-name {
+  font-size: 14px; font-weight: normal; line-height: 1.4;
+  margin-top: 0; margin-bottom: 0;
+}
+.PostUser h3 a, .PostUser .PostUser-name a {
+  color: #1a2035;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-weight: 700; font-size: 14px;
+}
+.PostUser h3 a:hover, .PostUser .PostUser-name a:hover {
+  color: var(--primary-color-lm); text-decoration: none;
+}
+
+.Post-body {
+  color: #1a2035;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 16px; line-height: 1.75;
+}
+.Post-body p { margin-bottom: 12px; }
+.Post-body a { color: var(--primary-color-lm); }
+.Post-body a:hover { color: var(--primary-color-lm); }
+.Post-body blockquote,
+.Post-body blockquote.uncited {
+  background: rgba(0, 0, 0, 0.025);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-left: 3px solid color-mix(in srgb, var(--primary-color) 55%, transparent);
+  border-radius: 0 8px 8px 0;
+  padding: 10px 14px 10px 16px;
+  color: #4a5568;
+  margin: 14px 0;
+}
+.Post-body blockquote .PostMention {
+  display: inline-flex;
+  align-items: center;
+  background: color-mix(in srgb, var(--primary-color) 10%, transparent) !important;
+  color: var(--primary-color-lm) !important;
+  border-radius: 4px;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 2px 8px !important;
+  margin-right: 6px;
+  border: 1px solid color-mix(in srgb, var(--primary-color) 25%, transparent);
+  vertical-align: middle;
+}
+.Post-body blockquote .PostMention:hover {
+  background: color-mix(in srgb, var(--primary-color) 18%, transparent) !important;
+  color: #1a2035 !important;
+  text-decoration: none;
+}
+.Post-body blockquote blockquote {
+  border-left-color: color-mix(in srgb, var(--primary-color) 25%, transparent);
+  background: rgba(0, 0, 0, 0.02);
+  color: #9aa3b4;
+}
+.Post-body code {
+  background: #eceef5; color: var(--primary-color-lm);
+  border-radius: 4px; padding: 2px 6px; font-size: 13px;
+  font-family: 'DM Mono', monospace;
+}
+.Post-body pre {
+  background: #eceef5;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 8px; padding: 14px 16px;
+  color: #1a2035; font-family: 'DM Mono', monospace; font-size: 13px;
+}
+.Post-body pre code { background: none; padding: 0; }
+.Post-body h1, .Post-body h2, .Post-body h3,
+.Post-body h4, .Post-body h5, .Post-body h6 {
+  color: #1a2035;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif; font-weight: 700;
+}
+.Post-body img { border-radius: 8px; max-width: 100%; }
+
+.Post-actions > ul > li > .Button {
+  color: #9aa3b4; background: transparent; border-radius: 6px;
+  transition: color 0.15s, background 0.15s;
+}
+.Post-actions > ul > li > .Button:hover {
+  color: var(--primary-color-lm);
+  background: color-mix(in srgb, var(--primary-color) 8%, transparent);
+}
+
+.Scrubber-bar { background: var(--primary-color); }
+.Scrubber-before, .Scrubber-after { border-left-color: rgba(0, 0, 0, 0.1); }
+.Scrubber-description { color: #4a5568; }
+
+.EventPost { color: #9aa3b4; font-size: 12.5px; text-align: center; padding: 8px 0; }
+.EventPost a { color: #4a5568; }
+.EventPost a:hover { color: var(--primary-color-lm); }
+
+/* ---------------------------------
+   COMPOSER
+   --------------------------------- */
+.Composer {
+  background: #f0f2f7 !important;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.08);
+}
+.Composer.active,
+.Composer.active:not(.fullScreen) {
+  background: #f0f2f7 !important;
+  border-top: 1px solid color-mix(in srgb, var(--primary-color) 40%, transparent);
+  box-shadow:
+    0 0 0 2px var(--primary-color),
+    0 -8px 32px rgba(0, 0, 0, 0.10);
+}
+.Composer.minimized { background: #ffffff !important; cursor: pointer; }
+.Composer .TextEditor-controls,
+.App-composer .TextEditor-controls {
+  border-top: 1px solid rgba(0, 0, 0, 0.07) !important;
+  background: #f0f2f7 !important;
+}
+
+.ComposerBody-header h3,
+.ComposerBody-header h3 input,
+.ComposerBody-header h3 a {
+  color: #1a2035;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif; font-size: 16px;
+}
+.ComposerBody-header h3 input { font-weight: 700; }
+.ComposerBody-header h3 input::placeholder { color: #9aa3b4; }
+
+.TextEditor-editor {
+  background: #f0f2f7; color: #1a2035;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 14px; line-height: 1.7;
+  caret-color: var(--primary-color-lm);
+}
+.TextEditor-editor::placeholder { color: #9aa3b4; }
+
+.TextEditor-controls .Button {
+  color: #4a5568; background: transparent; border-radius: 5px;
+  transition: background 0.12s, color 0.12s;
+}
+.TextEditor-controls .Button:hover { background: #eceef5; color: #1a2035; }
+
+.TextEditor-controls .item-submit .Button,
+.ComposerBody .item-submit .Button {
+  background: var(--primary-color); color: #ffffff;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-weight: 700; border-radius: 8px; border: none;
+  transition: background 0.15s, filter 0.15s;
+}
+.TextEditor-controls .item-submit .Button:hover,
+.ComposerBody .item-submit .Button:hover { filter: brightness(1.1); }
+
+/* ---------------------------------
+   MODALS
+   --------------------------------- */
+.Modal-backdrop { background: rgba(240, 242, 247, 0.8); }
+.Modal-content {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 14px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.14);
+}
+.Modal-header {
+  background: #ffffff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+.Modal-header h3 {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-weight: 700; font-size: 18px; color: #1a2035;
+}
+.Modal-body { background: #f4f5fa; color: #1a2035; }
+.Modal-body label, .Modal-body .helpText {
+  color: #4a5568; font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+}
+.Modal-footer {
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  background: #ffffff; color: #4a5568;
+}
+
+/* ---------------------------------
+   FORM CONTROLS
+   --------------------------------- */
+.FormControl {
+  background: #ffffff;
+  border: 2px solid transparent;
+  border-radius: 6px; color: #1a2035;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  transition: border-color 0.15s, background 0.15s;
+}
+.FormControl::placeholder { color: #9aa3b4; }
+.FormControl:focus {
+  background: #ffffff;
+  border-color: var(--primary-color-lm); color: #1a2035; outline: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-color-lm) 12%, transparent);
+}
+.FormControl[disabled], .FormControl[readonly] { opacity: 0.5; }
+
+/* ---------------------------------
+   BUTTONS
+   --------------------------------- */
+.Button {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-weight: 500; border-radius: 6px;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  background: #ffffff; color: #4a5568; border: 0;
+}
+.Button:hover { background: #f4f5fa; color: #1a2035; text-decoration: none; }
+.Button:active { transform: scale(0.98); }
+
+.Button--primary {
+  background: var(--primary-color); color: #ffffff; font-weight: 700; border: none;
+}
+.Button--primary:hover {
+  background: var(--primary-color); color: #ffffff;
+  text-decoration: none; filter: brightness(1.1);
+}
+.Button--primary:active { transform: scale(0.98); }
+
+.Button--icon { background: transparent; color: #4a5568; }
+.Button--icon:hover { background: #f4f5fa; color: #1a2035; }
+
+.Dropdown-toggle:not(.Dropdown--split .Dropdown-toggle) {
+  background: #ffffff; color: #4a5568; border: 1px solid rgba(0, 0, 0, 0.1);
+}
+.Dropdown-toggle:not(.Dropdown--split .Dropdown-toggle):hover {
+  background: #f4f5fa; color: #1a2035; border-color: rgba(0,0,0,0.14);
+}
+.Dropdown--split .Dropdown-toggle {
+  border: none; border-left: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* ---------------------------------
+   TAGS
+   --------------------------------- */
+.TagLabel {
+  font-weight: 700; border-radius: 4px; font-size: 85%;
+  display: inline-block; padding: 0.1em 0.5em;
+  vertical-align: bottom;
+  background: #eceef5 !important;
+  color: #4a5568 !important;
+  text-decoration: none !important;
+  transition: opacity 0.15s;
+}
+.TagLabel:hover { opacity: 0.82; }
+.TagLabel.text-contrast--dark,
+.TagLabel.text-contrast--light,
+.TagLabel .TagLabel-text,
+.TagLabel .TagLabel-name,
+.DiscussionHero .TagsLabel .TagLabel,
+.DiscussionHero .TagsLabel .TagLabel.colored,
+.DiscussionHero .TagsLabel .TagLabel--colored {
+  background: #eceef5 !important; color: #4a5568 !important;
+}
+.TagIcon {
+  border-radius: 4px; width: 16px; height: 16px;
+  display: inline-block; vertical-align: -3px;
+  background: #eceef5; color: #4a5568 !important;
+}
+.TagIcon.text-contrast--dark,
+.TagIcon.text-contrast--light,
+.TagLabel .icon,
+.TagLabel i.icon { color: #4a5568 !important; }
+
+/* =============================================================
+   COSMOS GENERIC HERO — light mode (UserDirectoryHero, TagHero)
+   ============================================================= */
+.Hero.UserDirectoryHero,
+.TagHero,
+.LeaderboardHero,
+.AwardsHero,
+.GamepediaHero {
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--primary-color) 18%, #d8dce8) 0%,
+      color-mix(in srgb, var(--primary-color) 6%, #d0d4e0) 50%,
+      #c8ccd8 100%);
+  border-bottom: none;
+  color: #ffffff;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+}
+
+.Hero.UserDirectoryHero::before,
+.TagHero::before,
+.LeaderboardHero::before,
+.AwardsHero::before,
+.GamepediaHero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 80% at 0% 50%,
+      color-mix(in srgb, var(--primary-color) 14%, transparent) 0%,
+      transparent 70%),
+    radial-gradient(ellipse 50% 60% at 100% 100%,
+      color-mix(in srgb, var(--secondary-color) 16%, transparent) 0%,
+      transparent 65%),
+    radial-gradient(ellipse 35% 40% at 85% 10%,
+      color-mix(in srgb, var(--secondary-color) 10%, transparent) 0%,
+      transparent 55%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.Hero.UserDirectoryHero::after,
+.TagHero::after,
+.LeaderboardHero::after,
+.AwardsHero::after,
+.GamepediaHero::after {
+  content: '';
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+  box-shadow:
+    120px 25px 0 0.5px rgba(255,255,255,0.5),
+    280px 15px 0 1px   rgba(255,255,255,0.6),
+    450px 35px 0 0.5px rgba(255,255,255,0.45),
+    620px 20px 0 1px   rgba(255,255,255,0.55),
+    800px 40px 0 0.5px rgba(255,255,255,0.48),
+    980px 12px 0 1px   rgba(255,255,255,0.6),
+    1150px 30px 0 0.5px rgba(255,255,255,0.45),
+    60px  80px 0 0.5px rgba(255,255,255,0.4),
+    220px 90px 0 1px   rgba(255,255,255,0.48),
+    400px 70px 0 0.5px rgba(255,255,255,0.42),
+    580px 95px 0 1px   rgba(255,255,255,0.52),
+    760px 75px 0 0.5px rgba(255,255,255,0.45);
+  animation: cosmos-drift-slow 24s ease-in-out infinite,
+             cosmos-pulse 10s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.Hero.UserDirectoryHero .container,
+.TagHero .container,
+.TagHero > *,
+.LeaderboardHero .container,
+.AwardsHero .container,
+.GamepediaHero .container {
+  position: relative;
+  z-index: 1;
+}
+
+.TagHero h2 {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-weight: 800;
+  color: #ffffff;
+}
+.TagHero p {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.TagTile {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  transition: background 0.15s, border-color 0.15s;
+  text-decoration: none; overflow: hidden;
+}
+.TagTile:hover {
+  background: color-mix(in srgb, var(--primary-color) 5%, #ffffff);
+  border-color: color-mix(in srgb, var(--primary-color-lm) 24%, transparent);
+  text-decoration: none;
+}
+.TagTile.text-contrast--dark,
+.TagTile.text-contrast--light,
+.TagTile.text-contrast--dark a,
+.TagTile.text-contrast--light a { color: #1a2035 !important; }
+.TagTile .TagTile-info { padding: 20px 20px 8px; }
+.TagTile .TagTile-name {
+  color: #1a2035;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-weight: 700; font-size: 16px;
+}
+.TagTile .TagTile-description { color: #4a5568; font-size: 12.5px; opacity: 1; }
+.TagTile .TagTile-lastPostedDiscussion {
+  color: #9aa3b4; font-size: 12px;
+  border-top-color: rgba(0, 0, 0, 0.06);
+  margin: 0 16px; padding: 8px 0;
+}
+.TagTiles { gap: 8px; }
+.TagTiles > li { padding: 4px; }
+
+.sideNav--horizontal .Dropdown-menu > li.active > a,
+.sideNav--horizontal .Dropdown--select .Dropdown-menu > li.active > a {
+  background: none;
+  color: var(--secondary-color-lm);
+  font-weight: 600;
+  padding-right: 10px !important;
+}
+.sideNav--horizontal .Dropdown-menu > li.active > a .Button-icon,
+.sideNav--horizontal .Dropdown--select .Dropdown-menu > li.active > a .Button-icon {
+  color: var(--secondary-color-lm);
+}
+
+/* ---------------------------------
+   USER CARD + USER HERO
+   --------------------------------- */
+.UserCard.UserHero {
+  position: relative; isolation: isolate; background: transparent;
+}
+.UserCard.UserHero a,
+.UserCard.UserHero .username,
+.UserCard.UserHero .UserCard-identity,
+.UserCard.UserHero .UserCard-info,
+.UserCard.UserHero .UserCard-info li,
+.UserCard.UserHero .UserCard-bio {
+  color: #ffffff !important;
+}
+/* Restore oklch letter colour inside UserHero — the white text rule above cascades in */
+/* Letter avatars in hero are always <span>, photo avatars are <img> — target span directly */
+.UserCard.UserHero span.Avatar {
+  color: oklch(from var(--avatar-bg, #69c6b9) 92% 0.18 h) !important;
+}
+.UserCard.UserHero .darkenBackground {
+  background: transparent;
+}
+
+.UserCard.UserHero::before {
+  content: ''; position: absolute; inset: 0;
+  background: var(--usercard-bg, #e8eaf0);
+  filter: saturate(1.8) brightness(0.72);
+  z-index: -1;
+}
+/* Core's light-contents() sets white text — keep it, it works on the coloured background */
+.UserCard--popover {
+  position: relative; isolation: isolate; background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 10px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+}
+
+/* Layer 1: avatar-colour gradient fading to dark */
+.UserCard--popover::before {
+  content: ''; position: absolute; inset: 0; border-radius: 10px;
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--usercard-bg, #e8eaf0) 70%, #080c14) 0%,
+      color-mix(in srgb, var(--usercard-bg, #e8eaf0) 35%, #080c14) 55%,
+      #1a1a2e 100%);
+  filter: saturate(2.2) brightness(0.58);
+  z-index: -2;
+}
+
+/* Layer 2: ambient glow radials */
+.UserCard--popover::after {
+  content: ''; position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 70% 80% at 0% 50%,
+      color-mix(in srgb, var(--usercard-bg, #69c6b9) 18%, transparent) 0%,
+      transparent 70%),
+    radial-gradient(ellipse 50% 60% at 100% 100%,
+      color-mix(in srgb, var(--secondary-color) 16%, transparent) 0%,
+      transparent 65%),
+    radial-gradient(ellipse 30% 35% at 85% 10%,
+      color-mix(in srgb, var(--secondary-color) 10%, transparent) 0%,
+      transparent 55%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Layer 3: star field */
+.UserCard--popover .darkenBackground {
+  position: relative;
+  z-index: 0;
+}
+.UserCard--popover .darkenBackground::before {
+  content: '';
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+  box-shadow:
+    40px  15px 0 0.5px color-mix(in srgb, var(--usercard-bg, #1a2440) 55%, white),
+    100px 10px 0 1px   color-mix(in srgb, var(--usercard-bg, #1a2440) 45%, white),
+    180px 25px 0 0.5px color-mix(in srgb, var(--usercard-bg, #1a2440) 60%, white),
+    260px 8px  0 1px   color-mix(in srgb, var(--usercard-bg, #1a2440) 48%, white),
+    340px 20px 0 0.5px color-mix(in srgb, var(--usercard-bg, #1a2440) 55%, white),
+    420px 12px 0 1px   color-mix(in srgb, var(--usercard-bg, #1a2440) 62%, white),
+    30px  60px 0 0.5px color-mix(in srgb, var(--usercard-bg, #1a2440) 38%, white),
+    120px 70px 0 1px   color-mix(in srgb, var(--usercard-bg, #1a2440) 48%, white),
+    220px 55px 0 0.5px color-mix(in srgb, var(--usercard-bg, #1a2440) 42%, white),
+    320px 68px 0 1px   color-mix(in srgb, var(--usercard-bg, #1a2440) 52%, white),
+    400px 45px 0 0.5px color-mix(in srgb, var(--usercard-bg, #1a2440) 40%, white);
+  animation: cosmos-drift-slow 22s ease-in-out infinite,
+             cosmos-pulse 10s ease-in-out infinite;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.UserCard--popover .container {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------------------------------
+   ALERTS
+   --------------------------------- */
+.Alert {
+  border-radius: 8px;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif; font-size: 13.5px;
+}
+.Alert--success {
+  background: color-mix(in srgb, var(--primary-color) 10%, transparent);
+  color: color-mix(in srgb, var(--primary-color) 80%, #000);
+}
+.Alert--error { background: rgba(216, 62, 62, 0.1); color: #c0392b; }
+.Alert--warning { background: rgba(234, 179, 8, 0.1); color: #b45309; }
+
+/* ---------------------------------
+   TOOLTIPS
+   --------------------------------- */
+.tooltip-inner {
+  background: #1a2035; color: #f0f2f7;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 12px; padding: 5px 10px;
+}
+.tooltip.top    .tooltip-arrow { border-top-color:    #1a2035; }
+.tooltip.bottom .tooltip-arrow { border-bottom-color: #1a2035; }
+.tooltip.left   .tooltip-arrow { border-left-color:   #1a2035; }
+.tooltip.right  .tooltip-arrow { border-right-color:  #1a2035; }
+
+/* ---------------------------------
+   AVATAR
+   --------------------------------- */
+span.Avatar:not(.PostUser-avatar) {
+  position: relative; background-color: transparent;
+  color: oklch(from var(--avatar-bg, #69c6b9) 92% 0.18 h);
+  isolation: isolate;
+}
+span.Avatar:not(.PostUser-avatar)::before {
+  content: ''; position: absolute; inset: 0; border-radius: 100%;
+  background-color: var(--avatar-bg, #d0e8e5);
+  filter: saturate(1.8) brightness(0.72); z-index: -1;
+}
+span.PostUser-avatar {
+  background-color: transparent;
+  color: oklch(from var(--avatar-bg, #69c6b9) 92% 0.18 h);
+  z-index: 0;
+}
+@media (max-width: 844px) {
+  span.PostUser-avatar { position: relative; }
+}
+span.PostUser-avatar::before {
+  content: ''; position: absolute; inset: 0; border-radius: 100%;
+  background-color: var(--avatar-bg, #d0e8e5);
+  filter: saturate(1.8) brightness(0.72); z-index: -1;
+}
+
+@keyframes online-pulse {
+  0%, 100% { opacity: 1;   transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.75); }
+}
+.UserOnline .fa-circle {
+  color: var(--primary-color-lm);
+  animation: online-pulse 2.4s ease-in-out infinite;
+  display: inline-block;
+}
+
+/* Badges */
+.Badge {
+  background: color-mix(in srgb, var(--badge-bg) 55%, transparent);
+  color: #1a2035 !important;
+}
+.Badge--hidden {
+  background: color-mix(in srgb, var(--primary-color) 18%, transparent);
+}
+
+/* ---------------------------------
+   FOOTER
+   --------------------------------- */
+.App-footer {
+  color: #9aa3b4;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  margin-top: 40px; padding: 16px 0; font-size: 12px;
+}
+.App-footer a { color: #9aa3b4; }
+.App-footer a:hover { color: var(--primary-color-lm); }
+
+/* ---------------------------------
+   MISC
+   --------------------------------- */
+.LoadingIndicator > div { background: var(--primary-color); }
+.Placeholder { color: #9aa3b4; }
+.fakeText { background: #eceef5; }
+.ValidationError { color: #c0392b; font-size: 12.5px; }
+.helpText { color: #4a5568; font-family: var(--cosmos-font, 'Outfit'), sans-serif; }
+
+.Checkbox-display {
+  background: #ffffff; border: 1px solid rgba(0, 0, 0, 0.18);
+}
+input:checked ~ .Checkbox-display {
+  background: var(--primary-color); border-color: var(--primary-color-lm);
+}
+
+/* Post body tables */
+.Post-body table { background: #ffffff; color: #1a2035; border-color: rgba(0,0,0,0.08); }
+.Post-body table th { background: #f4f5fa; color: #1a2035; }
+.Post-body table td { border-color: rgba(0,0,0,0.06); }
+
+/* Blog cards */
+[class*="BlogCard"],
+[class*="blog-card"],
+[class*="PostCard"],
+[class*="post-card"],
+[class*="ArticleCard"],
+[class*="article-card"] {
+  background: #ffffff !important;
+  color: #1a2035 !important;
+  border-color: rgba(0,0,0,0.08) !important;
+}
+[class*="BlogCard"]:hover,
+[class*="blog-card"]:hover,
+[class*="PostCard"]:hover,
+[class*="post-card"]:hover,
+[class*="ArticleCard"]:hover,
+[class*="article-card"]:hover {
+  background: color-mix(in srgb, var(--primary-color) 5%, #ffffff) !important;
+  border-color: color-mix(in srgb, var(--primary-color-lm) 20%, transparent) !important;
+}
+
+.App-content [style*="background: white"],
+.App-content [style*="background:#fff"],
+.App-content [style*="background: #fff"],
+.App-content [style*="background-color: white"],
+.App-content [style*="background-color: #fff"] {
+  background: #ffffff !important; color: #1a2035 !important;
+}
+
+.CardsListItem,
+.CardsListItem.Card,
+.CardsListItem.unread,
+.CardsListItem.read {
+  background: #ffffff !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  color: #1a2035 !important;
+}
+.CardsListItem:hover,
+.CardsListItem.Card:hover {
+  background: color-mix(in srgb, var(--primary-color) 5%, #ffffff) !important;
+  border-color: color-mix(in srgb, var(--primary-color-lm) 20%, transparent) !important;
+}
+.cardImageWrap { background: #f4f5fa !important; }
+.cardBody { background: #ffffff !important; color: #1a2035 !important; }
+.cardTags { background: transparent !important; }
+.cardTitle { color: #1a2035 !important; }
+.cardExcerpt { color: #4a5568 !important; }
+.cardFooter {
+  background: #f4f5fa !important;
+  border-top: 1px solid rgba(0, 0, 0, 0.06) !important;
+  color: #4a5568 !important;
+}
+.cardAuthor, .cardReplies, .cardRepliesCount { color: #4a5568 !important; }
+.cardAuthor .username { color: #1a2035 !important; }
+.cardParticipantsRow {
+  background: transparent !important;
+  border-top: 1px solid rgba(0, 0, 0, 0.06) !important;
+}
+.CardParticipants { background: transparent !important; }
+.CardsListItem .ButtonGroup,
+.CardsListItem .Dropdown-toggle {
+  background: rgba(240, 242, 247, 0.9) !important;
+  color: #1a2035 !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Cosmos theme toggle — desktop: match Dropdown-toggle button styling exactly */
+@media (min-width: 845px) {
+  .Header-secondary .Header-controls > .item-cosmos-theme-toggle .Button {
+    background: #ffffff;
+    color: #4a5568;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+    width: 36px;
+    padding: 8px 0;
+    text-align: center;
+  }
+  .Header-secondary .Header-controls > .item-cosmos-theme-toggle .Button:hover {
+    background: #f4f5fa;
+    color: #1a2035;
+    border-color: rgba(0, 0, 0, 0.14);
+  }
+  .Header-secondary .Header-controls > .item-cosmos-theme-toggle .Button-label {
+    display: none;
+  }
+  .Header-secondary .Header-controls > .item-cosmos-theme-toggle .Button-icon {
+    margin-right: 0;
+    font-size: 18px;
+  }
+}
+@media (max-width: 844px) {
+  .Header-controls > .item-cosmos-theme-toggle .Button {
+    border: 1px solid rgba(0, 0, 0, 0.07);
+  }
+}
+
+/* ---------------------------------
+   MOBILE / MISC MISSING ELEMENTS
+   --------------------------------- */
+
+/* Post timestamp badge — dark pill that appears next to username in posts */
+.Post-header .item-edited a,
+.Post-header time,
+.Post-header .PostMeta-time,
+.PostMeta time {
+  background: #eceef5;
+  color: #4a5568;
+  border-radius: 4px;
+  padding: 1px 6px;
+}
+
+/* User profile page nav tabs (Posts, Discussions, Likes, Mentions, Security) */
+.UserPage .sideNav .Button,
+.UserPage .sideNavigation .Button,
+.UserPage .item-posts .Button,
+.UserPage .item-discussions .Button,
+.UserPage .item-likes .Button,
+.UserPage .item-mentions .Button,
+.UserPage .item-security .Button,
+.UserPage .sideNav a.hasIcon,
+.UserPage .sideNavigation a.hasIcon {
+  background: #ffffff;
+  color: #4a5568;
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  border-radius: 6px;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.UserPage .sideNav .Button:hover,
+.UserPage .sideNavigation .Button:hover,
+.UserPage .sideNav a.hasIcon:hover,
+.UserPage .sideNavigation a.hasIcon:hover {
+  background: color-mix(in srgb, var(--primary-color) 10%, #f0f2f7);
+  color: var(--primary-color-lm);
+  border-color: color-mix(in srgb, var(--primary-color-lm) 20%, transparent);
+}
+.UserPage .sideNav .Button.active,
+.UserPage .sideNavigation .Button.active {
+  background: color-mix(in srgb, var(--primary-color) 10%, transparent);
+  color: var(--primary-color-lm);
+  border-color: color-mix(in srgb, var(--primary-color-lm) 25%, transparent);
+}
+
+/* App-header on mobile — ensure it stays light even with higher specificity rules */
+@media (max-width: 844px) {
+  .App-header {
+    background: rgba(232, 234, 240, 0.97) !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+  }
+  .App-drawer {
+    background: #f0f2f7 !important;
+  }
+}
+
+/* =============================================================
+   FOF/USER-DIRECTORY — Cosmos card redesign (light mode)
+   ============================================================= */
+
+.UserDirectoryList .UserDirectoryList-users {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: 1fr;
+  gap: 16px;
+  padding: 0;
+  list-style: none;
+}
+@media (max-width: 844px) {
+  .UserDirectoryList .UserDirectoryList-users {
+    grid-template-columns: 1fr;
+    grid-auto-rows: auto;
+    gap: 10px;
+  }
+}
+
+.UserDirectoryList .User {
+  margin-bottom: 0;
+  display: flex;
+  flex-direction: column;
+}
+.UserDirectoryList .User .UserCard--directory {
+  flex: 1;
+}
+
+.UserCard--directory {
+  position: relative;
+  isolation: isolate;
+  background: transparent;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+  min-height: 220px;
+}
+.UserCard--directory::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--usercard-bg, #e8eaf0) 70%, #080c14) 0%,
+      color-mix(in srgb, var(--usercard-bg, #e8eaf0) 35%, #080c14) 55%,
+      #1a1a2e 100%);
+  filter: saturate(2.2) brightness(0.58);
+  z-index: -2;
+}
+.UserCard--directory::after {
+  content: '';
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+  box-shadow:
+    18px  28px 0 0.5px color-mix(in srgb, var(--usercard-bg, #69c6b9) 70%, white),
+    55px  15px 0 0.5px color-mix(in srgb, var(--usercard-bg, #69c6b9) 55%, white),
+    92px  42px 0 1px   color-mix(in srgb, var(--usercard-bg, #69c6b9) 80%, white),
+    138px 12px 0 0.5px color-mix(in srgb, var(--usercard-bg, #69c6b9) 60%, white),
+    175px 35px 0 0.5px color-mix(in srgb, var(--usercard-bg, #69c6b9) 70%, white),
+    220px 20px 0 1px   color-mix(in srgb, var(--usercard-bg, #69c6b9) 75%, white),
+    265px 45px 0 0.5px color-mix(in srgb, var(--usercard-bg, #69c6b9) 55%, white),
+    310px 18px 0 0.5px color-mix(in srgb, var(--usercard-bg, #69c6b9) 65%, white),
+    355px 38px 0 1px   color-mix(in srgb, var(--usercard-bg, #69c6b9) 72%, white),
+    400px 10px 0 0.5px color-mix(in srgb, var(--usercard-bg, #69c6b9) 58%, white),
+    30px  85px 0 0.5px color-mix(in srgb, var(--usercard-bg, #69c6b9) 45%, white),
+    78px  72px 0 1px   color-mix(in srgb, var(--usercard-bg, #69c6b9) 60%, white),
+    125px 90px 0 0.5px color-mix(in srgb, var(--usercard-bg, #69c6b9) 50%, white),
+    185px 65px 0 0.5px color-mix(in srgb, var(--usercard-bg, #69c6b9) 55%, white),
+    240px 80px 0 1px   color-mix(in srgb, var(--usercard-bg, #69c6b9) 65%, white),
+    295px 55px 0 0.5px color-mix(in srgb, var(--usercard-bg, #69c6b9) 48%, white),
+    345px 78px 0 0.5px color-mix(in srgb, var(--usercard-bg, #69c6b9) 58%, white),
+    8px   158px 0 1px  color-mix(in srgb, var(--usercard-bg, #69c6b9) 85%, white),
+    65px  165px 0 0.5px color-mix(in srgb, var(--usercard-bg, #69c6b9) 75%, white),
+    130px 155px 0 1px  color-mix(in srgb, var(--usercard-bg, #69c6b9) 80%, white),
+    200px 168px 0 0.5px color-mix(in srgb, var(--usercard-bg, #69c6b9) 70%, white),
+    270px 160px 0 1px  color-mix(in srgb, var(--usercard-bg, #69c6b9) 78%, white),
+    340px 155px 0 0.5px color-mix(in srgb, var(--usercard-bg, #69c6b9) 72%, white),
+    390px 165px 0 1px  color-mix(in srgb, var(--usercard-bg, #69c6b9) 68%, white);
+  animation: cosmos-drift-slow 18s ease-in-out infinite,
+             cosmos-pulse 8s ease-in-out infinite;
+  pointer-events: none;
+  z-index: -1;
+}
+.UserCard--directory .darkenBackground {
+  background:
+    radial-gradient(ellipse 70% 80% at 0% 50%,
+      color-mix(in srgb, var(--usercard-bg, #69c6b9) 18%, transparent) 0%,
+      transparent 70%),
+    radial-gradient(ellipse 50% 60% at 100% 100%,
+      color-mix(in srgb, var(--secondary-color) 16%, transparent) 0%,
+      transparent 65%),
+    radial-gradient(ellipse 30% 35% at 80% 10%,
+      color-mix(in srgb, var(--secondary-color) 10%, transparent) 0%,
+      transparent 55%) !important;
+}
+.UserCard--directory .darkenBackground {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.UserDirectoryList .UserCard--directory .container {
+  width: auto !important;
+  padding: 20px 20px 24px !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  flex: 1;
+}
+.UserCard--directory .UserCard-profile {
+  padding-top: 0;
+}
+.UserCard--directory .UserCard-avatar {
+  margin: 0 0 14px 0;
+  float: none;
+}
+.UserCard--directory .UserCard-avatar .Avatar {
+  width: 80px !important;
+  height: 80px !important;
+  line-height: 80px !important;
+  font-size: 36px !important;
+  border: 3px solid rgba(255, 255, 255, 0.35) !important;
+}
+.UserCard--directory .UserCard-profile {
+  padding-left: 0 !important;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+.UserCard--directory .UserCard-identity {
+  font-size: 22px !important;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  margin-bottom: 4px;
+  text-align: center;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+/* Link inside identity: flex-row + wrap so avatar takes full width (own line),
+   username text and badge share the next line */
+.UserCard--directory .UserCard-identity a {
+  display: inline-flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+/* Avatar: force to its own full-width line */
+.UserCard--directory .UserCard-identity a .UserCard-avatar {
+  flex: 0 0 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+/* Badge appended by JS: inline with username text */
+.UserCard--directory .UserCard-identity a .UserCard-badges {
+  display: inline-flex !important;
+  align-items: center;
+  margin: 0 !important;
+  flex: 0 0 auto;
+}
+.UserCard--directory .username { color: #ffffff !important; }
+.UserCard--directory .UserCard-info {
+  margin: 8px 0 0 0 !important;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 12px;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 12.5px;
+  width: 100%;
+}
+.UserCard--directory .UserCard-info > li {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.UserCard--directory .UserCard-controls {
+  align-self: flex-end !important;
+  margin: 8px 8px -46px auto !important;
+  position: relative !important;
+  z-index: 2;
+}
+.UserCard--directory .UserCard-badges {
+  margin: 4px 0 4px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+/* Badge relocated inside .UserCard-identity via JS — style for inline display */
+.UserCard--directory .UserCard-identity .UserCard-badges {
+  display: inline-flex !important;
+  align-items: center;
+  vertical-align: middle;
+  margin: 0 0 0 8px !important;
+  list-style: none;
+  padding: 0;
+}
+.UserCard--directory .UserCard-identity .UserCard-badges li {
+  display: inline-flex !important;
+  margin-right: 4px;
+}
+
+/* User Directory Hero */
+
+
+/* Neutralise darkenBackground on small cards */
+.UserCard--small .darkenBackground {
+  background: transparent;
+}
+
+/* =============================================================
+   SIDE NAVIGATION — Cosmos panel treatment (light mode)
+   ============================================================= */
+
+@media (min-width: 992px) {
+  /* 1. Elevated panel surface — on item-nav only, below the Start a Discussion button */
+  .IndexPage-nav .item-nav {
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
+    padding: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+
+  /* 2. Active item: left accent bar */
+  .sideNav .Dropdown--select .Dropdown-menu > li.active > a {
+    background: color-mix(in srgb, var(--secondary-color) 10%, transparent);
+    color: var(--secondary-color-lm);
+    font-weight: 600;
+    border-radius: 6px;
+    border-left: 3px solid var(--secondary-color-lm);
+    padding-left: 35px;
+  }
+  .sideNav .Dropdown--select .Dropdown-menu > li.active > a .Button-icon {
+    color: var(--secondary-color-lm);
+  }
+
+  /* 4. Hover */
+  .sideNav .Dropdown--select .Dropdown-menu > li > a:hover {
+    background: #f4f5fa;
+    color: #1a2035;
+    text-decoration: none;
+  }
+  .sideNav .Dropdown--select .Dropdown-menu > li > a:hover .Button-icon {
+    color: #4a5568;
+  }
+
+  /* 5. Section separator */
+  .sideNav .Dropdown-separator {
+    background: rgba(0, 0, 0, 0.08) !important;
+    margin: 8px 4px;
+    position: relative;
+  }
+  .sideNav .Dropdown-separator::after {
+    content: 'TAGS';
+    display: block;
+    position: absolute;
+    top: 6px;
+    left: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #9aa3b4;
+    font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  }
+  .sideNav .Dropdown-separator + li {
+    margin-top: 20px;
+  }
+}
+
+/* =============================================================
+   SIDE NAV — Star field + ambient glow (light mode)
+   ============================================================= */
+
+@media (min-width: 992px) {
+  .IndexPage-nav .item-nav {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .IndexPage-nav .item-nav::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 40% at 50% 110%,
+        color-mix(in srgb, var(--primary-color) 10%, transparent) 0%,
+        transparent 70%),
+      radial-gradient(ellipse 60% 30% at 10% 80%,
+        color-mix(in srgb, var(--primary-color) 5%, transparent) 0%,
+        transparent 60%),
+      radial-gradient(ellipse 50% 25% at 90% 20%,
+        color-mix(in srgb, var(--primary-color) 6%, transparent) 0%,
+        transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .IndexPage-nav .item-nav::after {
+    content: '';
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    top: 0;
+    left: 0;
+    border-radius: 50%;
+    box-shadow:
+      12px  35px 0 0.5px color-mix(in srgb, var(--primary-color) 35%, #1a2035),
+      38px  80px 0 1px   color-mix(in srgb, var(--primary-color) 45%, #1a2035),
+      65px  22px 0 0.5px color-mix(in srgb, var(--primary-color) 28%, #1a2035),
+      92px  58px 0 0.5px color-mix(in srgb, var(--primary-color) 40%, #1a2035),
+      118px 15px 0 1px   color-mix(in srgb, var(--primary-color) 32%, #1a2035),
+      145px 45px 0 0.5px color-mix(in srgb, var(--primary-color) 36%, #1a2035),
+      170px 30px 0 0.5px color-mix(in srgb, var(--primary-color) 28%, #1a2035),
+      25px  110px 0 1px  color-mix(in srgb, var(--primary-color) 42%, #1a2035),
+      55px  145px 0 0.5px color-mix(in srgb, var(--primary-color) 32%, #1a2035),
+      85px  125px 0 0.5px color-mix(in srgb, var(--primary-color) 36%, #1a2035),
+      130px 95px 0 1px   color-mix(in srgb, var(--primary-color) 45%, #1a2035),
+      158px 130px 0 0.5px color-mix(in srgb, var(--primary-color) 30%, #1a2035),
+      18px  190px 0 0.5px color-mix(in srgb, var(--primary-color) 34%, #1a2035),
+      48px  220px 0 1px   color-mix(in srgb, var(--primary-color) 42%, #1a2035),
+      78px  175px 0 0.5px color-mix(in srgb, var(--primary-color) 28%, #1a2035),
+      108px 210px 0 0.5px color-mix(in srgb, var(--primary-color) 38%, #1a2035),
+      142px 185px 0 1px   color-mix(in srgb, var(--primary-color) 36%, #1a2035),
+      168px 230px 0 0.5px color-mix(in srgb, var(--primary-color) 26%, #1a2035),
+      30px  270px 0 0.5px color-mix(in srgb, var(--primary-color) 32%, #1a2035),
+      62px  305px 0 1px   color-mix(in srgb, var(--primary-color) 40%, #1a2035),
+      95px  285px 0 0.5px color-mix(in srgb, var(--primary-color) 28%, #1a2035),
+      125px 320px 0 0.5px color-mix(in srgb, var(--primary-color) 36%, #1a2035),
+      155px 295px 0 1px   color-mix(in srgb, var(--primary-color) 34%, #1a2035),
+      22px  355px 0 0.5px color-mix(in srgb, var(--primary-color) 30%, #1a2035),
+      72px  380px 0 1px   color-mix(in srgb, var(--primary-color) 38%, #1a2035),
+      115px 365px 0 0.5px color-mix(in srgb, var(--primary-color) 26%, #1a2035),
+      160px 390px 0 0.5px color-mix(in srgb, var(--primary-color) 32%, #1a2035),
+      40px  430px 0 1px   color-mix(in srgb, var(--primary-color) 36%, #1a2035),
+      90px  455px 0 0.5px color-mix(in srgb, var(--primary-color) 28%, #1a2035),
+      140px 440px 0 0.5px color-mix(in srgb, var(--primary-color) 34%, #1a2035);
+    animation: cosmos-drift-slow 18s ease-in-out infinite,
+               cosmos-pulse 8s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .IndexPage-nav .item-nav .ButtonGroup,
+  .IndexPage-nav .item-nav .Dropdown-menu {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+/* Cosmos Slider — light mode overrides */
+.CosmosSlider-fade {
+  background: linear-gradient(to bottom,
+    transparent 0%,
+    rgba(10, 10, 20, 0.45) 100%);
+}
+.CosmosSlider-btn {
+  background: rgba(255, 255, 255, 0.7);
+  border-color: rgba(0, 0, 0, 0.15);
+  color: #1a2035;
+}
+.CosmosSlider-btn:hover {
+  background: rgba(255, 255, 255, 0.92);
+  border-color: var(--primary-color-lm);
+  box-shadow: 0 0 10px 2px color-mix(in srgb, var(--primary-color-lm) 35%, transparent);
+}
+.CosmosSlider-dots .dot { background: rgba(0, 0, 0, 0.25); }
+.CosmosSlider-dots .dot.is-active {
+  background: var(--secondary-color-lm);
+}
+.CosmosSlider-stars::after {
+  box-shadow:
+    80px  30px 0 0.5px color-mix(in srgb, var(--primary-color) 40%, #1a2035),
+    220px 55px  0 1px   color-mix(in srgb, var(--primary-color) 50%, #1a2035),
+    410px 20px  0 0.5px color-mix(in srgb, var(--primary-color) 35%, #1a2035),
+    600px 65px  0 1px   color-mix(in srgb, var(--primary-color) 45%, #1a2035),
+    780px 35px  0 0.5px color-mix(in srgb, var(--primary-color) 40%, #1a2035),
+    950px 15px  0 1px   color-mix(in srgb, var(--primary-color) 50%, #1a2035),
+    1100px 50px 0 0.5px color-mix(in srgb, var(--primary-color) 35%, #1a2035),
+    1280px 28px 0 1px   color-mix(in srgb, var(--primary-color) 45%, #1a2035),
+    1450px 60px 0 0.5px color-mix(in srgb, var(--primary-color) 40%, #1a2035),
+    150px 110px 0 0.5px color-mix(in srgb, var(--primary-color) 35%, #1a2035),
+    350px 130px 0 1px   color-mix(in srgb, var(--primary-color) 45%, #1a2035),
+    550px 95px  0 0.5px color-mix(in srgb, var(--primary-color) 40%, #1a2035),
+    750px 140px 0 1px   color-mix(in srgb, var(--primary-color) 50%, #1a2035),
+    920px 105px 0 0.5px color-mix(in srgb, var(--primary-color) 35%, #1a2035),
+    1150px 125px 0 1px  color-mix(in srgb, var(--primary-color) 45%, #1a2035),
+    1380px 90px 0 0.5px color-mix(in srgb, var(--primary-color) 40%, #1a2035),
+    50px  180px 0 1px   color-mix(in srgb, var(--primary-color) 45%, #1a2035),
+    280px 200px 0 0.5px color-mix(in srgb, var(--primary-color) 35%, #1a2035),
+    480px 170px 0 0.5px color-mix(in srgb, var(--primary-color) 40%, #1a2035),
+    680px 210px 0 1px   color-mix(in srgb, var(--primary-color) 50%, #1a2035),
+    880px 185px 0 0.5px color-mix(in srgb, var(--primary-color) 35%, #1a2035),
+    1060px 205px 0 1px  color-mix(in srgb, var(--primary-color) 45%, #1a2035),
+    1250px 175px 0 0.5px color-mix(in srgb, var(--primary-color) 40%, #1a2035),
+    1460px 195px 0 1px  color-mix(in srgb, var(--primary-color) 50%, #1a2035);
+}
+
+/* Unread discussion — left accent band */
+.DiscussionListItem:has(.DiscussionListItem-content.unread) {
+  box-shadow: inset 4px 0 0 0 var(--secondary-color-lm);
+}
+.DiscussionListItem:has(.DiscussionListItem-content.unread):hover {
+  box-shadow: inset 4px 0 0 0 var(--secondary-color-lm),
+              0 0 16px 3px color-mix(in srgb, var(--primary-color-lm) 45%, transparent);
+}
+
+/* =============================================================
+   OPTION C — Discussion Hero (light mode)
+   ============================================================= */
+
+/* Light mode DiscussionHero — identical treatment to dark mode */
+.DiscussionHero {
+  position: relative;
+  overflow: hidden;
+  min-height: 140px;
+  display: flex;
+  align-items: center;
+  border-bottom: none;
+  filter: none;
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--hero-bg, var(--secondary-color)) 55%, #080c14) 0%,
+      color-mix(in srgb, var(--hero-bg, var(--secondary-color)) 18%, #080c14) 55%,
+      #080c14 100%);
+  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.5);
+}
+
+.DiscussionHero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  filter: none;
+  background:
+    radial-gradient(ellipse 70% 80% at 0% 50%,
+      color-mix(in srgb, var(--hero-bg, var(--secondary-color)) 22%, transparent) 0%,
+      transparent 70%),
+    radial-gradient(ellipse 50% 60% at 100% 100%,
+      color-mix(in srgb, var(--secondary-color) 16%, transparent) 0%,
+      transparent 65%),
+    radial-gradient(ellipse 35% 40% at 85% 10%,
+      color-mix(in srgb, var(--secondary-color) 10%, transparent) 0%,
+      transparent 55%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.DiscussionHero::after {
+  content: '';
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+  box-shadow:
+    120px 25px 0 0.5px rgba(255,255,255,0.4),
+    280px 15px 0 1px   rgba(255,255,255,0.5),
+    450px 35px 0 0.5px rgba(255,255,255,0.35),
+    620px 20px 0 1px   rgba(255,255,255,0.45),
+    800px 40px 0 0.5px rgba(255,255,255,0.38),
+    980px 12px 0 1px   rgba(255,255,255,0.5),
+    1150px 30px 0 0.5px rgba(255,255,255,0.35),
+    1320px 22px 0 1px   rgba(255,255,255,0.42),
+    1480px 38px 0 0.5px rgba(255,255,255,0.4),
+    60px  80px 0 0.5px rgba(255,255,255,0.3),
+    220px 90px 0 1px   rgba(255,255,255,0.38),
+    400px 70px 0 0.5px rgba(255,255,255,0.32),
+    580px 95px 0 1px   rgba(255,255,255,0.42),
+    760px 75px 0 0.5px rgba(255,255,255,0.35),
+    940px 88px 0 1px   rgba(255,255,255,0.4),
+    1100px 65px 0 0.5px rgba(255,255,255,0.3),
+    1300px 85px 0 0.5px rgba(255,255,255,0.38);
+  animation: cosmos-drift-slow 24s ease-in-out infinite,
+             cosmos-pulse 10s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.DiscussionHero .container {
+  position: relative;
+  z-index: 1;
+  padding-top: 28px;
+  padding-bottom: 28px;
+}
+
+.DiscussionHero-title {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif !important;
+  font-size: 28px !important;
+  font-weight: 800 !important;
+  color: #ffffff !important;
+  letter-spacing: -0.5px !important;
+  line-height: 1.25 !important;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4) !important;
+  display: block !important;
+  margin-top: 6px !important;
+}
+
+.DiscussionHero .TagsLabel {
+  display: block;
+  margin-bottom: 8px;
+}
+.DiscussionHero .TagLabel {
+  font-size: 11.5px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.04em !important;
+  text-transform: uppercase !important;
+  padding: 3px 10px !important;
+  border-radius: 4px !important;
+  background: rgba(255, 255, 255, 0.15) !important;
+  color: rgba(255, 255, 255, 0.92) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  backdrop-filter: blur(4px) !important;
+}
+.DiscussionHero .TagLabel .TagLabel-text,
+.DiscussionHero .TagLabel .TagLabel-name,
+.DiscussionHero .TagsLabel .TagLabel,
+.DiscussionHero .TagsLabel .TagLabel.colored,
+.DiscussionHero .TagsLabel .TagLabel--colored {
+  background: rgba(255, 255, 255, 0.15) !important;
+  color: rgba(255, 255, 255, 0.92) !important;
+}
+
+.DiscussionHero-title {
+  color: #1a2035;
+  text-shadow: none;
+}
+.DiscussionHero {
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+}
+
+/* =============================================================
+   OPTION B — Avatar column (light mode)
+   ============================================================= */
+
+img.PostUser-avatar {
+  border-color: color-mix(in srgb, var(--avatar-bg, var(--primary-color)) 50%, transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--avatar-bg, var(--primary-color)) 20%, transparent),
+    0 0 10px 2px color-mix(in srgb, var(--avatar-bg, var(--primary-color)) 22%, transparent);
+}
+span.PostUser-avatar {
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--avatar-bg, var(--primary-color)) 30%, transparent),
+    0 0 10px 2px color-mix(in srgb, var(--avatar-bg, var(--primary-color)) 18%, transparent);
+}
+.PostUser h3 a,
+.PostUser .PostUser-name a {
+  color: #1a2035;
+}
+.PostMeta-number {
+  color: var(--secondary-color-lm);
+}
+@media (min-width: 845px) {
+  .PostStream-item:not(:last-child)::after {
+    background: linear-gradient(to bottom,
+      color-mix(in srgb, var(--primary-color) 18%, transparent) 0%,
+      transparent 100%);
+  }
+}
+
+/* =============================================================
+   POST CONTROLS — Reply, Like, Reactions  (light / day mode)
+   ============================================================= */
+
+/* ── General baseline ────────────────────────────────────────── */
+.Post-actions > ul {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-wrap: wrap;
+}
+.Post-actions > ul > li:has(.Post-controls) {
+  margin-left: 6px;
+}
+
+/* ── Reply button ────────────────────────────────────────────── */
+.item-reply > .Button {
+  color: #9aa3b4 !important;
+}
+.item-reply > .Button:hover {
+  color: var(--primary-color-lm) !important;
+  background: color-mix(in srgb, var(--primary-color) 8%, transparent) !important;
+}
+
+/* ── Like button (flarum/likes) ──────────────────────────────── */
+.item-like > .Button {
+  color: #9aa3b4 !important;
+}
+.item-like > .Button:hover {
+  color: var(--primary-color-lm) !important;
+  background: color-mix(in srgb, var(--primary-color) 8%, transparent) !important;
+}
+.item-like > .Button.active {
+  color: var(--primary-color-lm) !important;
+}
+
+/* ── Reactions: emoji count pills ───────────────────────────── */
+.Reactions--reactions .Button-emoji-parent {
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  padding: 4px 9px;
+  color: #4a5568;
+  font-size: 13px;
+  font-weight: 600;
+  margin-right: 4px;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.Reactions--reactions .Button-emoji-parent:hover {
+  background: color-mix(in srgb, var(--primary-color) 10%, transparent);
+  border-color: color-mix(in srgb, var(--primary-color) 30%, transparent);
+  color: #1a2035;
+}
+.Reactions--reactions .Button-emoji-parent.active {
+  background: color-mix(in srgb, var(--primary-color) 14%, transparent);
+  border-color: color-mix(in srgb, var(--primary-color) 45%, transparent);
+  color: var(--primary-color-lm);
+}
+.Reactions--reactions .Button-emoji-parent.disabled {
+  background: transparent;
+  border-color: rgba(0, 0, 0, 0.05);
+  opacity: 0.6;
+}
+
+/* ── Reactions: "react" smiley trigger button ───────────────── */
+.Reactions--ShowReactions.Button {
+  color: #9aa3b4 !important;
+  background: transparent !important;
+  padding: 5px 8px;
+  transition: color 0.15s, background 0.15s;
+}
+.Reactions--ShowReactions.Button:hover {
+  color: var(--primary-color-lm) !important;
+  background: color-mix(in srgb, var(--primary-color) 8%, transparent) !important;
+}
+.Reactions--ShowReactions .button-react path,
+.Reactions--ShowReactions .button-react polygon {
+  fill: currentColor;
+  transition: fill 0.15s;
+}
+
+/* ── Reactions: picker dropdown card ────────────────────────── */
+.CommentPost--Reactions {
+  background: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.09) !important;
+  border-radius: 10px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.10),
+    0 2px 6px rgba(0, 0, 0, 0.06) !important;
+  padding: 6px !important;
+  min-width: 0 !important;
+  max-width: none !important;
+}
+
+/* ── Picker: single-row flex layout ─────────────────────────── */
+.CommentPost--Reactions ul {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  justify-content: flex-start !important;
+  align-items: center !important;
+  gap: 2px !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  width: auto !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  list-style: none !important;
+}
+.CommentPost--Reactions ul li {
+  display: flex !important;
+  margin: 0 !important;
+}
+
+/* ── Reactions: individual emoji buttons inside picker ──────── */
+.CommentPost--Reactions ul li button {
+  background: transparent;
+  border-radius: 8px;
+  padding: 0;
+  width: 38px;
+  height: 38px;
+  border: 1px solid transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.12s, border-color 0.12s;
+}
+.CommentPost--Reactions ul li button .Button-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  font-size: 20px;
+}
+.CommentPost--Reactions ul li button img {
+  width: 22px;
+  height: 22px;
+  display: block;
+}
+.CommentPost--Reactions ul li button:hover {
+  background: color-mix(in srgb, var(--primary-color) 10%, transparent);
+  border-color: color-mix(in srgb, var(--primary-color) 25%, transparent);
+}
+
+/* ── Reactions: icon/link buttons inside picker ─────────────── */
+.CommentPost--Reactions .Button--link {
+  color: #4a5568;
+}
+.CommentPost--Reactions .Button--link:hover {
+  color: #1a2035;
+  background: rgba(0, 0, 0, 0.04);
+  border-radius: 6px;
+}
+
+/* =============================================================
+   USER PROFILE HERO — Cosmos star field + glow + stats (light)
+   ============================================================= */
+
+.UserCard.UserHero {
+  min-height: 130px;
+}
+
+.UserCard.UserHero::before {
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--usercard-bg, #e8eaf0) 70%, #080c14) 0%,
+      color-mix(in srgb, var(--usercard-bg, #e8eaf0) 35%, #080c14) 55%,
+      #1a1a2e 100%);
+  filter: saturate(2.2) brightness(0.58);
+}
+
+.UserCard.UserHero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 80% at 0% 50%,
+      color-mix(in srgb, var(--usercard-bg, #69c6b9) 18%, transparent) 0%,
+      transparent 70%),
+    radial-gradient(ellipse 50% 60% at 100% 100%,
+      color-mix(in srgb, var(--secondary-color) 16%, transparent) 0%,
+      transparent 65%),
+    radial-gradient(ellipse 35% 40% at 85% 10%,
+      color-mix(in srgb, var(--secondary-color) 10%, transparent) 0%,
+      transparent 55%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.UserCard.UserHero .darkenBackground::before {
+  content: '';
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+  box-shadow:
+    80px  20px 0 0.5px color-mix(in srgb, var(--usercard-bg, #1a2440) 55%, white),
+    200px 15px 0 1px   color-mix(in srgb, var(--usercard-bg, #1a2440) 45%, white),
+    340px 35px 0 0.5px color-mix(in srgb, var(--usercard-bg, #1a2440) 60%, white),
+    500px 10px 0 1px   color-mix(in srgb, var(--usercard-bg, #1a2440) 48%, white),
+    680px 28px 0 0.5px color-mix(in srgb, var(--usercard-bg, #1a2440) 55%, white),
+    860px 18px 0 1px   color-mix(in srgb, var(--usercard-bg, #1a2440) 62%, white),
+    1040px 32px 0 0.5px color-mix(in srgb, var(--usercard-bg, #1a2440) 50%, white),
+    1220px 22px 0 1px  color-mix(in srgb, var(--usercard-bg, #1a2440) 58%, white),
+    40px  75px 0 0.5px color-mix(in srgb, var(--usercard-bg, #1a2440) 38%, white),
+    160px 85px 0 1px   color-mix(in srgb, var(--usercard-bg, #1a2440) 48%, white),
+    290px 68px 0 0.5px color-mix(in srgb, var(--usercard-bg, #1a2440) 42%, white),
+    440px 90px 0 1px   color-mix(in srgb, var(--usercard-bg, #1a2440) 52%, white),
+    620px 72px 0 0.5px color-mix(in srgb, var(--usercard-bg, #1a2440) 40%, white),
+    800px 88px 0 1px   color-mix(in srgb, var(--usercard-bg, #1a2440) 50%, white);
+  animation: cosmos-drift-slow 22s ease-in-out infinite,
+             cosmos-pulse 10s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.UserCard.UserHero .darkenBackground {
+  position: relative;
+  z-index: 1;
+}
+
+.UserCard.UserHero .UserCard-avatar .Avatar {
+  border: 3px solid color-mix(in srgb, var(--usercard-bg, #1a2440) 45%, transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--usercard-bg, #1a2440) 20%, transparent),
+    0 0 14px 2px color-mix(in srgb, var(--usercard-bg, #1a2440) 22%, transparent);
+}
+
+.UserHero-stats {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+.UserHero-stat {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  background: rgba(255, 255, 255, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 6px;
+  padding: 3px 10px;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(4px);
+}
+.UserHero-stat-value {
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+/* =============================================================
+   DISCUSSION SIDEBAR — Reply & Follow buttons (light mode)
+   ============================================================= */
+
+.DiscussionPage-nav .item-controls .SplitDropdown-button,
+.DiscussionPage-nav .item-controls .SubscriptionMenu-button {
+  background: #ffffff !important;
+  color: var(--primary-color-lm) !important;
+  border: 1px solid color-mix(in srgb, var(--primary-color) 35%, transparent) !important;
+  font-weight: 600 !important;
+  filter: none !important;
+}
+.DiscussionPage-nav .item-controls .SplitDropdown-button:hover,
+.DiscussionPage-nav .item-controls .SubscriptionMenu-button:hover {
+  background: color-mix(in srgb, var(--primary-color) 8%, transparent) !important;
+  color: var(--primary-color-lm) !important;
+  border-color: color-mix(in srgb, var(--primary-color) 55%, transparent) !important;
+  filter: none !important;
+}
+
+.DiscussionPage-nav .item-controls .Dropdown-toggle {
+  background: #ffffff !important;
+  color: var(--primary-color-lm) !important;
+  border: 1px solid color-mix(in srgb, var(--primary-color) 35%, transparent) !important;
+  border-left: 1px solid color-mix(in srgb, var(--primary-color) 20%, transparent) !important;
+}
+.DiscussionPage-nav .item-controls .Dropdown-toggle:hover {
+  background: color-mix(in srgb, var(--primary-color) 8%, transparent) !important;
+  color: var(--primary-color-lm) !important;
+  border-color: color-mix(in srgb, var(--primary-color) 55%, transparent) !important;
+}
+
+.DiscussionPage-nav .item-controls .Dropdown-menu {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.09);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.10);
+}
+.DiscussionPage-nav .item-controls .Dropdown-menu > li > a,
+.DiscussionPage-nav .item-controls .Dropdown-menu > li > button {
+  color: #4a5568;
+}
+.DiscussionPage-nav .item-controls .Dropdown-menu > li > a:hover,
+.DiscussionPage-nav .item-controls .Dropdown-menu > li > button:hover {
+  background: rgba(0, 0, 0, 0.04);
+  color: #1a2035;
+}
+
+/* ── Follow button group: unified border on the ButtonGroup container ── */
+.DiscussionPage-nav .item-controls .SubscriptionMenu.ButtonGroup {
+  border: 1px solid color-mix(in srgb, var(--primary-color) 35%, transparent);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.DiscussionPage-nav .item-controls .SubscriptionMenu.ButtonGroup:hover {
+  border-color: color-mix(in srgb, var(--primary-color) 55%, transparent);
+}
+.DiscussionPage-nav .item-controls .SubscriptionMenu-button,
+.DiscussionPage-nav .item-controls .SubscriptionMenu .Dropdown-toggle {
+  border: none !important;
+}
+
+/* =============================================================
+   MOBILE PASS — Phone viewport (light mode, max-width: 844px)
+   ============================================================= */
+
+@media (max-width: 844px) {
+
+  body {
+    padding-bottom: ~"calc(54px + env(safe-area-inset-bottom, 0px)");
+  }
+
+  .MobileTab {
+    background: #ffffff;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.07);
+  }
+
+  .MobileTab-items > li > .LinkButton .Button-label,
+  .MobileTab-items > li > .Button .Button-label {
+    font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+
+  .MobileTab .Dropdown-toggle,
+  .MobileTab .Dropdown-toggle:hover,
+  .MobileTab .SessionDropdown .Dropdown-toggle,
+  .MobileTab .SessionDropdown .Dropdown-toggle:hover {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+
+  .MobileTab .SessionDropdown .Avatar {
+    border: 2px solid rgba(0, 0, 0, 0.12);
+    box-shadow: none;
+  }
+
+  .CommentPost--Reactions {
+    left: auto !important;
+    right: 0 !important;
+    max-width: ~"calc(100vw - 24px)" !important;
+  }
+
+  .Reactions--react {
+    position: relative;
+  }
+
+  .CommentPost--Reactions.mobile-show {
+    visibility: visible !important;
+    opacity: 1 !important;
+    transition: visibility 0s linear 0s, opacity 300ms !important;
+  }
+
+  .Reactions--reactions .Button-emoji-parent {
+    padding: 3px 7px;
+    font-size: 12px;
+    margin-right: 3px;
+  }
+
+  .Post-actions > ul {
+    gap: 1px;
+  }
+
+  .App-header .container {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .DiscussionHero::after {
+    animation: none;
+    opacity: 0.4;
+  }
+
+  .UserHero-stats {
+    gap: 5px;
+    margin-top: 8px;
+  }
+  .UserHero-stat {
+    font-size: 12px;
+    padding: 2px 8px;
+  }
+
+  .PostStream-item:not(:last-child)::after {
+    display: none;
+  }
+
+}
+
+/* =============================================================
+   POST STREAM SCRUBBER — Cosmos treatment (light mode)
+   ============================================================= */
+
+.Scrubber-before,
+.Scrubber-after {
+  border-left: 2px solid rgba(0, 0, 0, 0.10);
+  transition: border-color 0.2s;
+}
+.PostStreamScrubber:hover .Scrubber-before,
+.PostStreamScrubber:hover .Scrubber-after {
+  border-left-color: rgba(0, 0, 0, 0.18);
+}
+
+.Scrubber-bar {
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--primary-color) 80%, white),
+    var(--primary-color)
+  );
+  width: 4px;
+  border-radius: 4px;
+  box-shadow: 0 0 8px color-mix(in srgb, var(--primary-color) 35%, transparent);
+  margin-left: -1px;
+}
+
+.Scrubber-handle {
+  padding: 4px 0;
+}
+.Scrubber-handle::after {
+  content: '';
+  position: absolute;
+  left: -4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  box-shadow:
+    0 0 0 2px #f0f2f7,
+    0 0 0 4px color-mix(in srgb, var(--primary-color) 30%, transparent),
+    0 0 8px color-mix(in srgb, var(--primary-color) 40%, transparent);
+  transition: box-shadow 0.2s, transform 0.15s;
+  z-index: 2;
+}
+.PostStreamScrubber:hover .Scrubber-handle::after,
+.Scrubber-scrollbar:active .Scrubber-handle::after {
+  transform: translateY(-50%) scale(1.2);
+  box-shadow:
+    0 0 0 2px #f0f2f7,
+    0 0 0 5px color-mix(in srgb, var(--primary-color) 40%, transparent),
+    0 0 12px color-mix(in srgb, var(--primary-color) 50%, transparent);
+}
+
+.Scrubber-info {
+  left: 18px;
+}
+.Scrubber-info strong {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #1a2035;
+  line-height: 1.3;
+}
+.Scrubber-description {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  color: #9aa3b4;
+  margin-top: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.Scrubber-unread {
+  border-left: 2px solid color-mix(in srgb, var(--primary-color) 45%, transparent);
+  background-image: linear-gradient(
+    to right,
+    color-mix(in srgb, var(--primary-color) 6%, transparent),
+    transparent 40px,
+    transparent
+  );
+  color: #9aa3b4;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+}
+
+.Scrubber-first,
+.Scrubber-last {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #9aa3b4 !important;
+  letter-spacing: 0.02em;
+  transition: color 0.15s;
+}
+.Scrubber-first:hover,
+.Scrubber-last:hover {
+  color: var(--primary-color-lm) !important;
+}
+
+/* =============================================================
+   USER CARD POPOVER — z-index fix + mobile sizing (light)
+   ============================================================= */
+
+.PostUser .UserCard--popover {
+  z-index: var(--zindex-dropdown);
+}
+
+@media (max-width: 844px) {
+  .PostUser .UserCard--popover {
+    width: ~"calc(100vw - 32px)" !important;
+    left: 0 !important;
+    right: auto !important;
+    max-width: 360px;
+  }
+}
+
+/* ── Popover avatar ring glow (no size override — core sets 96px) ── */
+.UserCard--popover .UserCard-avatar .Avatar {
+  border: 3px solid color-mix(in srgb, var(--usercard-bg, #1a2440) 45%, transparent) !important;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--usercard-bg, #1a2440) 20%, transparent),
+    0 0 12px 2px color-mix(in srgb, var(--usercard-bg, #1a2440) 20%, transparent);
+}
+.UserCard--popover .UserCard-identity {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-weight: 700;
+  color: #ffffff;
+}
+.UserCard--popover .UserCard-info {
+  color: rgba(255, 255, 255, 0.65);
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+}
+
+.UserCard--popover .UserHero-stats {
+  margin-top: 10px;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.UserCard--popover .UserHero-stat {
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 5px;
+  padding: 2px 8px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.8);
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+}
+.UserCard--popover .UserHero-stat-value {
+  font-size: 12px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+/* =============================================================
+   BADGES EXTENSION — Cosmos light mode
+   ============================================================= */
+
+.Post-footer {
+  height: auto !important;
+  min-height: 0;
+}
+
+.BadgesHero {
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--primary-color) 12%, #e8eaf0) 0%,
+      #e0e4ee 70%);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+}
+.BadgesHero .Hero-title {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  color: #1a2035;
+}
+
+.BadgesList-categoryTitle {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #9aa3b4;
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+.BadgesList-categoryDescription {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  color: #4a5568;
+  font-size: 13px;
+}
+.BadgesList-category--uncategorized {
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.BadgeCard {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+}
+.BadgeCard:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--primary-color) 35%, transparent);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.10),
+    0 0 0 1px color-mix(in srgb, var(--primary-color) 15%, transparent);
+}
+.BadgeCard-icon {
+  border-radius: 50%;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+.BadgeCard-name {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a2035;
+}
+.BadgeCard-description { color: #4a5568; font-size: 12.5px; }
+.BadgeCard-stats { color: #9aa3b4; font-size: 11.5px; }
+.BadgeCard-rarity {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.BadgeCard-indicator--new {
+  background: color-mix(in srgb, var(--primary-color) 85%, white);
+  color: #ffffff;
+}
+.BadgeCard-indicator--owned {
+  background: color-mix(in srgb, var(--primary-color) 80%, white);
+  color: #ffffff;
+}
+
+.BadgeModal .Modal-content {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.09);
+  border-radius: 14px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.15);
+}
+.BadgeModal .Modal-header {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+}
+.BadgeModal-icon {
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 4px rgba(0, 0, 0, 0.06),
+    0 8px 20px rgba(0, 0, 0, 0.15);
+}
+.BadgeModal-name {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  color: #1a2035;
+}
+.BadgeModal-description { color: #4a5568; font-size: 13.5px; line-height: 1.6; }
+.BadgeModal-category {
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.09);
+  color: #4a5568;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+.BadgeModal-rarity {
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+.BadgeModal-rarityTier {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+}
+.BadgeModal-rarityExplain { color: #9aa3b4; font-size: 12px; margin-top: 4px; }
+.BadgeModal-earnedCount { color: #4a5568; font-size: 13px; }
+.BadgeModal-users { border-top: 1px solid rgba(0, 0, 0, 0.07); }
+.BadgeModal-usersTitle {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a2035;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.BadgeModal-usersTitle i { color: var(--primary-color-lm); }
+.BadgeModal-userItem:hover {
+  background: rgba(0, 0, 0, 0.04);
+  border-radius: 8px;
+}
+.BadgeModal-userName {
+  color: #1a2035;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-weight: 600;
+}
+.BadgeModal-earnedDate { color: #9aa3b4; }
+.BadgeModal-moreUsers { border-top: 1px solid rgba(0, 0, 0, 0.07); color: #9aa3b4; }
+
+.UserBadgesPage-header h2 {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a2035;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.UserBadgesPage-emptyState { color: #9aa3b4; }
+.UserBadgesPage-loadMore { border-top: 1px solid rgba(0, 0, 0, 0.07); }
+.UserBadgesPage-meta { color: #9aa3b4; }
+.UserBadgesPage-reason { border-top: 1px solid rgba(0, 0, 0, 0.07); color: #9aa3b4; }
+
+.UserCardBadge {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: background 0.15s, border-color 0.15s;
+}
+.UserCardBadge-more { font-size: 10px; font-weight: 700; }
+
+.PostBadges-item {
+  background: #e8eaf0;
+  border: 1px solid rgba(0, 0, 0, 0.10);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+.PostBadges-more {
+  color: #9aa3b4;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+}
+.PostBadges:hover .PostBadges-item {
+  border-color: color-mix(in srgb, var(--primary-color) 30%, transparent);
+}
+
+.PrimaryBadge-name {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: #9aa3b4;
+}
+.PrimaryBadge i {
+  background: var(--primary-color-lm);
+}
+
+.BadgeNotification-badge {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  border-radius: 4px;
+  font-weight: 700;
+}
+
+/* =============================================================
+   LEADERBOARD EXTENSION — Cosmos light mode
+   ============================================================= */
+
+.LeaderboardPage-filterBtn {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.09);
+  color: #4a5568;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border-radius: 6px !important;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.LeaderboardPage-filterBtn:hover {
+  background: #f0f2f7;
+  border-color: rgba(0, 0, 0, 0.14);
+  color: #1a2035;
+}
+.LeaderboardPage-filterBtn.active {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  color: #ffffff;
+}
+
+.LeaderboardPage-refreshBtn {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.09);
+  color: #9aa3b4;
+  transition: background 0.15s, color 0.15s;
+}
+.LeaderboardPage-refreshBtn:hover {
+  background: #f0f2f7;
+  color: #4a5568;
+}
+
+.LeaderboardContenders-title,
+.LeaderboardHonorable-title {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #9aa3b4;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  margin-bottom: 14px;
+}
+.LeaderboardContenders-title .fas,
+.LeaderboardHonorable-title .fas {
+  color: var(--primary-color-lm);
+  font-size: 11px;
+}
+
+.LeaderboardPodium-place {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-top-width: 3px;
+  border-radius: 12px;
+  transition: transform 0.18s, box-shadow 0.18s;
+}
+.LeaderboardPodium-place:hover {
+  transform: translateY(-4px);
+  text-decoration: none;
+  color: inherit;
+}
+.LeaderboardPodium-place--1 {
+  border-top-color: #d4a730;
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.10),
+    0 -2px 10px rgba(212, 167, 48, 0.12);
+}
+.LeaderboardPodium-place--1:hover {
+  box-shadow:
+    0 10px 28px rgba(0, 0, 0, 0.14),
+    0 -2px 14px rgba(212, 167, 48, 0.20);
+}
+.LeaderboardPodium-place--2 {
+  border-top-color: #a0a0a0;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+.LeaderboardPodium-place--3 {
+  border-top-color: #b87333;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.LeaderboardPodium-crown {
+  color: #d4a730;
+}
+.LeaderboardPodium-medal--gold .LeaderboardPodium-rankNumber {
+  color: #d4a730;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-weight: 800;
+}
+.LeaderboardPodium-medal--silver .LeaderboardPodium-rankNumber {
+  color: #8a8a8a;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-weight: 700;
+}
+.LeaderboardPodium-medal--bronze .LeaderboardPodium-rankNumber {
+  color: #b87333;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-weight: 700;
+}
+.LeaderboardPodium-avatar .Avatar {
+  border: 3px solid rgba(0, 0, 0, 0.10);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+}
+.LeaderboardPodium-place--1 .LeaderboardPodium-avatar .Avatar {
+  border-color: rgba(212, 167, 48, 0.35);
+}
+.LeaderboardPodium-name {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-weight: 700;
+  color: #1a2035;
+}
+.LeaderboardPodium-points {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  color: #9aa3b4;
+}
+.LeaderboardPodium-stats {
+  border-top: 1px solid rgba(0, 0, 0, 0.07);
+}
+.LeaderboardPodium-stat {
+  color: #9aa3b4;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+}
+
+.LeaderboardContenders-card {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+}
+.LeaderboardContenders-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.10);
+  border-color: color-mix(in srgb, var(--primary-color) 30%, transparent);
+  color: inherit;
+  text-decoration: none;
+}
+.LeaderboardContenders-rank {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-weight: 700;
+  color: #9aa3b4;
+}
+.LeaderboardContenders-name {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-weight: 600;
+  color: #1a2035;
+}
+.LeaderboardContenders-points {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  color: var(--primary-color-lm);
+  font-weight: 700;
+}
+
+.LeaderboardItem {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 8px;
+  transition: background 0.12s, border-color 0.12s;
+}
+.LeaderboardItem:hover {
+  background: #f4f5fa;
+  border-color: rgba(0, 0, 0, 0.10);
+  opacity: 1;
+  color: inherit;
+  text-decoration: none;
+}
+.LeaderboardItem-rank {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-weight: 700;
+  color: #9aa3b4;
+}
+.LeaderboardItem-name {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-weight: 600;
+  color: #1a2035;
+}
+.LeaderboardItem-points {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  color: var(--primary-color-lm);
+  font-weight: 600;
+}
+
+.LeaderboardSkeleton-pulse {
+  background: rgba(0, 0, 0, 0.06);
+  border-radius: 4px;
+}
+
+.UserCard-leaderboardPoints {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+.UserCard-leaderboardPoints .fas.fa-trophy {
+  color: #d4a730;
+}
+
+.LeaderboardPage-empty {
+  color: #9aa3b4;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+}
+
+/* ── Podium card text — always white/light regardless of mode ── */
+.LeaderboardPodium-place--1,
+.LeaderboardPodium-place--2,
+.LeaderboardPodium-place--3,
+.LeaderboardPodium-place--1:hover,
+.LeaderboardPodium-place--2:hover,
+.LeaderboardPodium-place--3:hover {
+  color: #ffffff;
+}
+.LeaderboardPodium-place--1 .LeaderboardPodium-name,
+.LeaderboardPodium-place--2 .LeaderboardPodium-name,
+.LeaderboardPodium-place--3 .LeaderboardPodium-name {
+  color: #ffffff;
+}
+.LeaderboardPodium-place--1 .LeaderboardPodium-points,
+.LeaderboardPodium-place--2 .LeaderboardPodium-points,
+.LeaderboardPodium-place--3 .LeaderboardPodium-points {
+  color: rgba(255, 255, 255, 0.65);
+}
+.LeaderboardPodium-place--1 .LeaderboardPodium-stat,
+.LeaderboardPodium-place--2 .LeaderboardPodium-stat,
+.LeaderboardPodium-place--3 .LeaderboardPodium-stat {
+  color: rgba(255, 255, 255, 0.55);
+}
+.LeaderboardPodium-place--1 .LeaderboardPodium-stats,
+.LeaderboardPodium-place--2 .LeaderboardPodium-stats,
+.LeaderboardPodium-place--3 .LeaderboardPodium-stats {
+  border-top-color: rgba(255, 255, 255, 0.12);
+}
+
+
+/* =============================================================
+   AVATAR STYLE PICKER — Cosmos light mode
+   ============================================================= */
+
+.RfAvatarPicker-grid {
+  display: grid !important;
+  grid-template-columns: repeat(6, 1fr) !important;
+  gap: 10px;
+  margin-top: 12px;
+}
+.RfAvatarPicker-item {
+  background: #ffffff;
+  border: 2px solid rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  padding: 10px 6px 8px;
+  transition: background 0.15s, border-color 0.15s;
+}
+.RfAvatarPicker-item:hover {
+  background: #f4f5fa;
+  border-color: color-mix(in srgb, var(--primary-color) 35%, transparent);
+}
+.RfAvatarPicker-item.active {
+  background: color-mix(in srgb, var(--primary-color) 8%, #ffffff);
+  border-color: var(--primary-color);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--primary-color) 20%, transparent);
+}
+.RfAvatarPicker-label {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  color: #9aa3b4;
+}
+.RfAvatarPicker-item.active .RfAvatarPicker-label {
+  color: var(--primary-color-lm);
+  font-weight: 700;
+}
+
+/* =============================================================
+   COMPOSER — Choose Tags button + Title input (light mode)
+   ============================================================= */
+
+a.DiscussionComposer-changeTags {
+  display: inline-flex;
+  align-items: center;
+  background: #f0f2f7;
+  border: 1px solid rgba(0, 0, 0, 0.10);
+  border-radius: 6px;
+  color: #4a5568;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 10px;
+  margin-right: 10px;
+  text-decoration: none;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
+  vertical-align: middle;
+}
+a.DiscussionComposer-changeTags:hover {
+  background: #e8eaf0;
+  border-color: color-mix(in srgb, var(--primary-color) 30%, transparent);
+  color: #1a2035;
+  text-decoration: none;
+}
+
+.ComposerBody-header h3 input {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a2035;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12) !important;
+  border-radius: 0 !important;
+  padding: 2px 0 4px !important;
+  transition: border-color 0.15s;
+}
+.ComposerBody-header h3 input:focus {
+  border-bottom-color: var(--primary-color-lm) !important;
+  outline: none;
+}
+.ComposerBody-header h3 input::placeholder {
+  color: #9aa3b4;
+  font-weight: 400;
+}
+
+/* =============================================================
+   USER MENTION AVATARS — light mode
+   ============================================================= */
+
+a.UserMention,
+span.UserMention {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 4px;
+  vertical-align: middle;
+}
+.UserMention-avatar {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+.UserMention-avatar--letter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  color: #ffffff;
+  font-size: 9px;
+  font-weight: 800;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  flex-shrink: 0;
+}
+
+/* =============================================================
+   MENTION AUTOCOMPLETE DROPDOWN — Cosmos light mode
+   ============================================================= */
+
+.MentionsDropdown {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.09);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+}
+.MentionsDropdown li a,
+.MentionsDropdown li button {
+  color: #1a2035;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+}
+.MentionsDropdown li.active a,
+.MentionsDropdown li.active button,
+.MentionsDropdown li a:hover,
+.MentionsDropdown li button:hover {
+  background: rgba(0, 0, 0, 0.04);
+  color: #1a2035;
+}
+.MentionsDropdown .PostPreview .username {
+  color: #1a2035;
+  font-weight: 600;
+}
+.MentionsDropdown .PostPreview {
+  color: #4a5568;
+}
+
+/* =============================================================
+   POLLS EXTENSION — Cosmos light mode
+   ============================================================= */
+
+.Post-poll,
+.Poll {
+  --poll-option-color: rgba(0, 0, 0, 0.08);
+  --poll-option-accent-color: var(--primary-color-lm);
+  --poll-option-active-color: color-mix(in srgb, var(--primary-color) 18%, transparent);
+}
+
+.Post-poll,
+.Poll {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  padding: 16px;
+  margin: 12px 0;
+}
+
+.PollHeading,
+.Poll-title {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  color: #1a2035;
+  margin-bottom: 10px;
+}
+.PollHeading-actions .Button {
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  color: #9aa3b4;
+  border-radius: 6px;
+  transition: background 0.12s, color 0.12s;
+}
+.PollHeading-actions .Button:hover {
+  background: rgba(0, 0, 0, 0.07);
+  color: #4a5568;
+}
+
+.PollOption,
+.PollBar {
+  border-radius: 6px !important;
+}
+.PollOption {
+  background: #f4f5fa !important;
+}
+.PollOption:hover {
+  background: #eceef5 !important;
+}
+.PollBar {
+  background: #f4f5fa;
+  border: 2px solid rgba(0, 0, 0, 0.10) !important;
+  border-radius: 6px !important;
+  transition: border-color 0.15s, background 0.15s;
+}
+.PollBar:hover {
+  border-color: color-mix(in srgb, var(--primary-color) 35%, transparent) !important;
+}
+.PollBar::after {
+  background-image: linear-gradient(
+    to right,
+    color-mix(in srgb, var(--primary-color) 15%, transparent) 0% 100%
+  ) !important;
+}
+.PollBar[data-selected] {
+  border-color: color-mix(in srgb, var(--primary-color) 50%, transparent) !important;
+}
+.PollBar[data-selected]::after {
+  background-image: linear-gradient(
+    to right,
+    color-mix(in srgb, var(--primary-color) 20%, transparent) 0% 100%
+  ) !important;
+}
+.PollOption:has(.PollOption-input:checked) {
+  border-color: color-mix(in srgb, var(--primary-color) 50%, transparent) !important;
+  background: color-mix(in srgb, var(--primary-color) 8%, #ffffff) !important;
+}
+
+.Post-poll .PollAnswer-text-answer,
+.Post-poll .PollOption-label,
+.Poll .PollAnswer-text-answer,
+.Poll .PollOption-label,
+.PollBar .PollAnswer-text-answer,
+.PollBar .PollOption-label,
+.PollBar[data-selected] .PollAnswer-text-answer,
+.PollBar[data-selected] .PollOption-label,
+.PollOption:has(.PollOption-input:checked) .PollAnswer-text-answer,
+.PollOption:has(.PollOption-input:checked) .PollOption-label {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-weight: 600;
+  color: #1a2035 !important;
+}
+/* Percentage — dark enough to read on light fills */
+.PollBar .PollPercent,
+.PollBar .PollPercent--option,
+.PollBar .PollResult-number,
+.PollBar[data-selected] .PollPercent,
+.PollBar[data-selected] .PollPercent--option {
+  color: #3d4f65 !important;
+}
+.PollOption-description { color: #2d3a4a; }
+.PollPercent,
+.PollPercent--option,
+.PollResult-number {
+  color: #3d4f65 !important;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-weight: 700;
+}
+
+.PollAnswer-checkbox .checkmark {
+  border-color: rgba(0, 0, 0, 0.20);
+  background: transparent;
+}
+.PollAnswer-checkbox .checkmark:after {
+  border-color: var(--primary-color-lm);
+}
+.PollBar[data-selected] .PollAnswer-checkbox .checkmark {
+  border-color: var(--primary-color-lm);
+  background: color-mix(in srgb, var(--primary-color) 10%, transparent);
+}
+
+.PollInfoText,
+.Poll-subtitle {
+  color: #3d4f65;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 12px;
+}
+
+.Poll-sticky,
+.Post-poll .Poll-sticky {
+  background: #ffffff !important;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: none !important;
+}
+
+.PollResult-bar::-webkit-progress-value {
+  background-color: var(--primary-color-lm);
+}
+.PollResult-bar::-webkit-progress-bar {
+  background-color: rgba(0, 0, 0, 0.06);
+  border-radius: 4px;
+}
+.PollResult-bar {
+  border-radius: 4px;
+  height: 6px;
+}
+
+.VotesModal-list a { color: #1a2035; }
+
+/* ── Easter: day mode overrides (none needed — all colours hardcoded or primary-based) */
+
+/* ── Theme transition ──────────────────────────────────────────── */
+.cosmos-transitioning * {
+  transition: background-color 0.7s ease, color 0.7s ease, border-color 0.7s ease !important;
+}

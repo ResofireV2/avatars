@@ -93,19 +93,6 @@ All settings are available in **Admin → Extensions → Cosmos Theme**:
 
 ---
 
-### Mobile (acpl/mobile-tab compatible)
-
-The theme includes a full mobile pass targeting phone viewports (≤844px):
-
-- **MobileTab bar** — Cosmos surface treatment with top border and shadow, Outfit font on labels
-- **Profile tab highlight fix** — the session dropdown toggle no longer inherits the desktop `.Dropdown-toggle` border/background, so the Profile tab only highlights when active
-- **Reaction picker overflow** — the picker is anchored to the right edge of its trigger and capped to the viewport width so it never clips on narrow screens
-- **Touch reaction state** — `.mobile-show` receives the same Cosmos card styling as the hover state
-- **Body bottom padding** — page content clears the 54px tab bar (+ safe area inset) so the last post is never hidden behind it
-- **Discussion hero** — star field animation paused on phone for performance
-- **Post stream connector line** — hidden on phone where the avatar column layout doesn't apply
-- **User profile stat pills** — tighter sizing and gap for narrow viewports
-
 ## Requirements
 
 - Flarum `^1.8`

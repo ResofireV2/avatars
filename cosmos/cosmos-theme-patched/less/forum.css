@@ -1,0 +1,4392 @@
+/* =============================================================
+   Deep Cosmos Theme — forum.css
+   Compiled CSS for Flarum 1.8 — novacraft/theme-deep-cosmos
+   Accent: var(--primary-color)  |  Dark mode
+   ============================================================= */
+
+/* ---------------------------------
+   GOOGLE FONTS
+   --------------------------------- */
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&display=swap');
+
+
+/* ---------------------------------
+   BODY & GLOBAL
+   --------------------------------- */
+body {
+  font-family: var(--cosmos-font, 'Outfit'), system-ui, -apple-system, sans-serif;
+  background: #080c14;
+  color: #e8edf5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Ambient glow — positioned so it doesn't break layout */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 75% -5%,  color-mix(in srgb, var(--primary-color)   6%, transparent) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 40% at -5% 65%,  color-mix(in srgb, var(--primary-color)   3%, transparent) 0%, transparent 50%),
+    radial-gradient(ellipse 55% 45% at 105% 100%, color-mix(in srgb, var(--secondary-color) 5%, transparent) 0%, transparent 55%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* body::before is the ambient glow — pointer-events:none already set,
+   z-index:0 keeps it behind everything without needing .App z-index */
+.App {
+  position: relative;
+}
+
+/* Links */
+a {
+  color: var(--primary-color);
+}
+a:hover {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+/* Scrollbar — Webkit only, degrades gracefully */
+::-webkit-scrollbar               { width: 6px; height: 6px; }
+::-webkit-scrollbar-track         { background: #080c14; }
+::-webkit-scrollbar-thumb         { background: color-mix(in srgb, var(--secondary-color) 35%, #131b2e); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover   { background: color-mix(in srgb, var(--secondary-color) 55%, #131b2e); }
+
+hr { border-top-color: rgba(255, 255, 255, 0.06); }
+
+/* ---------------------------------
+   HEADER / TOPBAR
+   --------------------------------- */
+.App-header {
+  background: rgba(13, 18, 32, 0.95);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: none;
+}
+
+/* Scale header content to match the 10% taller header bar */
+@media (min-width: 845px) {
+  /* Forum title line-height fills the new content area */
+  .Header-title {
+    font-size: 19px;
+    line-height: 37px;
+  }
+
+  /* Search box — slightly taller to fill the extra header height */
+  .Search .FormControl {
+    height: 36px;
+    padding-top: 7px;
+    padding-bottom: 7px;
+  }
+
+  /* Icon buttons (flag, bell) — scale up the icon */
+  .Header-secondary .Button--icon .Button-icon,
+  .Header-secondary .Button--icon i {
+    font-size: 18px;
+  }
+
+  /* User avatar chip — bump Avatar size from 24px to 26px */
+  .SessionDropdown .Dropdown-toggle .Avatar {
+    width: 26px;
+    height: 26px;
+    font-size: 13px;
+    --size: 26px;
+    margin: -2px 5px -2px -6px;
+  }
+  .SessionDropdown .Dropdown-toggle {
+    border-radius: 20px;
+  }
+}
+
+/* Spacing between header control items (flag, bell, user chip) */
+@media (min-width: 845px) {
+  .Header-secondary .Header-controls > li {
+    margin-left: 6px;
+  }
+  .Header-secondary .Header-controls > li:first-child {
+    margin-left: 0;
+  }
+}
+
+/* Forum name in header */
+.Header-title a {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-weight: 800;
+  font-size: 19px;
+  letter-spacing: -0.4px;
+  color: #e8edf5;
+}
+.Header-title a:hover {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+/* Search box */
+.Search .FormControl {
+  background: #131b2e;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  color: #e8edf5;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+}
+.Search .FormControl:focus {
+  border-color: color-mix(in srgb, var(--primary-color) 35%, transparent);
+  background: #131b2e;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-color) 12%, transparent);
+  outline: none;
+}
+
+/* Search results dropdown */
+.Search-results .Dropdown-menu {
+  background: #1a2440;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 10px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.55);
+}
+.Search-results .Dropdown-menu li > a {
+  color: #8fa0bc;
+  border-radius: 6px;
+  margin: 2px 4px;
+  padding: 8px 12px;
+}
+.Search-results .Dropdown-menu li > a:hover {
+  background: #1f2c4a;
+  color: #e8edf5;
+  text-decoration: none;
+}
+.Search-results mark {
+  background: none;
+  color: var(--primary-color);
+  font-weight: 600;
+  box-shadow: none;
+}
+
+/* Notification bell dot */
+.NotificationsDropdown.new .Button::after {
+  content: '';
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  border: 2px solid #0d1220;
+}
+
+/* Notification dropdown */
+.NotificationsDropdown-content {
+  background: #1a2440;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 10px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+}
+.Notification {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.Notification:last-child {
+  border-bottom: none;
+}
+.Notification.unread {
+  background: color-mix(in srgb, var(--primary-color) 7%, transparent);
+}
+.Notification a {
+  color: #8fa0bc;
+}
+.Notification a:hover {
+  background: #1f2c4a;
+  color: #e8edf5;
+  text-decoration: none;
+}
+
+/* Dropdown menus (user menu, etc.) */
+.Dropdown-menu {
+  background: #1a2440;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.55);
+}
+.Dropdown-menu > li > a,
+.Dropdown-menu > li > button {
+  color: #8fa0bc;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+}
+.Dropdown-menu > li > a:hover,
+.Dropdown-menu > li > button:hover {
+  background: color-mix(in srgb, var(--secondary-color) 12%, transparent);
+  color: #e8edf5;
+  text-decoration: none;
+}
+.Dropdown-separator {
+  background: rgba(255, 255, 255, 0.06) !important;
+}
+
+/* Drawer (mobile nav) */
+.App-drawer {
+  background: #0d1220;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* ---------------------------------
+   HERO
+   --------------------------------- */
+/* ---------------------------------
+   HERO — Cosmos star animation
+   Stars are pure CSS: box-shadow on 1×1px pseudo-elements.
+   ::before = sparse slow layer (large stars, lower third)
+   ::after  = dense fast layer  (small stars, full field)
+   Colours derive entirely from --primary-color.
+   --------------------------------- */
+
+@keyframes cosmos-drift-slow {
+  0%   { transform: translateY(0)   translateX(0); }
+  50%  { transform: translateY(-18px) translateX(6px); }
+  100% { transform: translateY(0)   translateX(0); }
+}
+@keyframes cosmos-drift-fast {
+  0%   { transform: translateY(0)   translateX(0); }
+  50%  { transform: translateY(-10px) translateX(-4px); }
+  100% { transform: translateY(0)   translateX(0); }
+}
+@keyframes cosmos-pulse {
+  0%, 100% { opacity: 0.35; }
+  50%       { opacity: 0.75; }
+}
+
+.WelcomeHero {
+  background: #131b2e;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  color: #e8edf5;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Gradient wash — primary colour bloom at bottom centre */
+.WelcomeHero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 90% 55% at 50% 115%,
+      color-mix(in srgb, var(--primary-color) 18%, transparent) 0%,
+      transparent 70%),
+    radial-gradient(ellipse 60% 40% at 15% 90%,
+      color-mix(in srgb, var(--primary-color) 7%, transparent) 0%,
+      transparent 60%),
+    radial-gradient(ellipse 50% 35% at 85% 85%,
+      color-mix(in srgb, var(--primary-color) 6%, transparent) 0%,
+      transparent 60%),
+    radial-gradient(ellipse 40% 35% at 8% 20%,
+      color-mix(in srgb, var(--secondary-color) 18%, transparent) 0%,
+      transparent 60%),
+    radial-gradient(ellipse 35% 30% at 92% 15%,
+      color-mix(in srgb, var(--secondary-color) 12%, transparent) 0%,
+      transparent 55%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Star field — box-shadow on 1x1px element.
+   Hero is ~180px tall desktop / ~140px tablet.
+   Stars use fixed px positions; clustered toward lower third.
+   Two layers: ::after = slow drift, a second keyframe set on
+   .WelcomeHero-stars (injected via ::after only — two anims) */
+.WelcomeHero::after {
+  content: '';
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+  /* Lower third (120–175px) — densest, brightest */
+  box-shadow:
+    45px  128px 0 1px    color-mix(in srgb, var(--primary-color) 65%, white),
+    112px 142px 0 0.5px  color-mix(in srgb, var(--primary-color) 50%, white),
+    190px 135px 0 1px    color-mix(in srgb, var(--primary-color) 60%, white),
+    267px 155px 0 0.5px  color-mix(in srgb, var(--primary-color) 55%, white),
+    338px 122px 0 1.5px  color-mix(in srgb, var(--primary-color) 70%, white),
+    415px 148px 0 0.5px  color-mix(in srgb, var(--primary-color) 45%, white),
+    493px 138px 0 1px    color-mix(in srgb, var(--primary-color) 60%, white),
+    571px 162px 0 0.5px  color-mix(in srgb, var(--primary-color) 50%, white),
+    648px 125px 0 1px    color-mix(in srgb, var(--primary-color) 65%, white),
+    724px 150px 0 0.5px  color-mix(in srgb, var(--primary-color) 45%, white),
+    802px 132px 0 1px    color-mix(in srgb, var(--primary-color) 55%, white),
+    876px 158px 0 0.5px  color-mix(in srgb, var(--primary-color) 60%, white),
+    950px 140px 0 1px    color-mix(in srgb, var(--primary-color) 50%, white),
+    1024px 168px 0 0.5px color-mix(in srgb, var(--primary-color) 45%, white),
+    1100px 130px 0 1px   color-mix(in srgb, var(--primary-color) 60%, white),
+    1170px 152px 0 0.5px color-mix(in srgb, var(--primary-color) 55%, white),
+    1248px 138px 0 1px   color-mix(in srgb, var(--primary-color) 60%, white),
+    1320px 158px 0 0.5px color-mix(in srgb, var(--primary-color) 50%, white),
+    1395px 130px 0 1px   color-mix(in srgb, var(--primary-color) 55%, white),
+    1468px 148px 0 0.5px color-mix(in srgb, var(--primary-color) 45%, white),
+    1540px 135px 0 1px   color-mix(in srgb, var(--primary-color) 62%, white),
+    1615px 160px 0 0.5px color-mix(in srgb, var(--primary-color) 50%, white),
+    1688px 128px 0 1px   color-mix(in srgb, var(--primary-color) 58%, white),
+    1760px 145px 0 0.5px color-mix(in srgb, var(--primary-color) 48%, white),
+    1835px 138px 0 1px   color-mix(in srgb, var(--primary-color) 55%, white),
+    /* Near bottom — brightest accent points */
+    80px  172px 0 1.5px  color-mix(in srgb, var(--primary-color) 80%, white),
+    310px 175px 0 1px    color-mix(in srgb, var(--primary-color) 75%, white),
+    580px 170px 0 1.5px  color-mix(in srgb, var(--primary-color) 72%, white),
+    830px 174px 0 1px    color-mix(in srgb, var(--primary-color) 70%, white),
+    1080px 171px 0 1px   color-mix(in srgb, var(--primary-color) 68%, white),
+    1290px 173px 0 1.5px color-mix(in srgb, var(--primary-color) 72%, white),
+    1510px 170px 0 1px   color-mix(in srgb, var(--primary-color) 68%, white),
+    1720px 174px 0 1.5px color-mix(in srgb, var(--primary-color) 65%, white),
+    1890px 171px 0 1px   color-mix(in srgb, var(--primary-color) 60%, white),
+    /* Mid field (60–120px) — moderate */
+    25px   72px 0 0.5px  color-mix(in srgb, var(--primary-color) 28%, white),
+    140px  88px 0 0.5px  color-mix(in srgb, var(--primary-color) 22%, white),
+    225px  65px 0 1px    color-mix(in srgb, var(--primary-color) 30%, white),
+    360px 105px 0 0.5px  color-mix(in srgb, var(--primary-color) 25%, white),
+    450px  78px 0 0.5px  color-mix(in srgb, var(--primary-color) 28%, white),
+    540px  95px 0 0.5px  color-mix(in srgb, var(--primary-color) 22%, white),
+    635px  68px 0 1px    color-mix(in srgb, var(--primary-color) 32%, white),
+    730px 112px 0 0.5px  color-mix(in srgb, var(--primary-color) 24%, white),
+    820px  82px 0 0.5px  color-mix(in srgb, var(--primary-color) 26%, white),
+    915px 100px 0 0.5px  color-mix(in srgb, var(--primary-color) 22%, white),
+    1010px  74px 0 1px   color-mix(in srgb, var(--primary-color) 30%, white),
+    1130px  92px 0 0.5px color-mix(in srgb, var(--primary-color) 24%, white),
+    1210px  78px 0 0.5px color-mix(in srgb, var(--primary-color) 28%, white),
+    1305px  95px 0 0.5px color-mix(in srgb, var(--primary-color) 22%, white),
+    1400px  70px 0 1px   color-mix(in srgb, var(--primary-color) 30%, white),
+    1490px  88px 0 0.5px color-mix(in srgb, var(--primary-color) 24%, white),
+    1580px  72px 0 0.5px color-mix(in srgb, var(--primary-color) 26%, white),
+    1660px 108px 0 0.5px color-mix(in srgb, var(--primary-color) 22%, white),
+    1745px  80px 0 1px   color-mix(in srgb, var(--primary-color) 28%, white),
+    1820px  96px 0 0.5px color-mix(in srgb, var(--primary-color) 24%, white),
+    1900px  68px 0 0.5px color-mix(in srgb, var(--primary-color) 20%, white),
+    /* Upper field (0–60px) — sparse, faintest */
+    75px   18px 0 0.5px  color-mix(in srgb, var(--primary-color) 15%, white),
+    220px  38px 0 0.5px  color-mix(in srgb, var(--primary-color) 12%, white),
+    420px  12px 0 0.5px  color-mix(in srgb, var(--primary-color) 18%, white),
+    610px  45px 0 1px    color-mix(in srgb, var(--primary-color) 14%, white),
+    790px  28px 0 0.5px  color-mix(in srgb, var(--primary-color) 16%, white),
+    980px  50px 0 0.5px  color-mix(in srgb, var(--primary-color) 12%, white),
+    1150px 22px 0 0.5px  color-mix(in srgb, var(--primary-color) 15%, white),
+    1260px 40px 0 0.5px  color-mix(in srgb, var(--primary-color) 12%, white),
+    1380px 18px 0 0.5px  color-mix(in srgb, var(--primary-color) 16%, white),
+    1500px 35px 0 1px    color-mix(in srgb, var(--primary-color) 14%, white),
+    1620px 10px 0 0.5px  color-mix(in srgb, var(--primary-color) 12%, white),
+    1740px 28px 0 0.5px  color-mix(in srgb, var(--primary-color) 15%, white),
+    1860px 45px 0 0.5px  color-mix(in srgb, var(--primary-color) 11%, white);
+  animation: cosmos-drift-slow 18s ease-in-out infinite,
+             cosmos-pulse 8s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Ensure hero text content sits above the star layers */
+.WelcomeHero .container,
+.WelcomeHero .containerNarrow {
+  position: relative;
+  z-index: 1;
+}
+
+.Hero h1,
+.WelcomeHero h1 {
+  color: #e8edf5;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  position: relative;
+  z-index: 1;
+}
+.Hero-subtitle {
+  color: #8fa0bc;
+  position: relative;
+  z-index: 1;
+}
+.Hero-close {
+  position: relative;
+  z-index: 1;
+}
+.DiscussionHero {
+  background: #131b2e;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  color: #e8edf5;
+}
+.DiscussionHero .Badge {
+  box-shadow: none;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* ---------------------------------
+   SIDE NAVIGATION
+   --------------------------------- */
+
+/* Nav items in expanded sidebar */
+@media (min-width: 992px) {
+  .sideNav .Dropdown--select .Dropdown-menu > li > a {
+    color: #8fa0bc;
+    font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+    font-size: 13.5px;
+    padding: 8px 0 8px 32px;
+    border-radius: 6px;
+    transition: background 0.15s, color 0.15s;
+  }
+  .sideNav .Dropdown--select .Dropdown-menu > li > a:hover {
+    background: #131b2e;
+    color: #e8edf5;
+    text-decoration: none;
+  }
+  .sideNav .Dropdown--select .Dropdown-menu > li > a .Button-icon {
+    color: #4d607e;
+    font-size: 14px;
+  }
+  .sideNav .Dropdown--select .Dropdown-menu > li.active > a {
+    background: color-mix(in srgb, var(--secondary-color) 14%, transparent);
+    color: var(--secondary-color);
+    font-weight: 600;
+    border-radius: 6px;
+  }
+  .sideNav .Dropdown--select .Dropdown-menu > li.active > a .Button-icon {
+    color: var(--secondary-color);
+  }
+  /* Horizontal nav: no background, just secondary colour text */
+  .sideNav--horizontal .Dropdown--select .Dropdown-menu > li.active > a,
+  .sideNav--horizontal .Dropdown-menu > li.active > a {
+    background: none;
+  }
+}
+
+/* New Discussion button */
+.IndexPage-nav .item-newDiscussion .Button,
+.IndexPage-nav .item-newDiscussion .Button.Button--primary {
+  background: var(--primary-color);
+  color: var(--body-bg);
+  font-weight: 800;
+  font-size: 14px;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+  border-top-right-radius: 44px;
+  border-bottom-right-radius: 44px;
+  border: none;
+  transition: filter 0.15s, box-shadow 0.2s;
+  letter-spacing: 0.01em;
+  padding-left: 16px;
+  padding-right: 24px;
+}
+@media (min-width: 845px) {
+  .IndexPage-nav .item-newDiscussion .Button.Button--primary::before {
+    content: '+';
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1;
+    margin-right: 6px;
+    vertical-align: -1px;
+  }
+}
+.IndexPage-nav .item-newDiscussion .Button:hover,
+.IndexPage-nav .item-newDiscussion .Button.Button--primary:hover {
+  filter: brightness(1.1);
+  text-decoration: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-color) 25%, transparent),
+              0 0 16px 2px color-mix(in srgb, var(--primary-color) 35%, transparent);
+  transition: filter 0.15s, box-shadow 0.2s;
+}
+
+/* Tag links in sidebar */
+.TagLinkButton {
+  color: #8fa0bc;
+  border-radius: 6px;
+  transition: background 0.15s, color 0.15s;
+}
+.TagLinkButton:hover {
+  background: #131b2e;
+  color: #e8edf5;
+  text-decoration: none;
+}
+.TagLinkButton.active,
+.active > .TagLinkButton {
+  background: color-mix(in srgb, var(--secondary-color) 14%, transparent);
+  color: var(--secondary-color);
+  font-weight: 600;
+}
+
+/* Toolbar filter buttons (All / Unread) */
+.IndexPage-toolbar-view .Button {
+  background: #131b2e;
+  color: #8fa0bc;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  margin-right: 4px;
+}
+.IndexPage-toolbar-view .Button:hover {
+  background: #1a2440;
+  color: #e8edf5;
+  border-color: rgba(255, 255, 255, 0.11);
+}
+.IndexPage-toolbar-view .Button.active {
+  background: color-mix(in srgb, var(--primary-color) 14%, transparent);
+  color: var(--primary-color);
+  border-color: color-mix(in srgb, var(--primary-color) 28%, transparent);
+}
+
+/* ---------------------------------
+   DISCUSSION LIST
+   --------------------------------- */
+.DiscussionListItem {
+  border-radius: 10px;
+  margin-bottom: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: #131b2e;
+  transition: background 0.15s, border-color 0.15s, box-shadow 0.2s;
+  box-shadow: 0 0 0 0 transparent;
+}
+.DiscussionListItem:hover {
+  background: color-mix(in srgb, var(--secondary-color) 12%, #131b2e) !important;
+  border-color: color-mix(in srgb, var(--secondary-color) 30%, transparent);
+  box-shadow: 0 0 12px 1px color-mix(in srgb, var(--secondary-color) 18%, transparent);
+}
+
+/* Unread — secondary left accent band (unread class is on -content child) */
+.DiscussionListItem:has(.DiscussionListItem-content.unread) {
+  box-shadow: inset 4px 0 0 0 var(--secondary-color);
+}
+.DiscussionListItem:has(.DiscussionListItem-content.unread):hover {
+  box-shadow: inset 4px 0 0 0 var(--secondary-color),
+              0 0 12px 1px color-mix(in srgb, var(--secondary-color) 18%, transparent);
+}
+.DiscussionListItem-content.unread .DiscussionListItem-title {
+  font-weight: 700;
+  color: #e8edf5;
+}
+
+/* Read — dimmed title */
+.DiscussionList:not(.DiscussionList--searchResults) .DiscussionListItem.read .DiscussionListItem-title {
+  color: #8fa0bc;
+}
+
+/* Thread title */
+.DiscussionListItem-title {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: #e8edf5;
+  transition: color 0.15s;
+  line-height: 1.35;
+}
+.DiscussionListItem-title mark {
+  background: none;
+  color: var(--primary-color);
+  font-weight: 700;
+  box-shadow: none;
+}
+
+/* Meta info */
+.DiscussionListItem-info {
+  color: #4d607e;
+  font-size: 12px;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+}
+.DiscussionListItem-info .username {
+  color: #8fa0bc;
+  font-weight: 600;
+}
+.DiscussionListItem-info .item-excerpt {
+  color: #4d607e;
+  font-size: 12.5px;
+  line-height: 1.5;
+  display: block;
+  margin-top: 4px;
+}
+
+/* Reply count */
+.DiscussionListItem-count {
+  color: #4d607e;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+}
+.DiscussionListItem-count::before {
+  color: #4d607e;
+}
+.DiscussionListItem-content.unread .DiscussionListItem-count {
+  color: #ffffff;
+  font-weight: 700;
+}
+.DiscussionListItem-content.unread .DiscussionListItem-count::before {
+  color: #ffffff;
+}
+@media (max-width: 767px) {
+  .DiscussionListItem-content.unread .DiscussionListItem-count {
+    color: #0d1220;
+  }
+  .DiscussionListItem-content.unread .DiscussionListItem-count::before {
+    color: #0d1220;
+  }
+}
+
+/* Avatar in list */
+.DiscussionListItem-author .Avatar {
+  border: 1.5px solid rgba(255, 255, 255, 0.06);
+}
+
+/* 3-dot controls */
+.DiscussionListItem-controls .Button {
+  background: #1a2440;
+  color: #8fa0bc;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+}
+.DiscussionListItem-controls .Button:hover {
+  background: #1f2c4a;
+  color: #e8edf5;
+}
+
+/* Pinned discussions (flarum/sticky) */
+.DiscussionListItem.Sticky {
+  background: color-mix(in srgb, var(--primary-color) 4%, transparent);
+  border-color: color-mix(in srgb, var(--primary-color) 18%, transparent);
+}
+.DiscussionListItem.Sticky:hover {
+  background: color-mix(in srgb, var(--primary-color) 8%, transparent) !important;
+}
+
+/* Load more */
+.DiscussionList-loadMore .Button {
+  background: #131b2e;
+  color: #8fa0bc;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-weight: 600;
+  padding: 9px 24px;
+  transition: border-color 0.15s, color 0.15s;
+}
+.DiscussionList-loadMore .Button:hover {
+  border-color: color-mix(in srgb, var(--primary-color) 35%, transparent);
+  color: var(--primary-color);
+  background: #131b2e;
+}
+
+/* ---------------------------------
+   DISCUSSION PAGE / POST STREAM
+   --------------------------------- */
+.PostStream-item:not(:last-child) {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Post header */
+.Post-header,
+.Post-header a {
+  color: #8fa0bc;
+}
+
+/* Username — reset browser UA heading defaults (margin, line-height, font-size)
+   so the h3 doesn't add extra height around the username line */
+.PostUser h3,
+.PostUser .PostUser-name {
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 1.4;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.PostUser h3 a,
+.PostUser .PostUser-name a {
+  color: #e8edf5;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+}
+.PostUser h3 a:hover,
+.PostUser .PostUser-name a:hover {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+/* Post body */
+.Post-body {
+  color: #e8edf5;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 16px;
+  line-height: 1.75;
+}
+.Post-body p {
+  margin-bottom: 12px;
+}
+.Post-body a {
+  color: var(--primary-color);
+}
+.Post-body a:hover {
+  color: var(--primary-color);
+}
+.Post-body blockquote,
+.Post-body blockquote.uncited {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-left: 3px solid rgba(105, 198, 185, 0.5);
+  border-radius: 0 8px 8px 0;
+  padding: 10px 14px 10px 16px;
+  color: #8fa0bc;
+  margin: 14px 0;
+  position: relative;
+}
+
+/* PostMention inside blockquote — the "↩ username" attribution */
+.Post-body blockquote .PostMention {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(105, 198, 185, 0.10) !important;
+  color: #69c6b9 !important;
+  border-radius: 4px;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 2px 8px !important;
+  margin-right: 6px;
+  border: 1px solid rgba(105, 198, 185, 0.2);
+  vertical-align: middle;
+}
+.Post-body blockquote .PostMention:hover {
+  background: rgba(105, 198, 185, 0.18) !important;
+  color: #e8edf5 !important;
+  text-decoration: none;
+}
+
+/* Nested blockquotes */
+.Post-body blockquote blockquote {
+  border-left-color: rgba(105, 198, 185, 0.25);
+  background: rgba(255, 255, 255, 0.02);
+  color: #4d607e;
+  margin: 8px 0;
+}
+.Post-body blockquote blockquote .PostMention {
+  background: rgba(255, 255, 255, 0.06) !important;
+  color: #4d607e !important;
+  border-color: rgba(255, 255, 255, 0.10);
+}
+.Post-body code {
+  background: #1a2440;
+  color: var(--primary-color);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 13px;
+  font-family: 'DM Mono', monospace;
+}
+.Post-body pre {
+  background: #1a2440;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  padding: 14px 16px;
+  color: #e8edf5;
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+}
+.Post-body pre code {
+  background: none;
+  padding: 0;
+}
+.Post-body h1,
+.Post-body h2,
+.Post-body h3,
+.Post-body h4,
+.Post-body h5,
+.Post-body h6 {
+  color: #e8edf5;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-weight: 700;
+}
+.Post-body img {
+  border-radius: 8px;
+  max-width: 100%;
+}
+
+/* Post action buttons (like, reply) */
+.Post-actions > ul > li > .Button {
+  color: #4d607e;
+  background: transparent;
+  border-radius: 6px;
+  transition: color 0.15s, background 0.15s;
+}
+.Post-actions > ul > li > .Button:hover {
+  color: var(--secondary-color);
+  background: color-mix(in srgb, var(--secondary-color) 10%, transparent);
+}
+
+/* Scrubber bar */
+.Scrubber-bar {
+  background: var(--primary-color);
+}
+.Scrubber-before,
+.Scrubber-after {
+  border-left-color: rgba(255, 255, 255, 0.06);
+}
+.Scrubber-description {
+  color: #8fa0bc;
+}
+
+/* Event posts (tagged, renamed, etc.) */
+.EventPost {
+  color: #4d607e;
+  font-size: 12.5px;
+  text-align: center;
+  padding: 8px 0;
+}
+.EventPost a {
+  color: #8fa0bc;
+}
+.EventPost a:hover {
+  color: var(--primary-color);
+}
+
+/* ---------------------------------
+   COMPOSER
+   --------------------------------- */
+.Composer {
+  background: #0d1220 !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.5);
+}
+/* Active: let core's teal ring show, add our upward glow alongside it */
+.Composer.active,
+.Composer.active:not(.fullScreen) {
+  background: #0d1220 !important;
+  border-top: 1px solid rgba(105, 198, 185, 0.35);
+  box-shadow:
+    0 0 0 2px var(--primary-color),
+    0 -8px 32px rgba(0, 0, 0, 0.5);
+}
+.Composer.minimized {
+  background: #131b2e !important;
+  cursor: pointer;
+}
+/* Resize handle: keep visible but style it subtly instead of hiding */
+.Composer-handle {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 2px;
+  margin: 0 auto;
+  width: 40px;
+  cursor: row-resize;
+}
+/* Toolbar separator line — soften from hard var(--control-bg) */
+.Composer .TextEditor-controls,
+.App-composer .TextEditor-controls {
+  border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+  background: #0d1220;
+}
+
+/* Title input */
+.ComposerBody-header h3,
+.ComposerBody-header h3 input,
+.ComposerBody-header h3 a {
+  color: #e8edf5;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 16px;
+}
+.ComposerBody-header h3 input {
+  font-weight: 700;
+}
+.ComposerBody-header h3 input::placeholder {
+  color: #4d607e;
+}
+
+/* Text editor area */
+.TextEditor-editor {
+  background: #0d1220;
+  color: #e8edf5;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 14px;
+  line-height: 1.7;
+  caret-color: var(--primary-color);
+}
+.TextEditor-editor::placeholder {
+  color: #4d607e;
+}
+
+/* Composer toolbar */
+.TextEditor-controls .Button {
+  color: #8fa0bc;
+  background: transparent;
+  border-radius: 5px;
+  transition: background 0.12s, color 0.12s;
+}
+.TextEditor-controls .Button:hover {
+  background: #1a2440;
+  color: #e8edf5;
+}
+
+/* Submit button */
+.TextEditor-controls .item-submit .Button,
+.ComposerBody .item-submit .Button {
+  background: var(--primary-color);
+  color: var(--body-bg);
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-weight: 700;
+  border-radius: 8px;
+  border: none;
+  transition: background 0.15s, filter 0.15s;
+}
+.TextEditor-controls .item-submit .Button:hover,
+.ComposerBody .item-submit .Button:hover {
+  filter: brightness(1.1);
+}
+
+/* ---------------------------------
+   MODALS
+   --------------------------------- */
+.Modal-backdrop {
+  background: rgba(8, 12, 20, 0.85);
+}
+.Modal-content {
+  background: #131b2e;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 14px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.65);
+}
+.Modal-header {
+  background: #131b2e;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.Modal-header h3 {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  color: #e8edf5;
+}
+.Modal-body {
+  background: #0d1220;
+  color: #e8edf5;
+}
+.Modal-body label,
+.Modal-body .helpText {
+  color: #8fa0bc;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+}
+.Modal-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  background: #131b2e;
+  color: #8fa0bc;
+}
+
+/* ---------------------------------
+   FORM CONTROLS
+   --------------------------------- */
+.FormControl {
+  background: #131b2e;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  color: #e8edf5;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  transition: border-color 0.15s, background 0.15s;
+}
+.FormControl::placeholder {
+  color: #4d607e;
+}
+.FormControl:focus {
+  background: #131b2e;
+  border-color: var(--primary-color);
+  color: #e8edf5;
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-color) 12%, transparent);
+}
+.FormControl[disabled],
+.FormControl[readonly] {
+  opacity: 0.5;
+}
+
+/* ---------------------------------
+   BUTTONS
+   --------------------------------- */
+.Button {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-weight: 500;
+  border-radius: 6px;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  background: #131b2e;
+  color: #8fa0bc;
+  border: 0;
+}
+.Button:hover {
+  background: #1a2440;
+  color: #e8edf5;
+  text-decoration: none;
+}
+.Button:active {
+  transform: scale(0.98);
+}
+
+/* Primary button */
+.Button--primary {
+  background: var(--primary-color);
+  color: var(--body-bg);
+  font-weight: 700;
+  border: none;
+}
+.Button--primary:hover {
+  background: var(--primary-color);
+  color: var(--body-bg);
+  text-decoration: none;
+  filter: brightness(1.1);
+}
+.Button--primary:active {
+  transform: scale(0.98);
+}
+
+/* Icon button */
+.Button--icon {
+  background: transparent;
+  color: #8fa0bc;
+}
+.Button--icon:hover {
+  background: #131b2e;
+  color: #e8edf5;
+}
+
+/* Dropdown toggle */
+/* Global dropdown toggle — standalone dropdowns only.
+   Exclude .Dropdown--split so the Reply/Follow caret inherits
+   its buttonClassName (Button--primary etc.) without interference. */
+.Dropdown-toggle:not(.Dropdown--split .Dropdown-toggle) {
+  background: #131b2e;
+  color: #8fa0bc;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+.Dropdown-toggle:not(.Dropdown--split .Dropdown-toggle):hover {
+  background: #1a2440;
+  color: #e8edf5;
+  border-color: rgba(255, 255, 255, 0.11);
+}
+
+/* SplitDropdown caret — seamless with its sibling button, no border */
+.Dropdown--split .Dropdown-toggle {
+  border: none;
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* ---------------------------------
+   TAGS (flarum/tags extension)
+   --------------------------------- */
+
+/* TagLabel — all tags get a flat neutral dark pill regardless of any
+   color set in the admin. We override Flarum's auto-contrast classes
+   (.text-contrast--light / --dark) so text and icons stay white on
+   this dark theme no matter what color the admin has assigned. */
+.TagLabel {
+  font-weight: 700;
+  border-radius: 4px;
+  font-size: 85%;
+  display: inline-block;
+  padding: 0.1em 0.5em;
+  vertical-align: bottom;
+  background: #1a2440 !important;
+  color: #8fa0bc !important;
+  text-decoration: none !important;
+  transition: opacity 0.15s;
+}
+.TagLabel:hover {
+  opacity: 0.82;
+}
+
+/* Force text/icon white — override Flarum's dark/light contrast classes
+   AND the extension's own DiscussionHero context overrides */
+.TagLabel.text-contrast--dark,
+.TagLabel.text-contrast--light,
+.TagLabel .TagLabel-text,
+.TagLabel .TagLabel-name,
+.DiscussionHero .TagsLabel .TagLabel,
+.DiscussionHero .TagsLabel .TagLabel.colored,
+.DiscussionHero .TagsLabel .TagLabel--colored {
+  background: #1a2440 !important;
+  color: #8fa0bc !important;
+}
+
+/* Desktop-only larger tag pills in discussion list */
+@media (min-width: 845px) {
+  .DiscussionListItem .TagLabel {
+    font-size: 13px;
+    padding: 3px 10px;
+    border-radius: 5px;
+  }
+  .DiscussionListItem .TagIcon {
+    width: 18px;
+    height: 18px;
+    vertical-align: -4px;
+  }
+}
+
+.TagIcon {
+  border-radius: 4px;
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  vertical-align: -3px;
+  background: #1a2440;
+  /* !important beats tagIcon's inline style.color = tag.color() */
+  color: #8fa0bc !important;
+}
+/* Force icon color — override contrast class and inline color on icon-type tags */
+.TagIcon.text-contrast--dark,
+.TagIcon.text-contrast--light,
+.TagLabel .icon,
+.TagLabel i.icon {
+  color: #8fa0bc !important;
+}
+
+/* Tag hero */
+
+
+/* Tag tiles page — flat neutral surface, ignoring any assigned tag color */
+.TagTile {
+  background: #131b2e;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  transition: background 0.15s, border-color 0.15s;
+  text-decoration: none;
+  overflow: hidden;
+}
+.TagTile:hover {
+  background: color-mix(in srgb, var(--secondary-color) 8%, #131b2e);
+  border-color: color-mix(in srgb, var(--secondary-color) 28%, transparent);
+  text-decoration: none;
+}
+/* Override contrast classes on tiles too */
+.TagTile.text-contrast--dark,
+.TagTile.text-contrast--light,
+.TagTile.text-contrast--dark a,
+.TagTile.text-contrast--light a {
+  color: #e8edf5 !important;
+}
+.TagTile .TagTile-info {
+  padding: 20px 20px 8px;
+}
+.TagTile .TagTile-name {
+  color: #e8edf5;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+}
+.TagTile .TagTile-description {
+  color: #8fa0bc;
+  font-size: 12.5px;
+  opacity: 1;
+}
+.TagTile .TagTile-lastPostedDiscussion {
+  color: #4d607e;
+  font-size: 12px;
+  border-top-color: rgba(255, 255, 255, 0.06);
+  margin: 0 16px;
+  padding: 8px 0;
+}
+
+/* Tags page gap between tiles */
+.TagTiles {
+  gap: 8px;
+}
+.TagTiles > li {
+  padding: 4px;
+}
+
+/* Horizontal nav active state — color only, no background pill.
+   Core sets padding-left:25px on these items for icon clearance;
+   adding a background block there looks misaligned. Just use the
+   secondary color on text and icon, same as core's own approach. */
+.sideNav--horizontal .Dropdown-menu > li.active > a,
+.sideNav--horizontal .Dropdown--select .Dropdown-menu > li.active > a {
+  background: none;
+  color: var(--secondary-color);
+  font-weight: 600;
+  padding-right: 10px !important;
+}
+.sideNav--horizontal .Dropdown-menu > li.active > a .Button-icon,
+.sideNav--horizontal .Dropdown--select .Dropdown-menu > li.active > a .Button-icon {
+  color: var(--secondary-color);
+}
+
+/* ---------------------------------
+   USER CARD + USER HERO
+   --------------------------------- */
+
+/* Profile page hero banner: use the user's generated color, darkened and
+   saturated to match the avatar treatment. The filter lives on ::before so
+   text/controls on top are unaffected. */
+.UserCard.UserHero {
+  position: relative;
+  isolation: isolate;
+  background: transparent;
+}
+.UserCard.UserHero a,
+.UserCard.UserHero .username,
+.UserCard.UserHero .UserCard-identity,
+.UserCard.UserHero .UserCard-info,
+.UserCard.UserHero .UserCard-info li,
+.UserCard.UserHero .UserCard-bio {
+  color: #ffffff !important;
+}
+/* Restore oklch letter colour inside UserHero — the white text rule above cascades in */
+/* Letter avatars in hero are always <span>, photo avatars are <img> — target span directly */
+.UserCard.UserHero span.Avatar {
+  color: oklch(from var(--avatar-bg, #69c6b9) 92% 0.18 h) !important;
+}
+.UserCard.UserHero .darkenBackground {
+  background: transparent;
+}
+
+.UserCard.UserHero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--usercard-bg, #131b2e);
+  filter: saturate(1.8) brightness(0.72);
+  z-index: -1;
+}
+
+/* Hover popover — full Cosmos hero treatment */
+.UserCard--popover {
+  position: relative;
+  isolation: isolate;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 10px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
+  overflow: hidden;
+}
+
+/* Layer 1: avatar-colour gradient fading to dark */
+.UserCard--popover::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 10px;
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--usercard-bg, #1a2440) 55%, #080c14) 0%,
+      color-mix(in srgb, var(--usercard-bg, #1a2440) 18%, #080c14) 55%,
+      #080c14 100%);
+  filter: none;
+  z-index: -2;
+}
+
+/* Layer 2: ambient glow radials */
+.UserCard--popover::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 80% at 0% 50%,
+      color-mix(in srgb, var(--usercard-bg, #69c6b9) 22%, transparent) 0%,
+      transparent 70%),
+    radial-gradient(ellipse 50% 60% at 100% 100%,
+      color-mix(in srgb, var(--secondary-color) 16%, transparent) 0%,
+      transparent 65%),
+    radial-gradient(ellipse 30% 35% at 85% 10%,
+      color-mix(in srgb, var(--secondary-color) 10%, transparent) 0%,
+      transparent 55%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Layer 3: star field on darkenBackground */
+.UserCard--popover .darkenBackground {
+  position: relative;
+  z-index: 0;
+}
+.UserCard--popover .darkenBackground::before {
+  content: '';
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+  box-shadow:
+    40px  15px 0 0.5px color-mix(in srgb, var(--usercard-bg, #69c6b9) 60%, white),
+    100px 10px 0 1px   color-mix(in srgb, var(--usercard-bg, #69c6b9) 50%, white),
+    180px 25px 0 0.5px color-mix(in srgb, var(--usercard-bg, #69c6b9) 68%, white),
+    260px 8px  0 1px   color-mix(in srgb, var(--usercard-bg, #69c6b9) 55%, white),
+    340px 20px 0 0.5px color-mix(in srgb, var(--usercard-bg, #69c6b9) 65%, white),
+    420px 12px 0 1px   color-mix(in srgb, var(--usercard-bg, #69c6b9) 72%, white),
+    30px  60px 0 0.5px color-mix(in srgb, var(--usercard-bg, #69c6b9) 45%, white),
+    120px 70px 0 1px   color-mix(in srgb, var(--usercard-bg, #69c6b9) 55%, white),
+    220px 55px 0 0.5px color-mix(in srgb, var(--usercard-bg, #69c6b9) 50%, white),
+    320px 68px 0 1px   color-mix(in srgb, var(--usercard-bg, #69c6b9) 60%, white),
+    400px 45px 0 0.5px color-mix(in srgb, var(--usercard-bg, #69c6b9) 48%, white);
+  animation: cosmos-drift-slow 22s ease-in-out infinite,
+             cosmos-pulse 10s ease-in-out infinite;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Ensure card content sits above all glow layers */
+.UserCard--popover .container {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------------------------------
+   ALERTS
+   --------------------------------- */
+.Alert {
+  border-radius: 8px;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 13.5px;
+}
+.Alert--success {
+  background: color-mix(in srgb, var(--primary-color) 14%, transparent);
+  color: var(--primary-color);
+}
+.Alert--error {
+  background: rgba(216, 62, 62, 0.12);
+  color: #f07070;
+}
+.Alert--warning {
+  background: rgba(234, 179, 8, 0.12);
+  color: #f0c040;
+}
+
+/* ---------------------------------
+   TOOLTIPS
+   --------------------------------- */
+.tooltip-inner {
+  background: #1f2c4a;
+  color: #e8edf5;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 6px;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 12px;
+  padding: 5px 10px;
+}
+.tooltip.top    .tooltip-arrow { border-top-color:    #1f2c4a; }
+.tooltip.bottom .tooltip-arrow { border-bottom-color: #1f2c4a; }
+.tooltip.left   .tooltip-arrow { border-left-color:   #1f2c4a; }
+.tooltip.right  .tooltip-arrow { border-right-color:  #1f2c4a; }
+
+/* ---------------------------------
+   AVATAR
+   --------------------------------- */
+
+/* Letter avatars: dark saturated bg + vivid hue-matched letter.
+   The filter lives on ::before so it only affects the background circle —
+   the letter itself is styled independently via oklch relative color,
+   which pulls the hue from --avatar-bg and pushes lightness to ~78%
+   for a bright vivid letter that always matches the user's hue.
+   :not(:has(img)) leaves uploaded photo avatars completely untouched. */
+span.Avatar:not(.PostUser-avatar) {
+  position: relative;
+  background-color: transparent;
+  color: oklch(from var(--avatar-bg, #69c6b9) 92% 0.18 h);
+  isolation: isolate;
+}
+span.Avatar:not(.PostUser-avatar)::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 100%;
+  background-color: var(--avatar-bg, #131b2e);
+  filter: saturate(1.8) brightness(0.72);
+  z-index: -1;
+}
+
+/* Letter avatar in post header — core keeps position:absolute intact on tablet-up.
+   z-index:0 (not auto) creates a stacking context so ::before z-index:-1 stays
+   behind the letter text but in front of the page background.
+   On phone, core does NOT set position:absolute on PostUser-avatar, so we need
+   position:relative to contain the ::before pseudo-element. */
+span.PostUser-avatar {
+  background-color: transparent;
+  color: oklch(from var(--avatar-bg, #69c6b9) 92% 0.18 h);
+  z-index: 0;
+}
+@media (max-width: 844px) {
+  span.PostUser-avatar {
+    position: relative;
+  }
+}
+span.PostUser-avatar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 100%;
+  background-color: var(--avatar-bg, #131b2e);
+  filter: saturate(1.8) brightness(0.72);
+  z-index: -1;
+}
+
+/* Online indicator */
+@keyframes online-pulse {
+  0%, 100% { opacity: 1;   transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.75); }
+}
+
+.UserOnline .fa-circle {
+  color: var(--primary-color);
+  animation: online-pulse 2.4s ease-in-out infinite;
+  display: inline-block;
+}
+
+/* Badges — tinted background from the group colour, solid white icon for legibility. */
+.Badge {
+  background: color-mix(in srgb, var(--badge-bg) 55%, transparent);
+  color: #ffffff !important;
+}
+.Badge--hidden {
+  background: color-mix(in srgb, var(--primary-color) 22%, transparent);
+}
+
+/* ---------------------------------
+   FOOTER
+   --------------------------------- */
+.App-footer {
+  color: #4d607e;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  margin-top: 40px;
+  padding: 16px 0;
+  font-size: 12px;
+}
+.App-footer a {
+  color: #4d607e;
+}
+.App-footer a:hover {
+  color: var(--primary-color);
+}
+
+/* ---------------------------------
+   LOADING & PLACEHOLDERS
+   --------------------------------- */
+.LoadingIndicator > div {
+  background: var(--primary-color);
+}
+.Placeholder {
+  color: #4d607e;
+}
+.fakeText {
+  background: #131b2e;
+}
+
+/* ---------------------------------
+   VALIDATION
+   --------------------------------- */
+.ValidationError {
+  color: #f07070;
+  font-size: 12.5px;
+}
+.helpText {
+  color: #8fa0bc;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+}
+
+/* ---------------------------------
+   CHECKBOX / SWITCH
+   --------------------------------- */
+.Checkbox-display {
+  background: #1a2440;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+}
+input:checked ~ .Checkbox-display {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+/* ---------------------------------
+   THIRD-PARTY EXTENSION CATCH-ALL
+   Prevents arbitrary white surfaces from extensions that
+   don't know about dark mode. Low specificity — explicit
+   rules above will still override these.
+   --------------------------------- */
+
+/* Any card/container that inherits or defaults to white */
+.Post-body table { background: #131b2e; color: #e8edf5; border-color: rgba(255,255,255,0.08); }
+.Post-body table th { background: #1a2440; color: #e8edf5; }
+.Post-body table td { border-color: rgba(255,255,255,0.06); }
+
+/* Blog-style cards (common pattern in blog extensions) */
+[class*="BlogCard"],
+[class*="blog-card"],
+[class*="PostCard"],
+[class*="post-card"],
+[class*="ArticleCard"],
+[class*="article-card"] {
+  background: #131b2e !important;
+  color: #e8edf5 !important;
+  border-color: rgba(255,255,255,0.06) !important;
+}
+
+[class*="BlogCard"]:hover,
+[class*="blog-card"]:hover,
+[class*="PostCard"]:hover,
+[class*="post-card"]:hover,
+[class*="ArticleCard"]:hover,
+[class*="article-card"]:hover {
+  background: color-mix(in srgb, var(--secondary-color) 10%, #131b2e) !important;
+  border-color: color-mix(in srgb, var(--secondary-color) 28%, transparent) !important;
+}
+
+/* Any element with inline white/light background that slips through */
+.App-content [style*="background: white"],
+.App-content [style*="background:#fff"],
+.App-content [style*="background: #fff"],
+.App-content [style*="background-color: white"],
+.App-content [style*="background-color: #fff"] {
+  background: #131b2e !important;
+  color: #e8edf5 !important;
+}
+
+/* ---------------------------------
+   BLOG CARDS EXTENSION
+   Class names confirmed via DevTools inspection.
+   --------------------------------- */
+
+/* Outer card item */
+.CardsListItem,
+.CardsListItem.Card,
+.CardsListItem.unread,
+.CardsListItem.read {
+  background: #131b2e !important;
+  border-color: rgba(255, 255, 255, 0.06) !important;
+  color: #e8edf5 !important;
+}
+
+.CardsListItem:hover,
+.CardsListItem.Card:hover {
+  background: color-mix(in srgb, var(--secondary-color) 10%, #131b2e) !important;
+  border-color: color-mix(in srgb, var(--secondary-color) 28%, transparent) !important;
+}
+
+/* Image wrapper */
+.cardImageWrap {
+  background: #0d1220 !important;
+}
+
+/* Card body — the white content area */
+.cardBody {
+  background: #131b2e !important;
+  color: #e8edf5 !important;
+}
+
+/* Tags row */
+.cardTags {
+  background: transparent !important;
+}
+
+/* Title and excerpt */
+.cardTitle {
+  color: #e8edf5 !important;
+}
+
+.cardExcerpt {
+  color: #8fa0bc !important;
+}
+
+/* Footer */
+.cardFooter {
+  background: #0d1220 !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+  color: #8fa0bc !important;
+}
+
+/* Author, replies */
+.cardAuthor,
+.cardReplies,
+.cardRepliesCount {
+  color: #8fa0bc !important;
+}
+
+.cardAuthor .username {
+  color: #e8edf5 !important;
+}
+
+/* Participants row */
+.cardParticipantsRow {
+  background: transparent !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+.CardParticipants {
+  background: transparent !important;
+}
+
+/* Kebab / controls button on card */
+.CardsListItem .ButtonGroup,
+.CardsListItem .Dropdown-toggle {
+  background: rgba(13, 18, 32, 0.7) !important;
+  color: #e8edf5 !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+/* Cosmos theme toggle — desktop: match Dropdown-toggle button styling exactly */
+@media (min-width: 845px) {
+  .Header-secondary .Header-controls > .item-cosmos-theme-toggle .Button {
+    background: #131b2e;
+    color: #8fa0bc;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 6px;
+    width: 36px;
+    padding: 8px 0;
+    text-align: center;
+  }
+  .Header-secondary .Header-controls > .item-cosmos-theme-toggle .Button:hover {
+    background: #1a2440;
+    color: #e8edf5;
+    border-color: rgba(255, 255, 255, 0.11);
+  }
+  .Header-secondary .Header-controls > .item-cosmos-theme-toggle .Button-label {
+    display: none;
+  }
+  .Header-secondary .Header-controls > .item-cosmos-theme-toggle .Button-icon {
+    margin-right: 0;
+    font-size: 18px;
+  }
+}
+/* Mobile drawer: subtle border matching other drawer items */
+@media (max-width: 844px) {
+  .Header-controls > .item-cosmos-theme-toggle .Button {
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+}
+
+/* =============================================================
+   FOF/USER-DIRECTORY — Cosmos card redesign
+   2-column grid on desktop, 1-column on mobile.
+   Portrait layout: centred avatar, large username, stats below.
+   Star field + ambient glow on each card.
+   ============================================================= */
+
+/* 2-column grid on desktop, 1-column on mobile */
+.UserDirectoryList .UserDirectoryList-users {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: 1fr;
+  gap: 16px;
+  padding: 0;
+  list-style: none;
+}
+@media (max-width: 844px) {
+  .UserDirectoryList .UserDirectoryList-users {
+    grid-template-columns: 1fr;
+    grid-auto-rows: auto;
+    gap: 10px;
+  }
+}
+
+/* Remove the .User margin since grid gap handles spacing */
+.UserDirectoryList .User {
+  margin-bottom: 0;
+  display: flex;
+  flex-direction: column;
+}
+.UserDirectoryList .User .UserCard--directory {
+  flex: 1;
+}
+
+/* Card base — portrait layout */
+.UserCard--directory {
+  position: relative;
+  isolation: isolate;
+  background: transparent;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+  min-height: 220px;
+}
+
+/* Gradient background: avatar colour fades to Cosmos dark */
+.UserCard--directory::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--usercard-bg, #1a2440) 55%, #080c14) 0%,
+      color-mix(in srgb, var(--usercard-bg, #1a2440) 18%, #080c14) 55%,
+      #080c14 100%);
+  filter: none;
+  z-index: -2;
+}
+
+/* Star field layer */
+.UserCard--directory::after {
+  content: '';
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+  box-shadow:
+    18px  28px 0 0.5px color-mix(in srgb, var(--usercard-bg, #69c6b9) 70%, white),
+    55px  15px 0 0.5px color-mix(in srgb, var(--usercard-bg, #69c6b9) 55%, white),
+    92px  42px 0 1px   color-mix(in srgb, var(--usercard-bg, #69c6b9) 80%, white),
+    138px 12px 0 0.5px color-mix(in srgb, var(--usercard-bg, #69c6b9) 60%, white),
+    175px 35px 0 0.5px color-mix(in srgb, var(--usercard-bg, #69c6b9) 70%, white),
+    220px 20px 0 1px   color-mix(in srgb, var(--usercard-bg, #69c6b9) 75%, white),
+    265px 45px 0 0.5px color-mix(in srgb, var(--usercard-bg, #69c6b9) 55%, white),
+    310px 18px 0 0.5px color-mix(in srgb, var(--usercard-bg, #69c6b9) 65%, white),
+    355px 38px 0 1px   color-mix(in srgb, var(--usercard-bg, #69c6b9) 72%, white),
+    400px 10px 0 0.5px color-mix(in srgb, var(--usercard-bg, #69c6b9) 58%, white),
+    30px  85px 0 0.5px color-mix(in srgb, var(--usercard-bg, #69c6b9) 45%, white),
+    78px  72px 0 1px   color-mix(in srgb, var(--usercard-bg, #69c6b9) 60%, white),
+    125px 90px 0 0.5px color-mix(in srgb, var(--usercard-bg, #69c6b9) 50%, white),
+    185px 65px 0 0.5px color-mix(in srgb, var(--usercard-bg, #69c6b9) 55%, white),
+    240px 80px 0 1px   color-mix(in srgb, var(--usercard-bg, #69c6b9) 65%, white),
+    295px 55px 0 0.5px color-mix(in srgb, var(--usercard-bg, #69c6b9) 48%, white),
+    345px 78px 0 0.5px color-mix(in srgb, var(--usercard-bg, #69c6b9) 58%, white),
+    8px   158px 0 1px  color-mix(in srgb, var(--usercard-bg, #69c6b9) 85%, white),
+    65px  165px 0 0.5px color-mix(in srgb, var(--usercard-bg, #69c6b9) 75%, white),
+    130px 155px 0 1px  color-mix(in srgb, var(--usercard-bg, #69c6b9) 80%, white),
+    200px 168px 0 0.5px color-mix(in srgb, var(--usercard-bg, #69c6b9) 70%, white),
+    270px 160px 0 1px  color-mix(in srgb, var(--usercard-bg, #69c6b9) 78%, white),
+    340px 155px 0 0.5px color-mix(in srgb, var(--usercard-bg, #69c6b9) 72%, white),
+    390px 165px 0 1px  color-mix(in srgb, var(--usercard-bg, #69c6b9) 68%, white);
+  animation: cosmos-drift-slow 18s ease-in-out infinite,
+             cosmos-pulse 8s ease-in-out infinite;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Ambient glow: radial gradient bloom from user colour + teal counter-bloom */
+.UserCard--directory .darkenBackground {
+  background:
+    radial-gradient(ellipse 70% 80% at 0% 50%,
+      color-mix(in srgb, var(--usercard-bg, #69c6b9) 22%, transparent) 0%,
+      transparent 70%),
+    radial-gradient(ellipse 50% 60% at 100% 100%,
+      color-mix(in srgb, var(--secondary-color) 18%, transparent) 0%,
+      transparent 65%),
+    radial-gradient(ellipse 30% 35% at 80% 10%,
+      color-mix(in srgb, var(--secondary-color) 10%, transparent) 0%,
+      transparent 55%) !important;
+}
+
+/* Container: centred portrait layout */
+.UserCard--directory .darkenBackground {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.UserDirectoryList .UserCard--directory .container {
+  width: auto !important;
+  padding: 20px 20px 24px !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  flex: 1;
+}
+.UserCard--directory .UserCard-profile {
+  padding-top: 0;
+}
+
+/* Avatar: larger, centred */
+.UserCard--directory .UserCard-avatar {
+  margin: 0 0 14px 0;
+  float: none;
+}
+.UserCard--directory .UserCard-avatar .Avatar {
+  width: 80px !important;
+  height: 80px !important;
+  line-height: 80px !important;
+  font-size: 36px !important;
+  border: 3px solid rgba(255, 255, 255, 0.35) !important;
+}
+
+/* Profile: no left padding, centred */
+.UserCard--directory .UserCard-profile {
+  padding-left: 0 !important;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+/* Username: larger, bolder */
+.UserCard--directory .UserCard-identity {
+  font-size: 22px !important;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  margin-bottom: 4px;
+  text-align: center;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+/* Link inside identity: flex-row + wrap so avatar takes full width (own line),
+   username text and badge share the next line */
+.UserCard--directory .UserCard-identity a {
+  display: inline-flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+/* Avatar: force to its own full-width line */
+.UserCard--directory .UserCard-identity a .UserCard-avatar {
+  flex: 0 0 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+/* Badge appended by JS: inline with username text */
+.UserCard--directory .UserCard-identity a .UserCard-badges {
+  display: inline-flex !important;
+  align-items: center;
+  margin: 0 !important;
+  flex: 0 0 auto;
+}
+.UserCard--directory .username {
+  color: #ffffff !important;
+}
+
+/* Stats row */
+.UserCard--directory .UserCard-info {
+  margin: 8px 0 0 0 !important;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 12px;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 12.5px;
+  width: 100%;
+}
+.UserCard--directory .UserCard-info > li {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Controls (3-dot menu) — top right */
+.UserCard--directory .UserCard-controls {
+  align-self: flex-end !important;
+  margin: 8px 8px -46px auto !important;
+  position: relative !important;
+  z-index: 2;
+}
+
+/* Badges */
+.UserCard--directory .UserCard-badges {
+  margin: 4px 0 4px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+/* Badge relocated inside .UserCard-identity via JS — style for inline display */
+.UserCard--directory .UserCard-identity .UserCard-badges {
+  display: inline-flex !important;
+  align-items: center;
+  vertical-align: middle;
+  margin: 0 0 0 8px !important;
+  list-style: none;
+  padding: 0;
+}
+.UserCard--directory .UserCard-identity .UserCard-badges li {
+  display: inline-flex !important;
+  margin-right: 4px;
+}
+
+/* User Directory Hero — styled like WelcomeHero */
+/* =============================================================
+   COSMOS GENERIC HERO — shared star field + gradient treatment
+   Applies to: UserDirectoryHero, TagHero, and future extension heroes.
+   WelcomeHero, DiscussionHero, BadgesHero have individual overrides.
+   ============================================================= */
+.Hero.UserDirectoryHero,
+.TagHero,
+.LeaderboardHero,
+.AwardsHero,
+.GamepediaHero {
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--primary-color) 22%, #080c14) 0%,
+      color-mix(in srgb, var(--primary-color) 8%, #080c14) 50%,
+      #080c14 100%);
+  border-bottom: none;
+  color: #e8edf5;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.5);
+}
+
+/* Ambient glow layer */
+.Hero.UserDirectoryHero::before,
+.TagHero::before,
+.LeaderboardHero::before,
+.AwardsHero::before,
+.GamepediaHero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 80% at 0% 50%,
+      color-mix(in srgb, var(--primary-color) 18%, transparent) 0%,
+      transparent 70%),
+    radial-gradient(ellipse 50% 60% at 100% 100%,
+      color-mix(in srgb, var(--secondary-color) 18%, transparent) 0%,
+      transparent 65%),
+    radial-gradient(ellipse 35% 40% at 85% 10%,
+      color-mix(in srgb, var(--secondary-color) 11%, transparent) 0%,
+      transparent 55%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Star field layer */
+.Hero.UserDirectoryHero::after,
+.TagHero::after,
+.LeaderboardHero::after,
+.AwardsHero::after,
+.GamepediaHero::after {
+  content: '';
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+  box-shadow:
+    120px 25px 0 0.5px rgba(255,255,255,0.4),
+    280px 15px 0 1px   rgba(255,255,255,0.5),
+    450px 35px 0 0.5px rgba(255,255,255,0.35),
+    620px 20px 0 1px   rgba(255,255,255,0.45),
+    800px 40px 0 0.5px rgba(255,255,255,0.38),
+    980px 12px 0 1px   rgba(255,255,255,0.5),
+    1150px 30px 0 0.5px rgba(255,255,255,0.35),
+    1320px 22px 0 1px  rgba(255,255,255,0.42),
+    60px  80px 0 0.5px rgba(255,255,255,0.3),
+    220px 90px 0 1px   rgba(255,255,255,0.38),
+    400px 70px 0 0.5px rgba(255,255,255,0.32),
+    580px 95px 0 1px   rgba(255,255,255,0.42),
+    760px 75px 0 0.5px rgba(255,255,255,0.35),
+    940px 88px 0 1px   rgba(255,255,255,0.4),
+    1100px 65px 0 0.5px rgba(255,255,255,0.3);
+  animation: cosmos-drift-slow 24s ease-in-out infinite,
+             cosmos-pulse 10s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.Hero.UserDirectoryHero .container,
+.TagHero .container,
+.TagHero > *,
+.LeaderboardHero .container,
+.AwardsHero .container,
+.GamepediaHero .container {
+  position: relative;
+  z-index: 1;
+}
+
+/* TagHero typography */
+.TagHero h2 {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-weight: 800;
+  color: #ffffff;
+}
+.TagHero p {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Achievement badge pills in user directory cards — use default UserCardBadge style */
+
+/* =============================================================
+   SIDE NAVIGATION — Cosmos panel treatment
+   1. Elevated surface with right border
+   2. Active item: left accent bar + tint
+   4. Hover state: subtle background lift
+   5. Section separator with TAGS label
+   ============================================================= */
+
+@media (min-width: 992px) {
+  /* 1. Elevated panel surface — on item-nav only, below the Start a Discussion button */
+  .IndexPage-nav .item-nav {
+    background: #0d1220;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 8px;
+    padding: 8px;
+  }
+
+  /* 2. Active item: left accent bar */
+  .sideNav .Dropdown--select .Dropdown-menu > li.active > a {
+    background: color-mix(in srgb, var(--secondary-color) 14%, transparent);
+    color: var(--secondary-color);
+    font-weight: 600;
+    border-radius: 6px;
+    border-left: 3px solid var(--secondary-color);
+    padding-left: 35px;
+  }
+  .sideNav .Dropdown--select .Dropdown-menu > li.active > a .Button-icon {
+    color: var(--secondary-color);
+  }
+
+  /* 4. Hover: subtle surface lift */
+  .sideNav .Dropdown--select .Dropdown-menu > li > a:hover {
+    background: #131b2e;
+    color: #e8edf5;
+    text-decoration: none;
+  }
+  .sideNav .Dropdown--select .Dropdown-menu > li > a:hover .Button-icon {
+    color: #8fa0bc;
+  }
+
+  /* 5. Section separator: styled rule + TAGS label */
+  .sideNav .Dropdown-separator {
+    background: rgba(255, 255, 255, 0.06) !important;
+    margin: 8px 4px;
+    position: relative;
+  }
+  .sideNav .Dropdown-separator::after {
+    content: 'TAGS';
+    display: block;
+    position: absolute;
+    top: 6px;
+    left: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #4d607e;
+    font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  }
+  /* Extra top margin on first tag item to clear the label */
+  .sideNav .Dropdown-separator + li {
+    margin-top: 20px;
+  }
+}
+
+/* =============================================================
+   SIDE NAV — Star field + ambient glow (dark mode)
+   ============================================================= */
+
+@media (min-width: 992px) {
+  .IndexPage-nav .item-nav {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  /* Ambient glow — primary colour bloom from bottom */
+  .IndexPage-nav .item-nav::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 40% at 50% 110%,
+        color-mix(in srgb, var(--primary-color) 14%, transparent) 0%,
+        transparent 70%),
+      radial-gradient(ellipse 60% 30% at 10% 80%,
+        color-mix(in srgb, var(--primary-color) 6%, transparent) 0%,
+        transparent 60%),
+      radial-gradient(ellipse 50% 25% at 90% 20%,
+        color-mix(in srgb, var(--secondary-color) 8%, transparent) 0%,
+        transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Star field — condensed to ~175px wide, full panel height */
+  .IndexPage-nav .item-nav::after {
+    content: '';
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    top: 0;
+    left: 0;
+    border-radius: 50%;
+    box-shadow:
+      12px  35px 0 0.5px color-mix(in srgb, var(--primary-color) 55%, white),
+      38px  80px 0 1px   color-mix(in srgb, var(--primary-color) 65%, white),
+      65px  22px 0 0.5px color-mix(in srgb, var(--primary-color) 45%, white),
+      92px  58px 0 0.5px color-mix(in srgb, var(--primary-color) 60%, white),
+      118px 15px 0 1px   color-mix(in srgb, var(--primary-color) 50%, white),
+      145px 45px 0 0.5px color-mix(in srgb, var(--primary-color) 55%, white),
+      170px 30px 0 0.5px color-mix(in srgb, var(--primary-color) 45%, white),
+      25px  110px 0 1px  color-mix(in srgb, var(--primary-color) 60%, white),
+      55px  145px 0 0.5px color-mix(in srgb, var(--primary-color) 50%, white),
+      85px  125px 0 0.5px color-mix(in srgb, var(--primary-color) 55%, white),
+      130px 95px 0 1px   color-mix(in srgb, var(--primary-color) 65%, white),
+      158px 130px 0 0.5px color-mix(in srgb, var(--primary-color) 48%, white),
+      18px  190px 0 0.5px color-mix(in srgb, var(--primary-color) 52%, white),
+      48px  220px 0 1px   color-mix(in srgb, var(--primary-color) 62%, white),
+      78px  175px 0 0.5px color-mix(in srgb, var(--primary-color) 45%, white),
+      108px 210px 0 0.5px color-mix(in srgb, var(--primary-color) 58%, white),
+      142px 185px 0 1px   color-mix(in srgb, var(--primary-color) 55%, white),
+      168px 230px 0 0.5px color-mix(in srgb, var(--primary-color) 42%, white),
+      30px  270px 0 0.5px color-mix(in srgb, var(--primary-color) 50%, white),
+      62px  305px 0 1px   color-mix(in srgb, var(--primary-color) 60%, white),
+      95px  285px 0 0.5px color-mix(in srgb, var(--primary-color) 45%, white),
+      125px 320px 0 0.5px color-mix(in srgb, var(--primary-color) 55%, white),
+      155px 295px 0 1px   color-mix(in srgb, var(--primary-color) 52%, white),
+      22px  355px 0 0.5px color-mix(in srgb, var(--primary-color) 48%, white),
+      72px  380px 0 1px   color-mix(in srgb, var(--primary-color) 58%, white),
+      115px 365px 0 0.5px color-mix(in srgb, var(--primary-color) 42%, white),
+      160px 390px 0 0.5px color-mix(in srgb, var(--primary-color) 50%, white),
+      40px  430px 0 1px   color-mix(in srgb, var(--primary-color) 55%, white),
+      90px  455px 0 0.5px color-mix(in srgb, var(--primary-color) 45%, white),
+      140px 440px 0 0.5px color-mix(in srgb, var(--primary-color) 52%, white);
+    animation: cosmos-drift-slow 18s ease-in-out infinite,
+               cosmos-pulse 8s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Ensure menu content sits above star layers */
+  .IndexPage-nav .item-nav .ButtonGroup,
+  .IndexPage-nav .item-nav .Dropdown-menu {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+/* =============================================================
+   COSMOS SLIDER
+   ============================================================= */
+
+.CosmosSlider-hero {
+  width: 100%;
+  position: relative;
+}
+
+.CosmosSlider {
+  position: relative;
+  height: var(--cs-h-desktop, 320px);
+  overflow: hidden;
+  width: 100%;
+  background: var(--body-bg);
+  user-select: none;
+}
+
+@media (max-width: 768px) {
+  .CosmosSlider { height: var(--cs-h-mobile, 200px); }
+}
+
+.CosmosSlider-track {
+  display: flex;
+  height: 100%;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+.CosmosSlide {
+  flex: 0 0 100%;
+  height: 100%;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  display: block;
+}
+
+.CosmosSlider-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(8, 12, 20, 0.55);
+  backdrop-filter: blur(6px);
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 14px;
+  z-index: 4;
+  transition: background 0.15s, border-color 0.15s, box-shadow 0.2s;
+}
+.CosmosSlider-btn:hover {
+  background: rgba(8, 12, 20, 0.8);
+  border-color: var(--primary-color);
+  box-shadow: 0 0 10px 2px color-mix(in srgb, var(--primary-color) 35%, transparent);
+}
+.CosmosSlider-btn.prev { left: 14px; }
+.CosmosSlider-btn.next { right: 14px; }
+
+.CosmosSlider-dots {
+  position: absolute;
+  left: 50%;
+  bottom: 14px;
+  transform: translateX(-50%);
+  display: inline-flex;
+  gap: 7px;
+  z-index: 4;
+}
+.CosmosSlider-dots .dot {
+  display: block;
+  appearance: none;
+  padding: 0;
+  border: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+.CosmosSlider-dots .dot.is-active {
+  background: var(--secondary-color);
+  transform: scale(1.3);
+}
+
+.CosmosSlider-stars {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+.CosmosSlider-stars::after {
+  content: "";
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+  box-shadow:
+    80px  30px 0 0.5px rgba(255,255,255,0.35),
+    220px 55px  0 1px   rgba(255,255,255,0.45),
+    410px 20px  0 0.5px rgba(255,255,255,0.30),
+    600px 65px  0 1px   rgba(255,255,255,0.40),
+    780px 35px  0 0.5px rgba(255,255,255,0.35),
+    950px 15px  0 1px   rgba(255,255,255,0.45),
+    1100px 50px 0 0.5px rgba(255,255,255,0.30),
+    1280px 28px 0 1px   rgba(255,255,255,0.40),
+    1450px 60px 0 0.5px rgba(255,255,255,0.35),
+    150px 110px 0 0.5px rgba(255,255,255,0.30),
+    350px 130px 0 1px   rgba(255,255,255,0.40),
+    550px 95px  0 0.5px rgba(255,255,255,0.35),
+    750px 140px 0 1px   rgba(255,255,255,0.45),
+    920px 105px 0 0.5px rgba(255,255,255,0.30),
+    1150px 125px 0 1px  rgba(255,255,255,0.40),
+    1380px 90px 0 0.5px rgba(255,255,255,0.35),
+    50px  180px 0 1px   rgba(255,255,255,0.40),
+    280px 200px 0 0.5px rgba(255,255,255,0.30),
+    480px 170px 0 0.5px rgba(255,255,255,0.35),
+    680px 210px 0 1px   rgba(255,255,255,0.45),
+    880px 185px 0 0.5px rgba(255,255,255,0.30),
+    1060px 205px 0 1px  rgba(255,255,255,0.40),
+    1250px 175px 0 0.5px rgba(255,255,255,0.35),
+    1460px 195px 0 1px  rgba(255,255,255,0.45);
+  animation: cosmos-drift-slow 22s ease-in-out infinite,
+             cosmos-pulse 10s ease-in-out infinite;
+}
+
+.CosmosSlider-fade {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: linear-gradient(to bottom,
+    transparent 0%,
+    color-mix(in srgb, var(--body-bg) 85%, transparent) 100%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+@media (max-width: 768px) {
+  .CosmosSlider-btn { width: 34px; height: 34px; font-size: 12px; }
+  .CosmosSlider-dots .dot { width: 6px; height: 6px; }
+}
+
+/* Admin slide manager */
+.CosmosSlides-item {
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 8px;
+  background: rgba(255,255,255,0.03);
+}
+.CosmosSlides-row { display: flex; gap: 8px; margin-bottom: 8px; }
+.CosmosSlides-row .FormControl { flex: 1; }
+.CosmosSlides-link { max-width: 280px !important; }
+.CosmosSlides-actions { display: flex; align-items: center; gap: 6px; }
+.CosmosSlides-newtab {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 13px; color: #8fa0bc; margin-right: auto; cursor: pointer;
+}
+
+/* =============================================================
+   OPTION C — DISCUSSION HERO UPGRADE
+   ============================================================= */
+
+.DiscussionHero {
+  position: relative;
+  overflow: hidden;
+  min-height: 140px;
+  display: flex;
+  align-items: center;
+  border-bottom: none;
+
+  /* Gradient: tag colour (or secondary) fades to cosmos dark */
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--hero-bg, var(--secondary-color)) 55%, #080c14) 0%,
+      color-mix(in srgb, var(--hero-bg, var(--secondary-color)) 18%, #080c14) 55%,
+      #080c14 100%);
+}
+
+/* Ambient glow layer */
+.DiscussionHero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 80% at 0% 50%,
+      color-mix(in srgb, var(--hero-bg, var(--secondary-color)) 22%, transparent) 0%,
+      transparent 70%),
+    radial-gradient(ellipse 50% 60% at 100% 100%,
+      color-mix(in srgb, var(--secondary-color) 16%, transparent) 0%,
+      transparent 65%),
+    radial-gradient(ellipse 35% 40% at 85% 10%,
+      color-mix(in srgb, var(--secondary-color) 10%, transparent) 0%,
+      transparent 55%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Star field */
+.DiscussionHero::after {
+  content: '';
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+  box-shadow:
+    120px 25px 0 0.5px rgba(255,255,255,0.4),
+    280px 15px 0 1px   rgba(255,255,255,0.5),
+    450px 35px 0 0.5px rgba(255,255,255,0.35),
+    620px 20px 0 1px   rgba(255,255,255,0.45),
+    800px 40px 0 0.5px rgba(255,255,255,0.38),
+    980px 12px 0 1px   rgba(255,255,255,0.5),
+    1150px 30px 0 0.5px rgba(255,255,255,0.35),
+    1320px 22px 0 1px   rgba(255,255,255,0.42),
+    1480px 38px 0 0.5px rgba(255,255,255,0.4),
+    60px  80px 0 0.5px rgba(255,255,255,0.3),
+    220px 90px 0 1px   rgba(255,255,255,0.38),
+    400px 70px 0 0.5px rgba(255,255,255,0.32),
+    580px 95px 0 1px   rgba(255,255,255,0.42),
+    760px 75px 0 0.5px rgba(255,255,255,0.35),
+    940px 88px 0 1px   rgba(255,255,255,0.4),
+    1100px 65px 0 0.5px rgba(255,255,255,0.3),
+    1300px 85px 0 0.5px rgba(255,255,255,0.38);
+  animation: cosmos-drift-slow 24s ease-in-out infinite,
+             cosmos-pulse 10s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Bottom fade into page */
+.DiscussionHero .container {
+  position: relative;
+  z-index: 1;
+  padding-top: 28px;
+  padding-bottom: 28px;
+}
+
+/* Title — larger, bolder */
+.DiscussionHero-title {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.5px;
+  line-height: 1.25;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+  display: block;
+  margin-top: 6px;
+}
+
+/* Tags row in hero */
+.DiscussionHero .TagsLabel {
+  display: block;
+  margin-bottom: 8px;
+}
+.DiscussionHero .TagLabel {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.15) !important;
+  color: rgba(255, 255, 255, 0.92) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(4px);
+}
+.DiscussionHero .TagLabel .TagLabel-text,
+.DiscussionHero .TagLabel .TagLabel-name,
+.DiscussionHero .TagsLabel .TagLabel,
+.DiscussionHero .TagsLabel .TagLabel.colored,
+.DiscussionHero .TagsLabel .TagLabel--colored {
+  background: rgba(255, 255, 255, 0.15) !important;
+  color: rgba(255, 255, 255, 0.92) !important;
+}
+
+/* Clean separation between hero and post stream */
+.DiscussionPage-stream {
+  position: relative;
+}
+.DiscussionHero {
+  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.5);
+  margin-bottom: 0;
+}
+
+/* =============================================================
+   OPTION B — AVATAR COLUMN TREATMENT
+   ============================================================= */
+
+/* Avatar ring glow using user colour */
+img.PostUser-avatar {
+  border: 2px solid color-mix(in srgb, var(--avatar-bg, var(--primary-color)) 60%, transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--avatar-bg, var(--primary-color)) 25%, transparent),
+    0 0 12px 2px color-mix(in srgb, var(--avatar-bg, var(--primary-color)) 30%, transparent);
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+img.PostUser-avatar:hover {
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--avatar-bg, var(--primary-color)) 55%, transparent),
+    0 0 18px 4px color-mix(in srgb, var(--avatar-bg, var(--primary-color)) 40%, transparent);
+}
+
+/* Letter avatar ring — same treatment */
+span.PostUser-avatar {
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--avatar-bg, var(--primary-color)) 40%, transparent),
+    0 0 12px 2px color-mix(in srgb, var(--avatar-bg, var(--primary-color)) 25%, transparent);
+}
+
+/* Username — more prominent */
+.PostUser h3 a,
+.PostUser .PostUser-name a {
+  font-size: 15px;
+  font-weight: 800;
+  color: #e8edf5;
+  letter-spacing: -0.1px;
+}
+
+/* Post number — styled accent */
+.PostMeta-number {
+  color: var(--secondary-color);
+  font-weight: 700;
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+/* Subtle connector line between posts in avatar column on desktop */
+@media (min-width: 845px) {
+  .PostStream-item:not(:last-child) {
+    border-bottom: none;
+    position: relative;
+  }
+  .PostStream-item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 52px;
+    top: 84px;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom,
+      color-mix(in srgb, var(--primary-color) 20%, transparent) 0%,
+      transparent 100%);
+    pointer-events: none;
+  }
+}
+
+/* =============================================================
+   POST CONTROLS — Reply, Like, Reactions  (dark mode)
+   ============================================================= */
+
+/* ── General baseline ────────────────────────────────────────── */
+.Post-actions > ul {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-wrap: wrap;
+}
+.Post-actions > ul > li:has(.Post-controls) {
+  margin-left: 6px;
+}
+
+/* ── Reply button ────────────────────────────────────────────── */
+.item-reply > .Button {
+  color: #4d607e !important;
+}
+.item-reply > .Button:hover {
+  color: #69c6b9 !important;
+  background: rgba(105, 198, 185, 0.08) !important;
+}
+
+/* ── Like button (flarum/likes) ──────────────────────────────── */
+.item-like > .Button {
+  color: #4d607e !important;
+}
+.item-like > .Button:hover {
+  color: #69c6b9 !important;
+  background: rgba(105, 198, 185, 0.08) !important;
+}
+.item-like > .Button.active {
+  color: #69c6b9 !important;
+}
+
+/* ── Reactions: emoji count pills ───────────────────────────── */
+.Reactions--reactions .Button-emoji-parent {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 8px;
+  padding: 4px 9px;
+  color: #8fa0bc;
+  font-size: 13px;
+  font-weight: 600;
+  margin-right: 4px;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.Reactions--reactions .Button-emoji-parent:hover {
+  background: rgba(105, 198, 185, 0.10);
+  border-color: rgba(105, 198, 185, 0.30);
+  color: #e8edf5;
+}
+.Reactions--reactions .Button-emoji-parent.active {
+  background: rgba(105, 198, 185, 0.14);
+  border-color: rgba(105, 198, 185, 0.45);
+  color: #69c6b9;
+}
+.Reactions--reactions .Button-emoji-parent.disabled {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.05);
+  opacity: 0.6;
+}
+
+/* ── Reactions: "react" smiley trigger button ───────────────── */
+.Reactions--ShowReactions.Button {
+  color: #4d607e !important;
+  background: transparent !important;
+  padding: 5px 8px;
+  transition: color 0.15s, background 0.15s;
+}
+.Reactions--ShowReactions.Button:hover {
+  color: #69c6b9 !important;
+  background: rgba(105, 198, 185, 0.08) !important;
+}
+.Reactions--ShowReactions .button-react path,
+.Reactions--ShowReactions .button-react polygon {
+  fill: currentColor;
+  transition: fill 0.15s;
+}
+
+/* ── Reactions: picker dropdown card ────────────────────────── */
+.CommentPost--Reactions {
+  background: #131b2e !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 10px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.55),
+    0 2px 8px rgba(0, 0, 0, 0.35) !important;
+  padding: 6px !important;
+  min-width: 0 !important;
+  max-width: none !important;
+}
+
+/* ── Picker: single-row flex layout ─────────────────────────── */
+.CommentPost--Reactions ul {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  justify-content: flex-start !important;
+  align-items: center !important;
+  gap: 2px !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  width: auto !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  list-style: none !important;
+}
+.CommentPost--Reactions ul li {
+  display: flex !important;
+  margin: 0 !important;
+}
+
+/* ── Reactions: individual emoji buttons inside picker ──────── */
+.CommentPost--Reactions ul li button {
+  background: transparent;
+  border-radius: 8px;
+  padding: 0;
+  width: 38px;
+  height: 38px;
+  border: 1px solid transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.12s, border-color 0.12s;
+}
+.CommentPost--Reactions ul li button .Button-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  font-size: 20px;
+}
+.CommentPost--Reactions ul li button img {
+  width: 22px;
+  height: 22px;
+  display: block;
+}
+.CommentPost--Reactions ul li button:hover {
+  background: rgba(105, 198, 185, 0.12);
+  border-color: rgba(105, 198, 185, 0.25);
+}
+
+/* ── Reactions: icon/link buttons inside picker ─────────────── */
+.CommentPost--Reactions .Button--link {
+  color: #8fa0bc;
+}
+.CommentPost--Reactions .Button--link:hover {
+  color: #e8edf5;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+}
+
+/* =============================================================
+   USER PROFILE HERO — Cosmos star field + glow + stats
+   ============================================================= */
+
+/* Taller hero to give stats room */
+.UserCard.UserHero {
+  min-height: 130px;
+}
+
+/* Gradient background: avatar colour fades to cosmos dark (same as discussion hero) */
+.UserCard.UserHero::before {
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--usercard-bg, #1a2440) 55%, #080c14) 0%,
+      color-mix(in srgb, var(--usercard-bg, #1a2440) 18%, #080c14) 55%,
+      #080c14 100%);
+  filter: none;
+}
+
+/* Ambient glow layer — bloom from avatar colour, teal counter-bloom */
+.UserCard.UserHero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 80% at 0% 50%,
+      color-mix(in srgb, var(--usercard-bg, #69c6b9) 22%, transparent) 0%,
+      transparent 70%),
+    radial-gradient(ellipse 50% 60% at 100% 100%,
+      color-mix(in srgb, var(--secondary-color) 16%, transparent) 0%,
+      transparent 65%),
+    radial-gradient(ellipse 35% 40% at 85% 10%,
+      color-mix(in srgb, var(--secondary-color) 10%, transparent) 0%,
+      transparent 55%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Star field — same colour-tinted stars as user directory cards */
+.UserCard.UserHero .darkenBackground::before {
+  content: '';
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+  box-shadow:
+    80px  20px 0 0.5px color-mix(in srgb, var(--usercard-bg, #69c6b9) 65%, white),
+    200px 15px 0 1px   color-mix(in srgb, var(--usercard-bg, #69c6b9) 50%, white),
+    340px 35px 0 0.5px color-mix(in srgb, var(--usercard-bg, #69c6b9) 72%, white),
+    500px 10px 0 1px   color-mix(in srgb, var(--usercard-bg, #69c6b9) 58%, white),
+    680px 28px 0 0.5px color-mix(in srgb, var(--usercard-bg, #69c6b9) 68%, white),
+    860px 18px 0 1px   color-mix(in srgb, var(--usercard-bg, #69c6b9) 75%, white),
+    1040px 32px 0 0.5px color-mix(in srgb, var(--usercard-bg, #69c6b9) 60%, white),
+    1220px 22px 0 1px  color-mix(in srgb, var(--usercard-bg, #69c6b9) 70%, white),
+    40px  75px 0 0.5px color-mix(in srgb, var(--usercard-bg, #69c6b9) 48%, white),
+    160px 85px 0 1px   color-mix(in srgb, var(--usercard-bg, #69c6b9) 60%, white),
+    290px 68px 0 0.5px color-mix(in srgb, var(--usercard-bg, #69c6b9) 55%, white),
+    440px 90px 0 1px   color-mix(in srgb, var(--usercard-bg, #69c6b9) 65%, white),
+    620px 72px 0 0.5px color-mix(in srgb, var(--usercard-bg, #69c6b9) 52%, white),
+    800px 88px 0 1px   color-mix(in srgb, var(--usercard-bg, #69c6b9) 62%, white);
+  animation: cosmos-drift-slow 22s ease-in-out infinite,
+             cosmos-pulse 10s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Keep darkenBackground content above layers */
+.UserCard.UserHero .darkenBackground {
+  position: relative;
+  z-index: 1;
+}
+
+/* Avatar — larger ring glow using avatar colour */
+.UserCard.UserHero .UserCard-avatar .Avatar {
+  border: 3px solid color-mix(in srgb, var(--usercard-bg, #69c6b9) 55%, transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--usercard-bg, #69c6b9) 25%, transparent),
+    0 0 18px 3px color-mix(in srgb, var(--usercard-bg, #69c6b9) 30%, transparent);
+}
+
+/* ── Stat pills row ──────────────────────────────────────────── */
+.UserHero-stats {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+.UserHero-stat {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 6px;
+  padding: 3px 10px;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(4px);
+}
+.UserHero-stat-value {
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+/* =============================================================
+   DISCUSSION SIDEBAR — Reply & Follow buttons
+   Override Button--primary to Cosmos surface style
+   ============================================================= */
+
+/* Main action button (Reply, Follow label) */
+.DiscussionPage-nav .item-controls .SplitDropdown-button,
+.DiscussionPage-nav .item-controls .SubscriptionMenu-button {
+  background: #131b2e !important;
+  color: #69c6b9 !important;
+  border: 1px solid rgba(105, 198, 185, 0.25) !important;
+  font-weight: 600 !important;
+  filter: none !important;
+}
+.DiscussionPage-nav .item-controls .SplitDropdown-button:hover,
+.DiscussionPage-nav .item-controls .SubscriptionMenu-button:hover {
+  background: rgba(105, 198, 185, 0.08) !important;
+  color: #69c6b9 !important;
+  border-color: rgba(105, 198, 185, 0.45) !important;
+  filter: none !important;
+}
+
+/* Caret toggle button */
+.DiscussionPage-nav .item-controls .Dropdown-toggle {
+  background: #131b2e !important;
+  color: #69c6b9 !important;
+  border: 1px solid rgba(105, 198, 185, 0.25) !important;
+  border-left: 1px solid rgba(105, 198, 185, 0.18) !important;
+}
+.DiscussionPage-nav .item-controls .Dropdown-toggle:hover {
+  background: rgba(105, 198, 185, 0.08) !important;
+  color: #69c6b9 !important;
+  border-color: rgba(105, 198, 185, 0.45) !important;
+}
+
+/* Dropdown menu inside these controls */
+.DiscussionPage-nav .item-controls .Dropdown-menu {
+  background: #131b2e;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+.DiscussionPage-nav .item-controls .Dropdown-menu > li > a,
+.DiscussionPage-nav .item-controls .Dropdown-menu > li > button {
+  color: #8fa0bc;
+}
+.DiscussionPage-nav .item-controls .Dropdown-menu > li > a:hover,
+.DiscussionPage-nav .item-controls .Dropdown-menu > li > button:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #e8edf5;
+}
+
+/* ── Follow button group: unified border on the ButtonGroup container ── */
+.DiscussionPage-nav .item-controls .SubscriptionMenu.ButtonGroup {
+  border: 1px solid rgba(105, 198, 185, 0.25);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.DiscussionPage-nav .item-controls .SubscriptionMenu.ButtonGroup:hover {
+  border-color: rgba(105, 198, 185, 0.45);
+}
+/* Remove individual button borders inside — the group border handles it */
+.DiscussionPage-nav .item-controls .SubscriptionMenu-button,
+.DiscussionPage-nav .item-controls .SubscriptionMenu .Dropdown-toggle {
+  border: none !important;
+}
+
+/* =============================================================
+   MOBILE PASS — Phone viewport (max-width: 844px)
+   ============================================================= */
+
+@media (max-width: 844px) {
+
+  /* ── 1. Page bottom padding — content clears the MobileTab bar ── */
+  body {
+    padding-bottom: ~"calc(54px + env(safe-area-inset-bottom, 0px)");
+  }
+
+  /* ── 2. MobileTab bar — Cosmos surface treatment ──────────────── */
+  .MobileTab {
+    background: #0d1220;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
+  }
+
+  /* Item label */
+  .MobileTab-items > li > .LinkButton .Button-label,
+  .MobileTab-items > li > .Button .Button-label {
+    font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+
+  /* ── 3. Profile tab — strip dropdown toggle styling ───────────── */
+  /* SessionDropdown Dropdown-toggle inside MobileTab gets our global
+     .Dropdown-toggle border/background, making it look permanently active.
+     Reset it to transparent so only the [active] teal applies. */
+  .MobileTab .Dropdown-toggle,
+  .MobileTab .Dropdown-toggle:hover,
+  .MobileTab .SessionDropdown .Dropdown-toggle,
+  .MobileTab .SessionDropdown .Dropdown-toggle:hover {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+
+  /* Keep the avatar glow colour correct inside the tab */
+  .MobileTab .SessionDropdown .Avatar {
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    box-shadow: none;
+  }
+
+  /* ── 4. Reaction picker — prevent viewport overflow on mobile ─── */
+  /* The extension renders the picker as position:absolute bottom:100%.
+     On phone the picker flies off the right edge. Anchor it to the
+     right of the trigger and cap the width to the screen. */
+  .CommentPost--Reactions {
+    left: auto !important;
+    right: 0 !important;
+    max-width: ~"calc(100vw - 24px)" !important;
+  }
+
+  /* Ensure picker stays within stacking context */
+  .Reactions--react {
+    position: relative;
+  }
+
+  /* Touch show state — apply same Cosmos card styling */
+  .CommentPost--Reactions.mobile-show {
+    visibility: visible !important;
+    opacity: 1 !important;
+    transition: visibility 0s linear 0s, opacity 300ms !important;
+  }
+
+  /* ── 5. Reaction pills — slightly tighter on phone ────────────── */
+  .Reactions--reactions .Button-emoji-parent {
+    padding: 3px 7px;
+    font-size: 12px;
+    margin-right: 3px;
+  }
+
+  /* ── 6. Post controls row — allow wrapping on very narrow screens  */
+  .Post-actions > ul {
+    gap: 1px;
+  }
+
+  /* ── 7. Header — ensure nav items don't clip at 51px phone height  */
+  .App-header .container {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  /* ── 8. Discussion hero — reduce star field on phone for perf ──── */
+  .DiscussionHero::after {
+    animation: none;
+    opacity: 0.4;
+  }
+
+  /* ── 9. User profile hero — stat pills wrap cleanly on phone ───── */
+  .UserHero-stats {
+    gap: 5px;
+    margin-top: 8px;
+  }
+  .UserHero-stat {
+    font-size: 12px;
+    padding: 2px 8px;
+  }
+
+  /* ── 10. Post stream connector line — hide on phone (no avatar col) */
+  .PostStream-item:not(:last-child)::after {
+    display: none;
+  }
+
+}
+
+/* =============================================================
+   POST STREAM SCRUBBER — Cosmos treatment
+   ============================================================= */
+
+/* ── Track lines (before/after handle) ──────────────────────── */
+.Scrubber-before,
+.Scrubber-after {
+  border-left: 2px solid rgba(255, 255, 255, 0.07);
+  transition: border-color 0.2s;
+}
+.PostStreamScrubber:hover .Scrubber-before,
+.PostStreamScrubber:hover .Scrubber-after {
+  border-left-color: rgba(255, 255, 255, 0.12);
+}
+
+/* ── Active fill bar ─────────────────────────────────────────── */
+.Scrubber-bar {
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--primary-color) 90%, white),
+    var(--primary-color)
+  );
+  width: 4px;
+  border-radius: 4px;
+  box-shadow: 0 0 8px color-mix(in srgb, var(--primary-color) 50%, transparent);
+  margin-left: -1px;
+}
+
+/* ── Drag handle ─────────────────────────────────────────────── */
+.Scrubber-handle {
+  padding: 4px 0;
+}
+.Scrubber-handle::after {
+  content: '';
+  position: absolute;
+  left: -4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  box-shadow:
+    0 0 0 2px rgba(8, 12, 20, 1),
+    0 0 0 4px color-mix(in srgb, var(--primary-color) 35%, transparent),
+    0 0 10px color-mix(in srgb, var(--primary-color) 50%, transparent);
+  transition: box-shadow 0.2s, transform 0.15s;
+  z-index: 2;
+}
+.PostStreamScrubber:hover .Scrubber-handle::after,
+.Scrubber-scrollbar:active .Scrubber-handle::after {
+  transform: translateY(-50%) scale(1.2);
+  box-shadow:
+    0 0 0 2px rgba(8, 12, 20, 1),
+    0 0 0 5px color-mix(in srgb, var(--primary-color) 45%, transparent),
+    0 0 14px color-mix(in srgb, var(--primary-color) 60%, transparent);
+}
+
+/* ── Info panel (post number + date) ────────────────────────── */
+.Scrubber-info {
+  left: 18px;
+}
+.Scrubber-info strong {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #e8edf5;
+  line-height: 1.3;
+}
+.Scrubber-description {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  color: #4d607e;
+  margin-top: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ── Unread indicator ────────────────────────────────────────── */
+.Scrubber-unread {
+  border-left: 2px solid color-mix(in srgb, var(--primary-color) 50%, transparent);
+  background-image: linear-gradient(
+    to right,
+    color-mix(in srgb, var(--primary-color) 8%, transparent),
+    transparent 40px,
+    transparent
+  );
+  color: #4d607e;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+}
+
+/* ── First / Last navigation links ──────────────────────────── */
+.Scrubber-first,
+.Scrubber-last {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #4d607e !important;
+  letter-spacing: 0.02em;
+  transition: color 0.15s;
+}
+.Scrubber-first:hover,
+.Scrubber-last:hover {
+  color: #69c6b9 !important;
+}
+
+/* =============================================================
+   USER CARD POPOVER — z-index fix + mobile sizing
+   ============================================================= */
+
+/* Ensure popover sits above the avatar's z-index:0 stacking context */
+.PostUser .UserCard--popover {
+  z-index: var(--zindex-dropdown);
+}
+
+/* Mobile: constrain width and reposition so it doesn't clip viewport */
+@media (max-width: 844px) {
+  .PostUser .UserCard--popover {
+    width: ~"calc(100vw - 32px)" !important;
+    left: 0 !important;
+    right: auto !important;
+    max-width: 360px;
+  }
+}
+
+/* ── Popover avatar ring glow (no size override — core sets 96px) ── */
+.UserCard--popover .UserCard-avatar .Avatar {
+  border: 3px solid color-mix(in srgb, var(--usercard-bg, #69c6b9) 55%, transparent) !important;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--usercard-bg, #69c6b9) 25%, transparent),
+    0 0 14px 2px color-mix(in srgb, var(--usercard-bg, #69c6b9) 28%, transparent);
+}
+.UserCard--popover .UserCard-identity {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-weight: 700;
+  color: #ffffff;
+}
+.UserCard--popover .UserCard-info {
+  color: rgba(255, 255, 255, 0.65);
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+}
+
+/* ── Popover stat pills ───────────────────────────────────────── */
+.UserCard--popover .UserHero-stats {
+  margin-top: 10px;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.UserCard--popover .UserHero-stat {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 5px;
+  padding: 2px 8px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+}
+.UserCard--popover .UserHero-stat-value {
+  font-size: 12px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+/* =============================================================
+   BADGES EXTENSION — Cosmos dark mode
+   ============================================================= */
+
+/* ── Post-footer: give it height so PostBadges are visible ───── */
+.Post-footer {
+  height: auto !important;
+  min-height: 0;
+}
+
+/* ── BadgesHero ──────────────────────────────────────────────── */
+.BadgesHero {
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--primary-color) 18%, #0d1220) 0%,
+      #080c14 70%);
+  border-bottom: none;
+  position: relative;
+  overflow: hidden;
+}
+.BadgesHero-glow {
+  /* ambient glow inserted via ::before on the hero itself */
+}
+.BadgesHero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 80% at 0% 50%,
+      color-mix(in srgb, var(--primary-color) 18%, transparent) 0%,
+      transparent 70%),
+    radial-gradient(ellipse 50% 60% at 100% 100%,
+      color-mix(in srgb, var(--secondary-color) 16%, transparent) 0%,
+      transparent 65%),
+    radial-gradient(ellipse 35% 40% at 85% 10%,
+      color-mix(in srgb, var(--secondary-color) 10%, transparent) 0%,
+      transparent 55%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.BadgesHero::after {
+  content: '';
+  position: absolute;
+  width: 1px; height: 1px;
+  top: 0; left: 0;
+  border-radius: 50%;
+  box-shadow:
+    120px 15px 0 0.5px rgba(255,255,255,0.35),
+    280px 25px 0 1px   rgba(255,255,255,0.4),
+    450px 10px 0 0.5px rgba(255,255,255,0.3),
+    640px 30px 0 1px   rgba(255,255,255,0.38),
+    850px 18px 0 0.5px rgba(255,255,255,0.32),
+    1050px 28px 0 1px  rgba(255,255,255,0.4),
+    60px  55px 0 0.5px rgba(255,255,255,0.28),
+    220px 65px 0 1px   rgba(255,255,255,0.35),
+    400px 50px 0 0.5px rgba(255,255,255,0.3);
+  animation: cosmos-drift-slow 24s ease-in-out infinite,
+             cosmos-pulse 10s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+.BadgesHero .container { position: relative; z-index: 1; }
+.BadgesHero .Hero-title {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.3px;
+}
+
+/* ── BadgesList categories ───────────────────────────────────── */
+.BadgesList-categoryTitle {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #4d607e;
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.BadgesList-categoryDescription {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  color: #8fa0bc;
+  margin-bottom: 16px;
+  font-size: 13px;
+}
+.BadgesList-category--uncategorized {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* ── BadgeCard ───────────────────────────────────────────────── */
+.BadgeCard {
+  background: #131b2e;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+}
+.BadgeCard:hover {
+  transform: translateY(-3px);
+  border-color: rgba(105, 198, 185, 0.25);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(105, 198, 185, 0.12);
+}
+.BadgeCard-icon {
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+.BadgeCard-name {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #e8edf5;
+}
+.BadgeCard-description {
+  color: #8fa0bc;
+  font-size: 12.5px;
+}
+.BadgeCard-stats {
+  color: #4d607e;
+  font-size: 11.5px;
+}
+/* Rarity gem colours — keep extension's inline colours, just style the container */
+.BadgeCard-rarity {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+/* Indicators */
+.BadgeCard-indicator--favorite { background: rgba(241, 196, 15, 0.85); }
+.BadgeCard-indicator--hidden   { background: rgba(255, 255, 255, 0.15); }
+.BadgeCard-indicator--new      { background: rgba(105, 198, 185, 0.85); color: #080c14; }
+.BadgeCard-indicator--manual   { background: rgba(155, 89, 182, 0.85); }
+.BadgeCard-indicator--owned    {
+  background: color-mix(in srgb, var(--primary-color) 80%, #080c14);
+  color: #080c14;
+}
+
+/* ── BadgeModal ──────────────────────────────────────────────── */
+.BadgeModal .Modal-content {
+  background: #0d1220;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+}
+.BadgeModal .Modal-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.BadgeModal-icon {
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 4px rgba(255, 255, 255, 0.06),
+    0 8px 24px rgba(0, 0, 0, 0.4);
+}
+.BadgeModal-name {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  color: #e8edf5;
+}
+.BadgeModal-description {
+  color: #8fa0bc;
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+.BadgeModal-category {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  color: #8fa0bc;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  backdrop-filter: blur(4px);
+}
+.BadgeModal-rarity {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+.BadgeModal-rarityTier {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.BadgeModal-rarityExplain {
+  color: #4d607e;
+  font-size: 12px;
+  margin-top: 4px;
+}
+.BadgeModal-earnedCount {
+  color: #8fa0bc;
+  font-size: 13px;
+}
+.BadgeModal-users {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+.BadgeModal-usersTitle {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #e8edf5;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.BadgeModal-usersTitle i { color: var(--primary-color); }
+.BadgeModal-userItem:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 8px;
+}
+.BadgeModal-userList {
+  scrollbar-width: thin;
+  scrollbar-color: #1f2c4a #0d1220;
+}
+.BadgeModal-userName {
+  color: #e8edf5;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-weight: 600;
+}
+.BadgeModal-earnedDate { color: #4d607e; }
+.BadgeModal-moreUsers {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  color: #4d607e;
+}
+
+/* ── UserBadgesPage (profile badges tab) ─────────────────────── */
+.UserBadgesPage-header h2 {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #e8edf5;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.UserBadgesPage-emptyState {
+  color: #4d607e;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+}
+.UserBadgesPage-emptyIcon { color: #1f2c4a; }
+.UserBadgesPage-loadMore {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+.UserBadgesPage-meta {
+  color: #4d607e;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+}
+.UserBadgesPage-reason {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  color: #4d607e;
+}
+
+/* ── UserCardBadge (badges on profile hero) ──────────────────── */
+.UserCardBadge {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 11.5px;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(4px);
+  letter-spacing: 0.02em;
+  transition: background 0.15s, border-color 0.15s;
+}
+.UserCardBadge:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+}
+.UserCardBadge-more {
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+/* ── PostBadges (badge dots in post footer) ──────────────────── */
+.PostBadges-item {
+  background: #1a2440;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+.PostBadges-more {
+  color: #4d607e;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+}
+.PostBadges:hover .PostBadges-item {
+  border-color: rgba(105, 198, 185, 0.25);
+}
+
+/* ── PrimaryBadge (next to username in posts) ────────────────── */
+.PrimaryBadge-name {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: #4d607e;
+}
+.PrimaryBadge i {
+  background: color-mix(in srgb, var(--primary-color) 80%, #080c14);
+  box-shadow: 0 0 6px color-mix(in srgb, var(--primary-color) 40%, transparent);
+}
+
+/* ── BadgeNotification badge chip ────────────────────────────── */
+.BadgeNotification-badge {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  border-radius: 4px;
+  font-weight: 700;
+}
+
+/* =============================================================
+   LEADERBOARD EXTENSION — Cosmos dark mode
+   ============================================================= */
+
+/* ── Period filter bar ───────────────────────────────────────── */
+.LeaderboardPage-filters {
+  gap: 6px;
+  padding: 2px 0 12px;
+}
+
+.LeaderboardPage-filterBtn {
+  background: #131b2e;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #8fa0bc;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border-radius: 6px !important;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.LeaderboardPage-filterBtn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.14);
+  color: #e8edf5;
+}
+.LeaderboardPage-filterBtn.active {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  color: #ffffff;
+}
+
+.LeaderboardPage-refreshBtn {
+  background: #131b2e;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #4d607e;
+  border-radius: 50%;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.LeaderboardPage-refreshBtn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #8fa0bc;
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+/* ── Section titles ──────────────────────────────────────────── */
+.LeaderboardContenders-title,
+.LeaderboardHonorable-title {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #4d607e;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  margin-bottom: 14px;
+}
+.LeaderboardContenders-title .fas,
+.LeaderboardHonorable-title .fas {
+  color: var(--primary-color);
+  font-size: 11px;
+}
+
+/* ── Podium cards ────────────────────────────────────────────── */
+.LeaderboardPodium {
+  padding: 20px 0 10px;
+  gap: 16px;
+}
+
+/* ── Podium cards: shared base ───────────────────────────────── */
+.LeaderboardPodium-place {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-top-width: 3px;
+  border-radius: 12px;
+  overflow: hidden;
+  isolation: isolate;
+  position: relative;
+  transition: transform 0.18s, box-shadow 0.18s;
+}
+.LeaderboardPodium-place:hover {
+  transform: translateY(-4px);
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Ensure card content stays above all glow layers */
+.LeaderboardPodium-place > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Gold — 1st place ────────────────────────────────────────── */
+.LeaderboardPodium-place--1 {
+  border-top-color: #d4a730;
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.45),
+    0 -2px 16px rgba(212, 167, 48, 0.22);
+}
+.LeaderboardPodium-place--1:hover {
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.55),
+    0 -2px 24px rgba(212, 167, 48, 0.35);
+}
+
+/* Gold gradient background */
+.LeaderboardPodium-place--1::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(160deg,
+      color-mix(in srgb, #d4a730 32%, #131b2e) 0%,
+      color-mix(in srgb, #d4a730 12%, #0d1220) 45%,
+      #0d1220 100%);
+  z-index: -2;
+}
+
+/* Gold ambient glow radials */
+.LeaderboardPodium-place--1::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 70% at 0% 0%,
+      rgba(212, 167, 48, 0.20) 0%,
+      transparent 65%),
+    radial-gradient(ellipse 60% 50% at 100% 100%,
+      rgba(212, 167, 48, 0.12) 0%,
+      transparent 60%),
+    radial-gradient(ellipse 50% 40% at 50% 0%,
+      rgba(212, 167, 48, 0.10) 0%,
+      transparent 55%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* ── Silver — 2nd place ──────────────────────────────────────── */
+.LeaderboardPodium-place--2 {
+  border-top-color: #a0a0a0;
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.4),
+    0 -2px 14px rgba(160, 160, 160, 0.16);
+}
+.LeaderboardPodium-place--2:hover {
+  box-shadow:
+    0 10px 28px rgba(0, 0, 0, 0.5),
+    0 -2px 20px rgba(160, 160, 160, 0.26);
+}
+
+/* Silver gradient background */
+.LeaderboardPodium-place--2::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(160deg,
+      color-mix(in srgb, #a0a0a0 26%, #131b2e) 0%,
+      color-mix(in srgb, #a0a0a0 10%, #0d1220) 45%,
+      #0d1220 100%);
+  z-index: -2;
+}
+
+/* Silver ambient glow radials */
+.LeaderboardPodium-place--2::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 70% at 0% 0%,
+      rgba(160, 160, 160, 0.14) 0%,
+      transparent 65%),
+    radial-gradient(ellipse 60% 50% at 100% 100%,
+      rgba(160, 160, 160, 0.08) 0%,
+      transparent 60%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* ── Bronze — 3rd place ──────────────────────────────────────── */
+.LeaderboardPodium-place--3 {
+  border-top-color: #b87333;
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.4),
+    0 -2px 14px rgba(184, 115, 51, 0.16);
+}
+.LeaderboardPodium-place--3:hover {
+  box-shadow:
+    0 10px 28px rgba(0, 0, 0, 0.5),
+    0 -2px 20px rgba(184, 115, 51, 0.26);
+}
+
+/* Bronze gradient background */
+.LeaderboardPodium-place--3::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(160deg,
+      color-mix(in srgb, #b87333 28%, #131b2e) 0%,
+      color-mix(in srgb, #b87333 10%, #0d1220) 45%,
+      #0d1220 100%);
+  z-index: -2;
+}
+
+/* Bronze ambient glow radials */
+.LeaderboardPodium-place--3::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 70% at 0% 0%,
+      rgba(184, 115, 51, 0.15) 0%,
+      transparent 65%),
+    radial-gradient(ellipse 60% 50% at 100% 100%,
+      rgba(184, 115, 51, 0.09) 0%,
+      transparent 60%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.LeaderboardPodium-crown {
+  color: #d4a730;
+  filter: drop-shadow(0 0 6px rgba(212, 167, 48, 0.5));
+}
+
+.LeaderboardPodium-medal--gold .LeaderboardPodium-rankNumber {
+  color: #d4a730;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-weight: 800;
+}
+.LeaderboardPodium-medal--silver .LeaderboardPodium-rankNumber {
+  color: #a0a0a0;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-weight: 700;
+}
+.LeaderboardPodium-medal--bronze .LeaderboardPodium-rankNumber {
+  color: #b87333;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-weight: 700;
+}
+
+.LeaderboardPodium-avatar .Avatar {
+  border: 3px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+.LeaderboardPodium-place--1 .LeaderboardPodium-avatar .Avatar {
+  border-color: rgba(212, 167, 48, 0.4);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.4),
+    0 0 16px rgba(212, 167, 48, 0.2);
+}
+
+.LeaderboardPodium-name {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: #e8edf5;
+}
+.LeaderboardPodium-points {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  color: #4d607e;
+  font-size: 12px;
+}
+.LeaderboardPodium-stats {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+.LeaderboardPodium-stat {
+  color: #4d607e;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 11.5px;
+}
+
+/* ── Contender cards (#4–#10) ────────────────────────────────── */
+.LeaderboardContenders-card {
+  background: #131b2e;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 10px;
+  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+}
+.LeaderboardContenders-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+  border-color: rgba(105, 198, 185, 0.25);
+  color: inherit;
+  text-decoration: none;
+}
+.LeaderboardContenders-avatar .Avatar {
+  border: 2px solid rgba(255, 255, 255, 0.12);
+}
+.LeaderboardContenders-rank {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-weight: 700;
+  color: #4d607e;
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+}
+.LeaderboardContenders-name {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-weight: 600;
+  color: #e8edf5;
+  font-size: 11.5px;
+}
+.LeaderboardContenders-points {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  color: #69c6b9;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* ── Honorable mentions (#11+) ───────────────────────────────── */
+.LeaderboardItem {
+  background: #131b2e;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  transition: background 0.12s, border-color 0.12s;
+}
+.LeaderboardItem:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.10);
+  opacity: 1;
+  color: inherit;
+  text-decoration: none;
+}
+.LeaderboardItem-rank {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-weight: 700;
+  color: #4d607e;
+  font-size: 12px;
+}
+.LeaderboardItem-name {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-weight: 600;
+  color: #e8edf5;
+  font-size: 12.5px;
+}
+.LeaderboardItem-points {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  color: #69c6b9;
+  font-weight: 600;
+  font-size: 11.5px;
+}
+.LeaderboardItem-avatar .Avatar {
+  border: 1.5px solid rgba(255, 255, 255, 0.10);
+}
+
+/* ── Skeleton loader ─────────────────────────────────────────── */
+.LeaderboardSkeleton-pulse {
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 4px;
+}
+
+/* ── UserCard leaderboard points ─────────────────────────────── */
+.UserCard-leaderboardPoints {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.75);
+}
+.UserCard-leaderboardPoints .fas.fa-trophy {
+  color: #d4a730;
+  filter: drop-shadow(0 0 4px rgba(212, 167, 48, 0.35));
+}
+
+/* ── Empty state ─────────────────────────────────────────────── */
+.LeaderboardPage-empty {
+  color: #4d607e;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+}
+
+/* ── Podium star fields ───────────────────────────────────────── */
+
+/* Shared star field structure — medal colour set per card */
+.LeaderboardPodium-place--1 .LeaderboardPodium-medal,
+.LeaderboardPodium-place--2 .LeaderboardPodium-medal,
+.LeaderboardPodium-place--3 .LeaderboardPodium-medal {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Podium star field twinkle animation ─────────────────────── */
+@keyframes podium-twinkle {
+  0%, 100% { opacity: 0.9; }
+  25%       { opacity: 0.3; }
+  50%       { opacity: 1;   }
+  75%       { opacity: 0.5; }
+}
+@keyframes podium-twinkle-b {
+  0%, 100% { opacity: 0.6; }
+  33%       { opacity: 1;   }
+  66%       { opacity: 0.2; }
+}
+
+/* Shared star field base — anchored to medal (top of card content) */
+.LeaderboardPodium-place--1 .LeaderboardPodium-medal::after,
+.LeaderboardPodium-place--2 .LeaderboardPodium-medal::after,
+.LeaderboardPodium-place--3 .LeaderboardPodium-medal::after {
+  content: '';
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Gold star field — covers full card ~240px wide, ~380px tall */
+.LeaderboardPodium-place--1 .LeaderboardPodium-medal::after {
+  box-shadow:
+    12px  20px 0 0.5px color-mix(in srgb, #d4a730 75%, white),
+    38px   8px 0 1px   color-mix(in srgb, #d4a730 60%, white),
+    62px  35px 0 0.5px color-mix(in srgb, #d4a730 80%, white),
+    88px  14px 0 1px   color-mix(in srgb, #d4a730 65%, white),
+    115px 42px 0 0.5px color-mix(in srgb, #d4a730 72%, white),
+    142px  6px 0 1px   color-mix(in srgb, #d4a730 58%, white),
+    168px 28px 0 0.5px color-mix(in srgb, #d4a730 68%, white),
+    195px 18px 0 1px   color-mix(in srgb, #d4a730 75%, white),
+    220px 38px 0 0.5px color-mix(in srgb, #d4a730 62%, white),
+    22px  75px 0 1px   color-mix(in srgb, #d4a730 55%, white),
+    55px  88px 0 0.5px color-mix(in srgb, #d4a730 70%, white),
+    90px  62px 0 1px   color-mix(in srgb, #d4a730 65%, white),
+    128px 95px 0 0.5px color-mix(in srgb, #d4a730 60%, white),
+    162px 72px 0 1px   color-mix(in srgb, #d4a730 72%, white),
+    200px 85px 0 0.5px color-mix(in srgb, #d4a730 58%, white),
+    30px  130px 0 1px  color-mix(in srgb, #d4a730 68%, white),
+    72px  118px 0 0.5px color-mix(in srgb, #d4a730 62%, white),
+    108px 145px 0 1px  color-mix(in srgb, #d4a730 75%, white),
+    148px 122px 0 0.5px color-mix(in srgb, #d4a730 55%, white),
+    185px 138px 0 1px  color-mix(in srgb, #d4a730 65%, white),
+    215px 115px 0 0.5px color-mix(in srgb, #d4a730 70%, white),
+    45px  175px 0 1px  color-mix(in srgb, #d4a730 60%, white),
+    82px  188px 0 0.5px color-mix(in srgb, #d4a730 72%, white),
+    125px 165px 0 1px  color-mix(in srgb, #d4a730 58%, white),
+    165px 182px 0 0.5px color-mix(in srgb, #d4a730 68%, white),
+    205px 170px 0 1px  color-mix(in srgb, #d4a730 62%, white),
+    18px  225px 0 0.5px color-mix(in srgb, #d4a730 65%, white),
+    60px  238px 0 1px  color-mix(in srgb, #d4a730 55%, white),
+    100px 215px 0 0.5px color-mix(in srgb, #d4a730 75%, white),
+    140px 245px 0 1px  color-mix(in srgb, #d4a730 60%, white),
+    178px 228px 0 0.5px color-mix(in srgb, #d4a730 70%, white),
+    218px 242px 0 1px  color-mix(in srgb, #d4a730 65%, white),
+    35px  285px 0 0.5px color-mix(in srgb, #d4a730 58%, white),
+    78px  272px 0 1px  color-mix(in srgb, #d4a730 72%, white),
+    118px 295px 0 0.5px color-mix(in srgb, #d4a730 62%, white),
+    158px 278px 0 1px  color-mix(in srgb, #d4a730 68%, white),
+    198px 290px 0 0.5px color-mix(in srgb, #d4a730 55%, white),
+    50px  335px 0 1px  color-mix(in srgb, #d4a730 65%, white),
+    95px  322px 0 0.5px color-mix(in srgb, #d4a730 75%, white),
+    138px 345px 0 1px  color-mix(in srgb, #d4a730 60%, white),
+    180px 330px 0 0.5px color-mix(in srgb, #d4a730 70%, white);
+  animation: podium-twinkle 3.8s ease-in-out infinite,
+             cosmos-drift-slow 20s ease-in-out infinite;
+}
+
+/* Silver star field */
+.LeaderboardPodium-place--2 .LeaderboardPodium-medal::after {
+  box-shadow:
+    14px  22px 0 0.5px color-mix(in srgb, #c0c0c0 70%, white),
+    40px  10px 0 1px   color-mix(in srgb, #c0c0c0 55%, white),
+    65px  38px 0 0.5px color-mix(in srgb, #c0c0c0 75%, white),
+    90px  16px 0 1px   color-mix(in srgb, #c0c0c0 60%, white),
+    118px 44px 0 0.5px color-mix(in srgb, #c0c0c0 68%, white),
+    145px  8px 0 1px   color-mix(in srgb, #c0c0c0 52%, white),
+    170px 30px 0 0.5px color-mix(in srgb, #c0c0c0 65%, white),
+    198px 20px 0 1px   color-mix(in srgb, #c0c0c0 72%, white),
+    222px 40px 0 0.5px color-mix(in srgb, #c0c0c0 58%, white),
+    25px  78px 0 1px   color-mix(in srgb, #c0c0c0 50%, white),
+    58px  90px 0 0.5px color-mix(in srgb, #c0c0c0 65%, white),
+    92px  65px 0 1px   color-mix(in srgb, #c0c0c0 60%, white),
+    130px 98px 0 0.5px color-mix(in srgb, #c0c0c0 55%, white),
+    165px 75px 0 1px   color-mix(in srgb, #c0c0c0 68%, white),
+    202px 88px 0 0.5px color-mix(in srgb, #c0c0c0 52%, white),
+    32px  132px 0 1px  color-mix(in srgb, #c0c0c0 62%, white),
+    75px  120px 0 0.5px color-mix(in srgb, #c0c0c0 58%, white),
+    112px 148px 0 1px  color-mix(in srgb, #c0c0c0 70%, white),
+    150px 125px 0 0.5px color-mix(in srgb, #c0c0c0 50%, white),
+    188px 140px 0 1px  color-mix(in srgb, #c0c0c0 62%, white),
+    218px 118px 0 0.5px color-mix(in srgb, #c0c0c0 65%, white),
+    48px  178px 0 1px  color-mix(in srgb, #c0c0c0 55%, white),
+    85px  190px 0 0.5px color-mix(in srgb, #c0c0c0 68%, white),
+    128px 168px 0 1px  color-mix(in srgb, #c0c0c0 52%, white),
+    168px 185px 0 0.5px color-mix(in srgb, #c0c0c0 62%, white),
+    208px 172px 0 1px  color-mix(in srgb, #c0c0c0 58%, white),
+    22px  228px 0 0.5px color-mix(in srgb, #c0c0c0 60%, white),
+    62px  240px 0 1px  color-mix(in srgb, #c0c0c0 50%, white),
+    102px 218px 0 0.5px color-mix(in srgb, #c0c0c0 70%, white),
+    142px 248px 0 1px  color-mix(in srgb, #c0c0c0 55%, white),
+    180px 230px 0 0.5px color-mix(in srgb, #c0c0c0 65%, white),
+    220px 245px 0 1px  color-mix(in srgb, #c0c0c0 60%, white),
+    38px  288px 0 0.5px color-mix(in srgb, #c0c0c0 52%, white),
+    80px  275px 0 1px  color-mix(in srgb, #c0c0c0 68%, white),
+    120px 298px 0 0.5px color-mix(in srgb, #c0c0c0 58%, white),
+    160px 280px 0 1px  color-mix(in srgb, #c0c0c0 62%, white);
+  animation: podium-twinkle-b 4.2s ease-in-out infinite,
+             cosmos-drift-slow 22s ease-in-out infinite;
+}
+
+/* Bronze star field */
+.LeaderboardPodium-place--3 .LeaderboardPodium-medal::after {
+  box-shadow:
+    16px  24px 0 0.5px color-mix(in srgb, #b87333 72%, white),
+    42px  12px 0 1px   color-mix(in srgb, #b87333 58%, white),
+    68px  40px 0 0.5px color-mix(in srgb, #b87333 78%, white),
+    92px  18px 0 1px   color-mix(in srgb, #b87333 62%, white),
+    120px 46px 0 0.5px color-mix(in srgb, #b87333 70%, white),
+    148px 10px 0 1px   color-mix(in srgb, #b87333 55%, white),
+    172px 32px 0 0.5px color-mix(in srgb, #b87333 66%, white),
+    200px 22px 0 1px   color-mix(in srgb, #b87333 74%, white),
+    224px 42px 0 0.5px color-mix(in srgb, #b87333 60%, white),
+    28px  80px 0 1px   color-mix(in srgb, #b87333 52%, white),
+    60px  92px 0 0.5px color-mix(in srgb, #b87333 68%, white),
+    94px  68px 0 1px   color-mix(in srgb, #b87333 62%, white),
+    132px 100px 0 0.5px color-mix(in srgb, #b87333 58%, white),
+    168px 78px 0 1px   color-mix(in srgb, #b87333 70%, white),
+    204px 90px 0 0.5px color-mix(in srgb, #b87333 55%, white),
+    34px  135px 0 1px  color-mix(in srgb, #b87333 65%, white),
+    78px  122px 0 0.5px color-mix(in srgb, #b87333 60%, white),
+    115px 150px 0 1px  color-mix(in srgb, #b87333 72%, white),
+    152px 128px 0 0.5px color-mix(in srgb, #b87333 52%, white),
+    190px 142px 0 1px  color-mix(in srgb, #b87333 64%, white),
+    220px 120px 0 0.5px color-mix(in srgb, #b87333 68%, white),
+    50px  180px 0 1px  color-mix(in srgb, #b87333 58%, white),
+    88px  192px 0 0.5px color-mix(in srgb, #b87333 70%, white),
+    130px 170px 0 1px  color-mix(in srgb, #b87333 55%, white),
+    170px 188px 0 0.5px color-mix(in srgb, #b87333 65%, white),
+    210px 175px 0 1px  color-mix(in srgb, #b87333 60%, white),
+    25px  230px 0 0.5px color-mix(in srgb, #b87333 62%, white),
+    65px  242px 0 1px  color-mix(in srgb, #b87333 52%, white),
+    105px 220px 0 0.5px color-mix(in srgb, #b87333 72%, white),
+    145px 250px 0 1px  color-mix(in srgb, #b87333 58%, white),
+    182px 232px 0 0.5px color-mix(in srgb, #b87333 68%, white),
+    222px 248px 0 1px  color-mix(in srgb, #b87333 62%, white),
+    40px  290px 0 0.5px color-mix(in srgb, #b87333 55%, white),
+    82px  278px 0 1px  color-mix(in srgb, #b87333 70%, white),
+    122px 300px 0 0.5px color-mix(in srgb, #b87333 60%, white),
+    162px 282px 0 1px  color-mix(in srgb, #b87333 65%, white),
+    200px 295px 0 0.5px color-mix(in srgb, #b87333 52%, white);
+  animation: podium-twinkle 4.5s ease-in-out infinite,
+             cosmos-drift-slow 24s ease-in-out infinite;
+}
+
+/* ── Podium card text — always white/light regardless of mode ── */
+.LeaderboardPodium-place--1,
+.LeaderboardPodium-place--2,
+.LeaderboardPodium-place--3,
+.LeaderboardPodium-place--1:hover,
+.LeaderboardPodium-place--2:hover,
+.LeaderboardPodium-place--3:hover {
+  color: #ffffff;
+}
+.LeaderboardPodium-place--1 .LeaderboardPodium-name,
+.LeaderboardPodium-place--2 .LeaderboardPodium-name,
+.LeaderboardPodium-place--3 .LeaderboardPodium-name {
+  color: #ffffff;
+}
+.LeaderboardPodium-place--1 .LeaderboardPodium-points,
+.LeaderboardPodium-place--2 .LeaderboardPodium-points,
+.LeaderboardPodium-place--3 .LeaderboardPodium-points {
+  color: rgba(255, 255, 255, 0.65);
+}
+.LeaderboardPodium-place--1 .LeaderboardPodium-stat,
+.LeaderboardPodium-place--2 .LeaderboardPodium-stat,
+.LeaderboardPodium-place--3 .LeaderboardPodium-stat {
+  color: rgba(255, 255, 255, 0.55);
+}
+.LeaderboardPodium-place--1 .LeaderboardPodium-stats,
+.LeaderboardPodium-place--2 .LeaderboardPodium-stats,
+.LeaderboardPodium-place--3 .LeaderboardPodium-stats {
+  border-top-color: rgba(255, 255, 255, 0.12);
+}
+
+
+
+/* =============================================================
+   AVATAR STYLE PICKER — Cosmos dark mode
+   ============================================================= */
+
+.RfAvatarPicker-grid {
+  display: grid !important;
+  grid-template-columns: repeat(6, 1fr) !important;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.RfAvatarPicker-item {
+  background: #131b2e;
+  border: 2px solid rgba(255, 255, 255, 0.07);
+  border-radius: 10px;
+  padding: 10px 6px 8px;
+  transition: background 0.15s, border-color 0.15s;
+}
+.RfAvatarPicker-item:hover {
+  background: #1a2440;
+  border-color: rgba(105, 198, 185, 0.3);
+}
+.RfAvatarPicker-item.active {
+  background: color-mix(in srgb, var(--primary-color) 10%, #131b2e);
+  border-color: var(--primary-color);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--primary-color) 25%, transparent);
+}
+.RfAvatarPicker-label {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  color: #4d607e;
+}
+.RfAvatarPicker-item.active .RfAvatarPicker-label {
+  color: #69c6b9;
+  font-weight: 700;
+}
+
+/* =============================================================
+   COMPOSER — Choose Tags button + Title input
+   ============================================================= */
+
+/* Choose Tags button */
+a.DiscussionComposer-changeTags {
+  display: inline-flex;
+  align-items: center;
+  background: #1a2440;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 6px;
+  color: #8fa0bc;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 10px;
+  margin-right: 10px;
+  text-decoration: none;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
+  vertical-align: middle;
+}
+a.DiscussionComposer-changeTags:hover {
+  background: #1f2c4a;
+  border-color: rgba(105, 198, 185, 0.3);
+  color: #e8edf5;
+  text-decoration: none;
+}
+
+/* Title input — underline style, no box */
+.ComposerBody-header h3 input {
+  font-size: 18px;
+  font-weight: 700;
+  color: #e8edf5;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 0 !important;
+  padding: 2px 0 4px !important;
+  transition: border-color 0.15s;
+}
+.ComposerBody-header h3 input:focus {
+  border-bottom-color: rgba(105, 198, 185, 0.5) !important;
+  outline: none;
+}
+.ComposerBody-header h3 input::placeholder {
+  color: #4d607e;
+  font-weight: 400;
+}
+
+/* =============================================================
+   USER MENTION AVATARS — inline avatar in @mention chips
+   ============================================================= */
+
+/* Make UserMention flex so avatar and text align */
+a.UserMention,
+span.UserMention {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 4px;
+  vertical-align: middle;
+}
+
+/* Injected avatar image */
+.UserMention-avatar {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* Letter fallback avatar */
+.UserMention-avatar--letter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  color: #080c14;
+  font-size: 9px;
+  font-weight: 800;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* =============================================================
+   MENTION AUTOCOMPLETE DROPDOWN — Cosmos dark mode
+   ============================================================= */
+
+.MentionsDropdown {
+  background: #0d1220;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+.MentionsDropdown li a,
+.MentionsDropdown li button {
+  color: #e8edf5;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+}
+.MentionsDropdown li.active a,
+.MentionsDropdown li.active button,
+.MentionsDropdown li a:hover,
+.MentionsDropdown li button:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+}
+.MentionsDropdown .PostPreview .username {
+  color: #e8edf5;
+  font-weight: 600;
+}
+.MentionsDropdown .PostPreview {
+  color: #8fa0bc;
+}
+
+/* =============================================================
+   POLLS EXTENSION — Cosmos dark mode
+   ============================================================= */
+
+/* Override poll colour variables — keep fills translucent so text stays readable */
+.Post-poll,
+.Poll {
+  --poll-option-color: rgba(255, 255, 255, 0.12);
+  --poll-option-accent-color: #69c6b9;
+  --poll-option-active-color: rgba(105, 198, 185, 0.20);
+}
+
+/* Poll container */
+.Post-poll,
+.Poll {
+  background: #131b2e;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 10px;
+  padding: 16px;
+  margin: 12px 0;
+}
+
+/* Poll heading */
+.PollHeading,
+.Poll-title {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  color: #e8edf5;
+  margin-bottom: 10px;
+}
+.PollHeading-actions .Button {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #4d607e;
+  border-radius: 6px;
+  transition: background 0.12s, color 0.12s;
+}
+.PollHeading-actions .Button:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #8fa0bc;
+}
+
+/* Poll option bars — unselected */
+.PollOption,
+.PollBar {
+  border-radius: 6px !important;
+}
+.PollOption {
+  background: #0d1220 !important;
+}
+.PollOption:hover {
+  background: #1a2440 !important;
+}
+
+/* PollBar — the clickable option row */
+.PollBar {
+  border: 2px solid rgba(255, 255, 255, 0.10) !important;
+  border-radius: 6px !important;
+  background: #0d1220;
+  transition: border-color 0.15s;
+}
+.PollBar:hover {
+  border-color: rgba(105, 198, 185, 0.3) !important;
+  cursor: pointer;
+}
+
+/* The fill bar (::after pseudo) */
+.PollBar::after {
+  background-image: linear-gradient(
+    to right,
+    rgba(105, 198, 185, 0.18) 0% 100%
+  ) !important;
+}
+
+/* Selected option — slightly lighter bg so text stays readable over fill */
+.PollBar[data-selected] {
+  border-color: rgba(105, 198, 185, 0.65) !important;
+  background: #111a2e !important;
+}
+.PollBar[data-selected]::after {
+  background-image: linear-gradient(
+    to right,
+    rgba(105, 198, 185, 0.20) 0% 100%
+  ) !important;
+}
+.PollOption:has(.PollOption-input:checked) {
+  border-color: rgba(105, 198, 185, 0.65) !important;
+  background: #111a2e !important;
+}
+
+/* Text inside bars — force white on ALL states including selected/checked */
+.Post-poll .PollAnswer-text-answer,
+.Post-poll .PollOption-label,
+.Poll .PollAnswer-text-answer,
+.Poll .PollOption-label,
+.PollBar .PollAnswer-text-answer,
+.PollBar .PollOption-label,
+.PollBar[data-selected] .PollAnswer-text-answer,
+.PollBar[data-selected] .PollOption-label,
+.PollOption:has(.PollOption-input:checked) .PollAnswer-text-answer,
+.PollOption:has(.PollOption-input:checked) .PollOption-label {
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-weight: 600;
+  color: #e8edf5 !important;
+}
+/* Percentage always visible regardless of fill */
+.PollBar .PollPercent,
+.PollBar .PollPercent--option,
+.PollBar .PollResult-number,
+.PollBar[data-selected] .PollPercent,
+.PollBar[data-selected] .PollPercent--option,
+.PollOption-description {
+  color: #c8d6e8 !important;
+}
+.PollPercent,
+.PollPercent--option,
+.PollResult-number {
+  color: #c8d6e8 !important;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-weight: 700;
+}
+
+/* Checkmark */
+.PollAnswer-checkbox .checkmark {
+  border-color: rgba(255, 255, 255, 0.25);
+  background: transparent;
+}
+.PollAnswer-checkbox .checkmark:after {
+  border-color: #69c6b9;
+}
+.PollBar[data-selected] .PollAnswer-checkbox .checkmark {
+  border-color: #69c6b9;
+  background: rgba(105, 198, 185, 0.15);
+}
+
+/* Info/subtitle text */
+.PollInfoText,
+.Poll-subtitle {
+  color: #8fa8c8;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+  font-size: 12px;
+}
+
+/* Sticky bar at bottom */
+.Poll-sticky,
+.Post-poll .Poll-sticky {
+  background: #131b2e !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: none !important;
+}
+
+/* Result bar (progress element) */
+.PollResult-bar::-webkit-progress-value {
+  background-color: #69c6b9;
+}
+.PollResult-bar::-webkit-progress-bar {
+  background-color: rgba(255, 255, 255, 0.06);
+  border-radius: 4px;
+}
+.PollResult-bar {
+  border-radius: 4px;
+  height: 6px;
+}
+
+/* Votes modal */
+.VotesModal-list a {
+  color: #e8edf5;
+  font-family: var(--cosmos-font, 'Outfit'), sans-serif;
+}
+
+/* ── Easter: Streamers ─────────────────────────────────────────── */
+#cosmos-easter-streamers {
+  position: absolute;
+  bottom: -170px;
+  left: 0;
+  width: 100%;
+  pointer-events: none;
+  z-index: 5;
+  overflow: visible;
+}
+
+/* ── Easter: Bunny ears ────────────────────────────────────────── */
+.CosmosEarWrap {
+  display: inline-block;
+  position: relative;
+  overflow: visible;
+  vertical-align: top;
+}
+.CosmosEarSvg {
+  position: absolute;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* ── Easter: Hopping bunny ───────────────────────────────────────
+   The bunny hops across the bottom of the viewport.
+   Each hop is a parabolic arc via translateY combined with translateX.
+   We animate a wrapper (horizontal travel) and the bunny itself (vertical bounce).
+──────────────────────────────────────────────────────────────────── */
+#cosmos-easter-bunny {
+  position: fixed;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 9000;
+  width: 60px;
+  height: 60px;
+}
+@keyframes cosmos-bunny-travel-ltr {
+  from { transform: translateX(-80px); }
+  to   { transform: translateX(~"calc(100vw + 80px)"); }
+}
+@keyframes cosmos-bunny-travel-rtl {
+  from { transform: translateX(~"calc(100vw + 80px)"); }
+  to   { transform: translateX(-80px); }
+}
+@keyframes cosmos-bunny-hop {
+  0%,100%  { transform: translateY(0)    scaleX(1); }
+  10%      { transform: translateY(-32px) scaleX(1); }
+  18%      { transform: translateY(0)    scaleX(1.15) scaleY(0.85); }
+  20%      { transform: translateY(0)    scaleX(1); }
+  35%      { transform: translateY(-28px) scaleX(1); }
+  43%      { transform: translateY(0)    scaleX(1.15) scaleY(0.85); }
+  45%      { transform: translateY(0)    scaleX(1); }
+  60%      { transform: translateY(-32px) scaleX(1); }
+  68%      { transform: translateY(0)    scaleX(1.15) scaleY(0.85); }
+  70%      { transform: translateY(0)    scaleX(1); }
+  85%      { transform: translateY(-28px) scaleX(1); }
+  93%      { transform: translateY(0)    scaleX(1.15) scaleY(0.85); }
+  95%      { transform: translateY(0)    scaleX(1); }
+}
+
+/* ── Theme transition ──────────────────────────────────────────── */
+.cosmos-transitioning * {
+  transition: background-color 0.7s ease, color 0.7s ease, border-color 0.7s ease !important;
+}
