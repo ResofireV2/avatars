@@ -31,12 +31,12 @@ class SugarSkull extends AbstractStyle
 
         [$br, $bg2, $bb] = $this->pick($username, 0, $bgColors);
 
-        // Derived colors
+        // Bg color IS the skull — no separate white shape
         $bgC   = $this->color($img, $br, $bg2, $bb);
-        $dark  = $this->color($img, (int)($br * 0.4), (int)($bg2 * 0.4), (int)($bb * 0.4));
-        $mid   = $this->color($img, (int)($br * 0.6), (int)($bg2 * 0.6), (int)($bb * 0.6));
-        $skull = $this->color($img, 245, 240, 232); // off-white skull base
-        $skullD= $this->color($img, 215, 208, 195);
+        $dark  = $this->color($img, (int)($br * 0.45), (int)($bg2 * 0.45), (int)($bb * 0.45));
+        $mid   = $this->color($img, (int)($br * 0.65), (int)($bg2 * 0.65), (int)($bb * 0.65));
+        $skull = $bgC;   // skull color = background
+        $skullD= $dark;  // darker shade for nose/teeth dividers
         $black = $this->color($img, 12, 8, 18);
 
         // Accent colors for decorations — always vivid against any bg
@@ -67,15 +67,8 @@ class SugarSkull extends AbstractStyle
         [$ac2r, $ac2g, $ac2b] = $this->pick($username, 2, $accentSets2);
         $acc2 = $this->color($img, $ac2r, $ac2g, $ac2b);
 
-        // Fill background
+        // Fill background — this IS the skull color
         $this->rect($img, 0, 0, 200, 200, $bgC);
-
-        // ── SKULL SHAPE ──────────────────────────────────────────────
-        // Skull cranium (upper rounded) + jaw (lower rectangle)
-        $this->ellipse($img, 100, 88, 150, 140, $skull);
-        $this->rect($img, 30, 108, 170, 168, $skull);
-        // Cheekbone narrowing
-        $this->ellipse($img, 100, 158, 130, 80, $skull);
 
         // ── SLOT 1: FOREHEAD ORNAMENT ────────────────────────────────
         $forehead = $this->hash($username, 3, 0, 13);
@@ -86,9 +79,9 @@ class SugarSkull extends AbstractStyle
         $this->drawSockets($img, $socketStyle, $acc1, $acc2, $dark, $skull, $bgC);
 
         // ── SKULL NOSE CAVITY ─────────────────────────────────────────
-        $this->ellipse($img, 88,  148, 14, 10, $skullD);
-        $this->ellipse($img, 110, 148, 14, 10, $skullD);
-        $this->polygon($img, [84, 148, 116, 148, 100, 160], $skullD);
+        $this->ellipse($img, 88,  148, 16, 12, $dark);
+        $this->ellipse($img, 112, 148, 16, 12, $dark);
+        $this->polygon($img, [82, 150, 118, 150, 100, 164], $dark);
 
         // ── SLOT 3: CHEEK MARKS ───────────────────────────────────────
         $cheekStyle = $this->hash($username, 5, 0, 4);
@@ -98,10 +91,14 @@ class SugarSkull extends AbstractStyle
         $teethStyle = $this->hash($username, 6, 0, 5);
         $this->drawTeeth($img, $teethStyle, $skull, $skullD, $acc1, $acc2, $bgC);
 
-        // Jaw outline
-        imagesetthickness($img, 2);
-        imagearc($img, 100, 148, 130, 80, 0, 180, $skullD);
+        // Jaw line suggestion
+        imagesetthickness($img, 3);
+        imagearc($img, 100, 152, 134, 84, 10, 170, $dark);
         imagesetthickness($img, 1);
+
+        // Always draw shine dots on eye sockets
+        $this->ellipse($img, $lx - 4, $sy - 4, 6, 6, $acc2);
+        $this->ellipse($img, $rx - 4, $sy - 4, 6, 6, $acc2);
 
         return $img;
     }
@@ -218,9 +215,9 @@ class SugarSkull extends AbstractStyle
     {
         $lx = 68; $rx = 132; $sy = 108;
 
-        // Always draw dark socket base first
-        $this->ellipse($img, $lx, $sy, 48, 48, $dark);
-        $this->ellipse($img, $rx, $sy, 48, 48, $dark);
+        // Dark socket base always drawn first
+        $this->ellipse($img, $lx, $sy, 50, 50, $dark);
+        $this->ellipse($img, $rx, $sy, 50, 50, $dark);
 
         switch ($style) {
             case 0: // rose — concentric + petals
@@ -326,11 +323,6 @@ class SugarSkull extends AbstractStyle
                 }
                 break;
         }
-
-        // Always draw shine dots
-        $white = $this->color($img, 255, 255, 255);
-        $this->ellipse($img, $lx - 4, $sy - 4, 6, 6, $white);
-        $this->ellipse($img, $rx - 4, $sy - 4, 6, 6, $white);
     }
 
     private function drawCheeks(\GdImage $img, int $style, int $a1, int $a2): void
@@ -392,23 +384,26 @@ class SugarSkull extends AbstractStyle
     {
         $ty = 170; $tx = 38; $tw = 124; $th = 22;
 
-        // Jaw bar
+        // Jaw bar — dark shade
         $this->rect($img, $tx, $ty, $tx + $tw, $ty + $th, $skullD);
 
         $toothW = 14;
         $count  = 8;
         $startX = $tx + 4;
 
+        // Tooth color = accent 1 (vivid, readable on any bg)
+        $toothCol = $a1;
+
         switch ($style) {
             case 0: // classic even teeth
                 for ($i = 0; $i < $count; $i++) {
-                    $this->rect($img, $startX + $i * $toothW, $ty, $startX + $i * $toothW + $toothW - 2, $ty + 16, $skull);
+                    $this->rect($img, $startX + $i * $toothW, $ty, $startX + $i * $toothW + $toothW - 2, $ty + 16, $toothCol);
                 }
                 break;
             case 1: // gap tooth (missing slot 3)
                 for ($i = 0; $i < $count; $i++) {
                     if ($i === 3) continue;
-                    $this->rect($img, $startX + $i * $toothW, $ty, $startX + $i * $toothW + $toothW - 2, $ty + 16, $skull);
+                    $this->rect($img, $startX + $i * $toothW, $ty, $startX + $i * $toothW + $toothW - 2, $ty + 16, $toothCol);
                 }
                 break;
             case 2: // jewel teeth — alternating accent colors
@@ -419,13 +414,12 @@ class SugarSkull extends AbstractStyle
                 break;
             case 3: // floral topped — teeth with dot on top
                 for ($i = 0; $i < $count; $i++) {
-                    $this->rect($img, $startX + $i * $toothW, $ty + 4, $startX + $i * $toothW + $toothW - 2, $ty + 18, $skull);
-                    $col = ($i % 2 === 0) ? $a1 : $a2;
+                    $this->rect($img, $startX + $i * $toothW, $ty + 4, $startX + $i * $toothW + $toothW - 2, $ty + 18, $toothCol);
+                    $col = ($i % 2 === 0) ? $a2 : $a1;
                     $this->ellipse($img, $startX + $i * $toothW + 6, $ty + 4, 10, 10, $col);
                 }
                 break;
-            case 4: // zigzag mouth — no individual teeth
-                $this->rect($img, $tx, $ty, $tx + $tw, $ty + $th, $skullD);
+            case 4: // zigzag mouth
                 $pts = [];
                 for ($i = 0; $i <= $count; $i++) {
                     $pts[] = $tx + 2 + $i * ($tw / $count);
@@ -433,13 +427,13 @@ class SugarSkull extends AbstractStyle
                 }
                 imagesetthickness($img, 4);
                 for ($i = 0; $i < count($pts) - 2; $i += 2) {
-                    imageline($img, (int)$pts[$i], (int)$pts[$i+1], (int)$pts[$i+2], (int)$pts[$i+3], $skull);
+                    imageline($img, (int)$pts[$i], (int)$pts[$i+1], (int)$pts[$i+2], (int)$pts[$i+3], $toothCol);
                 }
                 imagesetthickness($img, 1);
                 break;
-            case 5: // patterned — alternating white and accent
+            case 5: // patterned — alternating two accents
                 for ($i = 0; $i < $count; $i++) {
-                    $col = ($i % 3 === 0) ? $a1 : ($i % 3 === 1 ? $skull : $a2);
+                    $col = ($i % 2 === 0) ? $a1 : $a2;
                     $this->rect($img, $startX + $i * $toothW, $ty, $startX + $i * $toothW + $toothW - 2, $ty + 16, $col);
                 }
                 break;

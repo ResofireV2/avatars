@@ -57,13 +57,18 @@ class AvatarGenerator
 
     public function resolveStyle(?string $key): StyleInterface
     {
-        if ($key === 'random' || empty($key)) {
+        // Only randomize when explicitly requested
+        if ($key === 'random') {
             $keys = array_keys($this->styles);
             return $this->styles[$keys[array_rand($keys)]];
         }
-        if (isset($this->styles[$key])) {
+
+        // If a valid stored key exists, use it
+        if (!empty($key) && isset($this->styles[$key])) {
             return $this->styles[$key];
         }
+
+        // No stored key — fall back to admin default setting
         $default = $this->settings->get('resofire-avatars.default_style', 'cyberpunk');
         if ($default === 'random') {
             $keys = array_keys($this->styles);
