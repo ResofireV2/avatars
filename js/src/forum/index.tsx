@@ -5,7 +5,6 @@ import Component from 'flarum/common/Component';
 import Stream from 'flarum/common/utils/Stream';
 
 const STYLES = [
-  { key: 'retro-pixel',      label: 'Retro Pixel' },
   { key: 'cyberpunk',        label: 'Cyberpunk' },
   { key: 'android',          label: 'Android' },
   { key: 'fantasy',          label: 'Fantasy' },
@@ -17,6 +16,9 @@ const STYLES = [
   { key: 'pirate',           label: 'Pirate' },
   { key: 'glitch',           label: 'Glitch' },
   { key: 'emoji',            label: 'Emoji' },
+  { key: 'sugar-skull',      label: 'Sugar Skull' },
+  { key: 'lcd-face',         label: 'LCD Face' },
+  { key: 'cassette',         label: 'Cassette' },
 ];
 
 class AvatarStylePicker extends Component<any> {
@@ -27,7 +29,7 @@ class AvatarStylePicker extends Component<any> {
 
   oninit(vnode: any) {
     super.oninit(vnode);
-    this.selected = Stream(app.session.user?.attribute('rfAvatarStyle') || 'retro-pixel');
+    this.selected = Stream(app.session.user?.attribute('rfAvatarStyle') || 'cyberpunk');
     this.saving   = Stream(false);
     this.saved    = Stream(false);
     this.error    = Stream('');
@@ -35,59 +37,36 @@ class AvatarStylePicker extends Component<any> {
 
   previewUrl(styleKey: string): string {
     const username = app.session.user?.username() || 'user';
-    return (
-      app.forum.attribute('apiUrl') +
-      '/resofire-avatars/preview?username=' +
-      encodeURIComponent(username) +
-      '&style=' +
-      encodeURIComponent(styleKey)
-    );
+    return app.forum.attribute('apiUrl') + '/resofire-avatars/preview?username='
+      + encodeURIComponent(username) + '&style=' + encodeURIComponent(styleKey);
   }
 
   save() {
     if (this.saving()) return;
-    this.saving(true);
-    this.saved(false);
-    this.error('');
-
-    app
-      .request({
-        method: 'POST',
-        url: app.forum.attribute('apiUrl') + '/resofire-avatars/style',
-        body: {
-          style:  this.selected(),
-          userId: app.session.user?.id(),
-        },
-      })
-      .then(() => {
-        this.saving(false);
-        this.saved(true);
-        app.session.user?.pushAttributes({ rfAvatarStyle: this.selected() });
-        m.redraw();
-        setTimeout(() => {
-          this.saved(false);
-          m.redraw();
-        }, 3000);
-      })
-      .catch(() => {
-        this.saving(false);
-        this.error(
-          app.translator.trans('resofire-avatars.forum.error').toString()
-        );
-        m.redraw();
-      });
+    this.saving(true); this.saved(false); this.error('');
+    app.request({
+      method: 'POST',
+      url: app.forum.attribute('apiUrl') + '/resofire-avatars/style',
+      body: { style: this.selected(), userId: app.session.user?.id() },
+    })
+    .then(() => {
+      this.saving(false); this.saved(true);
+      app.session.user?.pushAttributes({ rfAvatarStyle: this.selected() });
+      m.redraw();
+      setTimeout(() => { this.saved(false); m.redraw(); }, 3000);
+    })
+    .catch(() => {
+      this.saving(false);
+      this.error(app.translator.trans('resofire-avatars.forum.error').toString());
+      m.redraw();
+    });
   }
 
   view() {
     return (
       <div className="Form-group RfAvatarPicker">
-        <label>
-          {app.translator.trans('resofire-avatars.forum.avatar_style_heading')}
-        </label>
-        <p className="helpText">
-          {app.translator.trans('resofire-avatars.forum.avatar_style_help')}
-        </p>
-
+        <label>{app.translator.trans('resofire-avatars.forum.avatar_style_heading')}</label>
+        <p className="helpText">{app.translator.trans('resofire-avatars.forum.avatar_style_help')}</p>
         <div className="RfAvatarPicker-grid">
           {STYLES.map(({ key, label }) => (
             <div
@@ -105,22 +84,15 @@ class AvatarStylePicker extends Component<any> {
             </div>
           ))}
         </div>
-
         <div style={{ marginTop: '12px' }}>
-          <button
-            className="Button Button--primary"
-            onclick={this.save.bind(this)}
-            disabled={this.saving()}
-          >
+          <button className="Button Button--primary" onclick={this.save.bind(this)} disabled={this.saving()}>
             {this.saving()
               ? app.translator.trans('resofire-avatars.forum.saving')
               : this.saved()
               ? app.translator.trans('resofire-avatars.forum.saved')
               : app.translator.trans('resofire-avatars.forum.save_button')}
           </button>
-          {this.error()
-            ? <span style={{ marginLeft: '10px', color: 'red' }}>{this.error()}</span>
-            : null}
+          {this.error() ? <span style={{ marginLeft: '10px', color: 'red' }}>{this.error()}</span> : null}
         </div>
       </div>
     );

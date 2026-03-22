@@ -10,7 +10,6 @@ resofire-avatars:
     flush_error: Something went wrong. Please try again.
     style_options:
       random: "🎲 Random"
-      retro-pixel: Retro Pixel
       cyberpunk: Cyberpunk
       android: Android
       fantasy: Fantasy
@@ -22,9 +21,12 @@ resofire-avatars:
       pirate: Pirate
       glitch: Glitch
       emoji: Emoji
+      sugar-skull: Sugar Skull
+      lcd-face: LCD Face
+      cassette: Cassette
   forum:
     avatar_style_heading: Avatar Style
-    avatar_style_help: Choose how your avatar looks. Your username determines the unique colours and features within the style.
+    avatar_style_help: Choose how your avatar looks. Your username determines the unique colours and features within each style.
     save_button: Save Style
     saving: Saving...
     saved: Saved!

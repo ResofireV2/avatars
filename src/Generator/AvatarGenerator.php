@@ -7,7 +7,6 @@ use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
 use Illuminate\Support\Str;
 use Resofire\Avatars\Generator\Style\StyleInterface;
-use Resofire\Avatars\Generator\Style\RetroPixel;
 use Resofire\Avatars\Generator\Style\Cyberpunk;
 use Resofire\Avatars\Generator\Style\Android;
 use Resofire\Avatars\Generator\Style\Fantasy;
@@ -19,6 +18,9 @@ use Resofire\Avatars\Generator\Style\FantasyCreature;
 use Resofire\Avatars\Generator\Style\Pirate;
 use Resofire\Avatars\Generator\Style\Glitch;
 use Resofire\Avatars\Generator\Style\Emoji;
+use Resofire\Avatars\Generator\Style\SugarSkull;
+use Resofire\Avatars\Generator\Style\LcdFace;
+use Resofire\Avatars\Generator\Style\CassetteTape;
 
 class AvatarGenerator
 {
@@ -31,63 +33,54 @@ class AvatarGenerator
     public function __construct(SettingsRepositoryInterface $settings, Paths $paths)
     {
         $this->settings = $settings;
-        $this->paths = $paths;
+        $this->paths    = $paths;
 
         $this->styles = [
-            'retro-pixel'       => new RetroPixel(),
-            'cyberpunk'         => new Cyberpunk(),
-            'android'           => new Android(),
-            'fantasy'           => new Fantasy(),
-            'orc'               => new Orc(),
-            'anime'             => new Anime(),
-            'undead'            => new Undead(),
-            'space-explorer'    => new SpaceExplorer(),
-            'fantasy-creature'  => new FantasyCreature(),
-            'pirate'            => new Pirate(),
-            'glitch'            => new Glitch(),
-            'emoji'             => new Emoji(),
+            'cyberpunk'        => new Cyberpunk(),
+            'android'          => new Android(),
+            'fantasy'          => new Fantasy(),
+            'orc'              => new Orc(),
+            'anime'            => new Anime(),
+            'undead'           => new Undead(),
+            'space-explorer'   => new SpaceExplorer(),
+            'fantasy-creature' => new FantasyCreature(),
+            'pirate'           => new Pirate(),
+            'glitch'           => new Glitch(),
+            'emoji'            => new Emoji(),
+            'sugar-skull'      => new SugarSkull(),
+            'lcd-face'         => new LcdFace(),
+            'cassette'         => new CassetteTape(),
         ];
     }
 
-    public function styles(): array
-    {
-        return $this->styles;
-    }
+    public function styles(): array { return $this->styles; }
 
     public function resolveStyle(?string $key): StyleInterface
     {
-        // Handle random selection
         if ($key === 'random' || empty($key)) {
             $keys = array_keys($this->styles);
             return $this->styles[$keys[array_rand($keys)]];
         }
-
         if (isset($this->styles[$key])) {
             return $this->styles[$key];
         }
-
-        $default = $this->settings->get('resofire-avatars.default_style', 'retro-pixel');
-
+        $default = $this->settings->get('resofire-avatars.default_style', 'cyberpunk');
         if ($default === 'random') {
             $keys = array_keys($this->styles);
             return $this->styles[$keys[array_rand($keys)]];
         }
-
-        return $this->styles[$default] ?? $this->styles['retro-pixel'];
+        return $this->styles[$default] ?? $this->styles['cyberpunk'];
     }
 
     public function generateForUser(User $user, ?string $styleKey = null): void
     {
         $effectiveKey = $styleKey ?? $user->rf_avatar_style;
-        $style = $this->resolveStyle($effectiveKey);
-        $avatarDir = $this->paths->public . '/assets/avatars';
+        $style        = $this->resolveStyle($effectiveKey);
+        $avatarDir    = $this->paths->public . '/assets/avatars';
 
-        if (!is_dir($avatarDir)) {
-            mkdir($avatarDir, 0755, true);
-        }
+        if (!is_dir($avatarDir)) mkdir($avatarDir, 0755, true);
 
-        $image = $style->generate($user->username);
-
+        $image    = $style->generate($user->username);
         $filename = 'rf_' . Str::random(24) . '.png';
         $filepath = $avatarDir . '/' . $filename;
 
@@ -97,20 +90,14 @@ class AvatarGenerator
         $oldAvatar = $user->getRawOriginal('avatar_url');
         if ($oldAvatar && strpos($oldAvatar, 'rf_') === 0) {
             $oldPath = $avatarDir . '/' . $oldAvatar;
-            if (is_file($oldPath)) {
-                unlink($oldPath);
-            }
+            if (is_file($oldPath)) unlink($oldPath);
         }
 
-        // Store the resolved style key (not 'random') so the user's picker shows
-        // their actual current style, not just 'random'.
         $storedKey = $style->key();
-
         User::where('id', $user->id)->update([
             'avatar_url'      => $filename,
             'rf_avatar_style' => $storedKey,
         ]);
-
         $user->avatar_url      = $filename;
         $user->rf_avatar_style = $storedKey;
     }
@@ -119,12 +106,10 @@ class AvatarGenerator
     {
         $style = $this->resolveStyle($styleKey);
         $image = $style->generate($username);
-
         ob_start();
         imagepng($image, null, 6);
         $png = ob_get_clean();
         imagedestroy($image);
-
         return $png;
     }
 }
