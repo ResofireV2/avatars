@@ -158,7 +158,7 @@ class Fantasy extends AbstractStyle
 
         // Detail variant extras
         if ($det === 1) { // battle scar
-            imageline($img, 96,108, 108,140, $this->color($img,max(0,$bg[0]-40),max(0,$bg[1]-40),max(0,$bg[2]-40)), $img);
+            imageline($img, 96,108, 108,140, $this->color($img,max(0,$bg[0]-40),max(0,$bg[1]-40),max(0,$bg[2]-40)));
             imagesetthickness($img, 2);
             imageline($img, 96,108, 108,140, $nose);
             imagesetthickness($img, 1);
@@ -349,7 +349,11 @@ class Fantasy extends AbstractStyle
         $this->ellipse($img, $lx, $ey, 28, 22, $darkC);
         $this->ellipse($img, $rx, $ey, 28, 22, $darkC);
 
-        $eyeH = match($expr) { 1 => 8, 2 => 7, 3 => 8, 4 => 16, default => 12 };
+        if ($expr === 1) { $eyeH = 8; }
+        elseif ($expr === 2) { $eyeH = 7; }
+        elseif ($expr === 3) { $eyeH = 8; }
+        elseif ($expr === 4) { $eyeH = 16; }
+        else { $eyeH = 12; }
         $this->ellipse($img, $lx, $ey, 20, $eyeH, $eye1);
         $this->ellipse($img, $rx, $ey, 20, $eyeH, $eye1);
         $this->ellipse($img, $lx, $ey, 10, (int)($eyeH*0.7), $eye2);
@@ -454,7 +458,9 @@ class Fantasy extends AbstractStyle
         } else {
             $this->ellipse($img, $lx, $ey, 22, 20, $eyeC);
             $this->ellipse($img, $rx, $ey, 22, 20, $eyeC);
-            $eyePupil = match($expr) { 4 => 12, 1 => 10, default => 8 };
+        if ($expr === 4) { $eyePupil = 12; }
+        elseif ($expr === 1) { $eyePupil = 10; }
+        else { $eyePupil = 8; }
             $this->ellipse($img, $lx, $ey, $eyePupil, $eyePupil, $darkC);
             $this->ellipse($img, $rx, $ey, $eyePupil, $eyePupil, $darkC);
             $this->ellipse($img, $lx-6, $ey-4, 7, 7, $white);
@@ -621,7 +627,9 @@ class Fantasy extends AbstractStyle
         $this->ellipse($img, $lx, $ey+1, (int)($eyeW-8), (int)($eyeH-6), $eyeOrg);
         $this->ellipse($img, $rx, $ey+1, (int)($eyeW-8), (int)($eyeH-6), $eyeOrg);
 
-        $pupilH = match($expr) { 2 => (int)($eyeH*0.4), 1 => (int)($eyeH*0.35), default => (int)($eyeH*0.45) };
+        if ($expr === 2) { $pupilH = (int)($eyeH*0.4); }
+        elseif ($expr === 1) { $pupilH = (int)($eyeH*0.35); }
+        else { $pupilH = (int)($eyeH*0.45); }
         $this->ellipse($img, $lx, $ey+2, 12, $pupilH, $pupil);
         $this->ellipse($img, $rx, $ey+2, 12, $pupilH, $pupil);
         $this->ellipse($img, $lx-8, $ey-8, 8, 8, $white);

@@ -31,10 +31,14 @@ class FlushAvatarsController implements RequestHandlerInterface
             ->pluck('avatar_url')
             ->toArray();
 
-        // Clear DB records.
+        // Clear avatar_url for users with rf_ files.
         $affected = User::whereNotNull('avatar_url')
             ->where('avatar_url', 'like', 'rf_%')
             ->update(['avatar_url' => null, 'rf_avatar_style' => null]);
+
+        // Also clear rf_avatar_style for ALL users regardless of avatar_url.
+        // This ensures users with no file but a stored style get reset to the admin default.
+        User::whereNotNull('rf_avatar_style')->update(['rf_avatar_style' => null]);
 
         // Delete files.
         $filesDeleted = 0;
