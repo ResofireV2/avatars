@@ -18,6 +18,7 @@ use Resofire\Avatars\Generator\Style\SugarSkull;
 use Resofire\Avatars\Generator\Style\LcdFace;
 use Resofire\Avatars\Generator\Style\CassetteTape;
 use Resofire\Avatars\Generator\Style\Eye;
+use Resofire\Avatars\Generator\Style\Treant;
 
 class AvatarGenerator
 {
@@ -44,6 +45,7 @@ class AvatarGenerator
             'lcd-face'    => new LcdFace(),
             'cassette'    => new CassetteTape(),
             'eye'         => new Eye(),
+            'treant'      => new Treant(),
         ];
     }
 

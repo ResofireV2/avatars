@@ -21,6 +21,7 @@ resofire-avatars:
       lcd-face: LCD Face
       cassette: Cassette
       eye: Eye
+      treant: Treant
   forum:
     avatar_style_heading: Avatar Style
     avatar_style_help: Choose how your avatar looks. Your username determines the unique colours and features within each style.
