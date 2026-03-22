@@ -15,6 +15,7 @@ const STYLES = [
   { key: 'sugar-skull', label: 'Sugar Skull' },
   { key: 'lcd-face',    label: 'LCD Face' },
   { key: 'cassette',    label: 'Cassette' },
+  { key: 'eye',         label: 'Eye' },
 ];
 
 class AvatarStylePicker extends Component<any> {

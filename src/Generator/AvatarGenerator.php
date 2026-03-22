@@ -17,6 +17,7 @@ use Resofire\Avatars\Generator\Style\Emoji;
 use Resofire\Avatars\Generator\Style\SugarSkull;
 use Resofire\Avatars\Generator\Style\LcdFace;
 use Resofire\Avatars\Generator\Style\CassetteTape;
+use Resofire\Avatars\Generator\Style\Eye;
 
 class AvatarGenerator
 {
@@ -42,6 +43,7 @@ class AvatarGenerator
             'sugar-skull' => new SugarSkull(),
             'lcd-face'    => new LcdFace(),
             'cassette'    => new CassetteTape(),
+            'eye'         => new Eye(),
         ];
     }
 
