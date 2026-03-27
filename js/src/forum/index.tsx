@@ -1,6 +1,5 @@
 import app from 'flarum/forum/app';
 import { extend } from 'flarum/common/extend';
-import SettingsPage from 'flarum/forum/components/SettingsPage';
 import Component from 'flarum/common/Component';
 import Stream from 'flarum/common/utils/Stream';
 
@@ -98,7 +97,9 @@ class AvatarStylePicker extends Component<any> {
 }
 
 app.initializers.add('resofire/avatars', () => {
-  extend(SettingsPage.prototype, 'settingsItems', function (items: any) {
+  // Use the string form of extend() so Flarum defers the extension until
+  // SettingsPage's async chunk has loaded (it is lazy-loaded via dynamic import).
+  extend('flarum/forum/components/SettingsPage', 'settingsItems', function (items: any) {
     if (!app.session.user) return;
     items.add('rf-avatar-style', <AvatarStylePicker />, 0);
   });
