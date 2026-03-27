@@ -1,1 +1,1 @@
-import './src/forum/index';
+export * from './src/forum';
