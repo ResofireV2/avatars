@@ -75,8 +75,11 @@ class SugarSkull extends AbstractStyle
         $this->drawForehead($img, $forehead, $acc1, $acc2, $dark, $skull);
 
         // ── SLOT 2: EYE SOCKET ORNAMENT ──────────────────────────────
+        // Socket coordinates defined here so the shine-dot pass at the end
+        // of generate() can reference them without undefined variable errors.
+        $lx = 68; $rx = 132; $sy = 108;
         $socketStyle = $this->hash($username, 4, 0, 7);
-        $this->drawSockets($img, $socketStyle, $acc1, $acc2, $dark, $skull, $bgC);
+        $this->drawSockets($img, $socketStyle, $acc1, $acc2, $dark, $skull, $bgC, $lx, $rx, $sy);
 
         // ── SKULL NOSE CAVITY ─────────────────────────────────────────
         $this->ellipse($img, 88,  148, 16, 12, $dark);
@@ -211,10 +214,8 @@ class SugarSkull extends AbstractStyle
         }
     }
 
-    private function drawSockets(\GdImage $img, int $style, int $a1, int $a2, int $dark, int $skull, int $bg): void
+    private function drawSockets(\GdImage $img, int $style, int $a1, int $a2, int $dark, int $skull, int $bg, int $lx, int $rx, int $sy): void
     {
-        $lx = 68; $rx = 132; $sy = 108;
-
         // Dark socket base always drawn first
         $this->ellipse($img, $lx, $sy, 50, 50, $dark);
         $this->ellipse($img, $rx, $sy, 50, 50, $dark);
