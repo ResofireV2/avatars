@@ -26,12 +26,12 @@ class PreviewController implements RequestHandlerInterface
         $username = $params['username'] ?? 'user';
         $style    = $params['style'] ?? 'pixel-gamer';
 
-        $png = $this->generator->generatePreview($username, $style);
+        $webp = $this->generator->generatePreview($username, $style);
 
         $response = new Response();
-        $response->getBody()->write($png);
+        $response->getBody()->write($webp);
 
-        return $response->withHeader('Content-Type', 'image/png')
+        return $response->withHeader('Content-Type', 'image/webp')
                         ->withHeader('Cache-Control', 'public, max-age=300');
     }
 }

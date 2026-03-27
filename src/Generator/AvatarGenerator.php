@@ -2,9 +2,9 @@
 
 namespace Resofire\Avatars\Generator;
 
-use Flarum\Foundation\Paths;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
+use Illuminate\Contracts\Filesystem\Factory;
 use Illuminate\Support\Str;
 use Resofire\Avatars\Generator\Style\StyleInterface;
 use Resofire\Avatars\Generator\Style\Cyberpunk;
@@ -23,15 +23,15 @@ use Resofire\Avatars\Generator\Style\Treant;
 class AvatarGenerator
 {
     protected SettingsRepositoryInterface $settings;
-    protected Paths $paths;
+    protected Factory $filesystemFactory;
 
     /** @var StyleInterface[] */
     protected array $styles;
 
-    public function __construct(SettingsRepositoryInterface $settings, Paths $paths)
+    public function __construct(SettingsRepositoryInterface $settings, Factory $filesystemFactory)
     {
-        $this->settings = $settings;
-        $this->paths    = $paths;
+        $this->settings          = $settings;
+        $this->filesystemFactory = $filesystemFactory;
 
         $this->styles = [
             'cyberpunk'   => new Cyberpunk(),
@@ -74,22 +74,23 @@ class AvatarGenerator
     {
         $effectiveKey = $styleKey ?? $user->rf_avatar_style;
         $style        = $this->resolveStyle($effectiveKey);
-        $avatarDir    = $this->paths->public . '/assets/avatars';
-
-        if (!is_dir($avatarDir)) mkdir($avatarDir, 0755, true);
+        $disk         = $this->filesystemFactory->disk('flarum-avatars');
 
         $image    = $style->generate($user->username);
-        $filename = 'rf_' . Str::random(24) . '.png';
-        $filepath = $avatarDir . '/' . $filename;
+        $filename = 'rf_' . Str::random(24) . '.webp';
 
-        imagepng($image, $filepath, 6);
+        ob_start();
+        imagewebp($image, null, 80);
+        $webpData = ob_get_clean();
         imagedestroy($image);
 
+        // Delete old RF avatar via the disk abstraction before writing the new one.
         $oldAvatar = $user->getRawOriginal('avatar_url');
-        if ($oldAvatar && strpos($oldAvatar, 'rf_') === 0) {
-            $oldPath = $avatarDir . '/' . $oldAvatar;
-            if (is_file($oldPath)) unlink($oldPath);
+        if ($oldAvatar && strpos($oldAvatar, 'rf_') === 0 && $disk->exists($oldAvatar)) {
+            $disk->delete($oldAvatar);
         }
+
+        $disk->put($filename, $webpData);
 
         $storedKey = $style->key();
         User::where('id', $user->id)->update([
@@ -105,9 +106,9 @@ class AvatarGenerator
         $style = $this->resolveStyle($styleKey);
         $image = $style->generate($username);
         ob_start();
-        imagepng($image, null, 6);
-        $png = ob_get_clean();
+        imagewebp($image, null, 80);
+        $webpData = ob_get_clean();
         imagedestroy($image);
-        return $png;
+        return $webpData;
     }
 }
