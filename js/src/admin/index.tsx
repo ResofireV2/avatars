@@ -1,5 +1,8 @@
 import app from 'flarum/admin/app';
 
+declare const flarum: any;
+declare const m: any;
+
 app.initializers.add('resofire/avatars', () => {
   const styles = [
     'random','cyberpunk','android','orc','undead',
